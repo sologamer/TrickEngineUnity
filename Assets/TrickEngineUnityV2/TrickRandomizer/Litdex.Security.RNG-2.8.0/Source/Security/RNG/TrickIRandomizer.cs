@@ -5,7 +5,8 @@ namespace TrickCore
 {
     public static class TrickIRandomizer
     {
-        public static PcgRxsMXs64 DefaultPcg32 = new PcgRxsMXs64();
+        public static PcgRxsMXs64 Default = new PcgRxsMXs64();
+        public static PcgRxsMXs64 DefaultPcgRxsMXs64 = new PcgRxsMXs64();
     }
 }
 namespace Litdex.Security.RNG

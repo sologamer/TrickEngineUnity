@@ -4,12 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using AnotherTrickWebAPIShared.Dto;
 using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using TrickCore;
 
 namespace TrickCore
 {
@@ -180,7 +175,7 @@ namespace TrickCore
                 Type memberType = ReflectionHelperExtension.GetTypeFromMember(member);
                 if (memberType == null) continue;
                 // TODO: fix
-                /*if (memberType == typeof(bool)) parameters.Add(new MySqlParameter(key, MySqlDbType.Bit));
+                if (memberType == typeof(bool)) parameters.Add(new MySqlParameter(key, MySqlDbType.Bit));
                 else if (memberType == typeof(short)) parameters.Add(new MySqlParameter(key, MySqlDbType.Int16));
                 else if (memberType == typeof(int)) parameters.Add(new MySqlParameter(key, MySqlDbType.Int32));
                 else if (memberType == typeof(long)) parameters.Add(new MySqlParameter(key, MySqlDbType.Int64));
@@ -190,7 +185,7 @@ namespace TrickCore
                 else if (memberType == typeof(double)) parameters.Add(new MySqlParameter(key, MySqlDbType.Double));
                 else if (memberType == typeof(decimal)) parameters.Add(new MySqlParameter(key, MySqlDbType.Decimal));
                 else if (memberType == typeof(string)) parameters.Add(new MySqlParameter(key, MySqlDbType.String));
-                else if (memberType == typeof(DateTime)) parameters.Add(new MySqlParameter(key, MySqlDbType.DateTime));*/
+                else if (memberType == typeof(DateTime)) parameters.Add(new MySqlParameter(key, MySqlDbType.DateTime));
             }
             
             return parameters;

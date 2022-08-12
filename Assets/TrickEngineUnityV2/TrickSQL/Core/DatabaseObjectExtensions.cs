@@ -4,11 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using AnotherTrickWebAPIShared.Dto;
 using Dapper.Contrib.Extensions;
 using Newtonsoft.Json;
 using TrickCore;
-using ReflectionHelperExtension = TrickCore.ReflectionHelperExtension;
 
 namespace TrickCore
 {

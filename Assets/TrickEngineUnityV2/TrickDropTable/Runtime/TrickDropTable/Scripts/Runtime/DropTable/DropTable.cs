@@ -29,9 +29,9 @@ namespace TrickCore
         /// </summary>
         /// <param name="item">The item to find</param>
         /// <param name="weight">The new weight</param>
-        public virtual void Set(object item, double weight)
+        public virtual bool SetObjectWeight(object item, double weight)
         {
-            
+            return false;
         }
 
         /// <summary>
@@ -210,14 +210,17 @@ namespace TrickCore
             return Items.Select(item => item.Object).ToList();
         }
 
-        public override void Set(object item, double weight)
+        public override bool SetObjectWeight(object item, double weight)
         {
             Item o = Items.Find(obj => Equals(obj.Object, item));
             if (o != null)
             {
                 o.Weight = (float) weight;
                 UpdateDropTable(Items);
+                return true;
             }
+
+            return false;
         }
 
         public override bool Remove(object item)

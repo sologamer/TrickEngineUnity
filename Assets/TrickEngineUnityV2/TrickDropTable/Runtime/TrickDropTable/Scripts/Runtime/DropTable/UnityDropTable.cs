@@ -168,19 +168,19 @@ namespace TrickCore
 
         public override object RandomItem(IRandomizer randomizer = null)
         {
-            if (randomizer == null) randomizer = TrickIRandomizer.DefaultPcg32;
+            if (randomizer == null) randomizer = TrickIRandomizer.Default;
             return randomizer.RandomItem(GetDropTable(true));
         }
 
         public override object RandomItems(IRandomizer randomizer, int count, bool allowDuplicate)
         {
-            if (randomizer == null) randomizer = TrickIRandomizer.DefaultPcg32;
+            if (randomizer == null) randomizer = TrickIRandomizer.Default;
             return randomizer.RandomItems(GetDropTable(true), count, allowDuplicate);
         }
 
         public override object RandomItems(IRandomizer randomizer, int minItems, int maxItems, bool allowDuplicate)
         {
-            if (randomizer == null) randomizer = TrickIRandomizer.DefaultPcg32;
+            if (randomizer == null) randomizer = TrickIRandomizer.Default;
             return randomizer.RandomItems(GetDropTable(true), minItems, maxItems, allowDuplicate);
         }
     }
