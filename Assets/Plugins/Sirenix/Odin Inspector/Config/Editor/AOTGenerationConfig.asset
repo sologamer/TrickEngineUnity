@@ -1,0 +1,2548 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1726182683, guid: a4865f1ab4504ed8a368670db22f409c, type: 3}
+  m_Name: AOTGenerationConfig
+  m_EditorClassIdentifier: 
+  automateBeforeBuilds: 1
+  deleteDllAfterBuilds: 1
+  AutomateForAllAOTPlatforms: 1
+  automateForPlatforms: 090000000d00000005000000
+  lastScan: 637886214760826675
+  supportSerializedTypes:
+  - TypeName: System.Nullable`1[[LastResistance.AbilityHitData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 1
+    Emit: 1
+  - TypeName: UnityEngine.Keyframe, UnityEngine.CoreModule
+    IsCustom: 1
+    Emit: 1
+  - TypeName: UnitAttributeType, Assembly-CSharp
+    IsCustom: 1
+    Emit: 1
+  - TypeName: LastResistance.AbilityAttackType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData+ProcAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData+ProcActionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData+ProcCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData+ProcConditionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityBehaviorProcTypeData+ProcStopType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AbilityDirection, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AbilityEffectData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityEffectHitData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityHitData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityHitDataTarget, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityHitVisualData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityParentType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityProjectileAssetData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilityScaleType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilitySpawnLocation, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AbilitySpawnRotation, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AchievementManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Action, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Action`2[[System.Collections.Generic.List`1[[UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation,
+      Unity.ResourceManager]], mscorlib],[System.Collections.Generic.Dictionary`2[[System.String,
+      mscorlib],[System.Int64, mscorlib]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Action`2[[System.Object, mscorlib],[UnityEngine.ResourceManagement.AsyncOperations.DownloadStatus,
+      Unity.ResourceManager]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Action`1[[System.Object, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Action`3[[Stage, Assembly-CSharp],[System.Boolean, mscorlib],[GameMode,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CodeStage.AntiCheat.Common.ACTkByte4, ACTk.Runtime
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ActorType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AdvertisementTicket, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AdvertisingTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AnimationClip, UnityEngine.AnimationModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AntiCheatTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AppleLoginTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReference, Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AssetReferenceAudioClip, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceGameObject, Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceSprite, Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.AnimationClip,
+      UnityEngine.AnimationModule]], Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.AvatarMask,
+      UnityEngine.AnimationModule]], Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceT`1[[TrickLanguagePack,
+      Assembly-CSharp]], Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AddressableAssets.AssetReferenceT`1[[TrickModularSkinnedRendererData,
+      Assembly-CSharp]], Unity.Addressables
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AssignAttributeTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AttributeAllocation, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.AttributeValueType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.AvatarMask, UnityEngine.AnimationModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: BeauRoutine.Axis, BeauRoutine
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BaseAbilityTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BehaviorCompletionCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BehaviorConditionContinueType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BehaviorState, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Boolean, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[System.Boolean, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BoostType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: BossSpawnInfo, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.BuffItemEffectAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Byte, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Byte[], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.CastBehaviorCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CasterMoveType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CharacterPresetData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ChatColorDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CollectTargetData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Color, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.Color, UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConditionalDropable, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConditionalDropable+ConditionalCheckType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConditionalDropable+ConditionalOperatorType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConditionTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConsentTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConsumableAutoMetadata, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConsumableAutoSettings, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ConsumableUseType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ContractShopProductData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ContractShopTabAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ContractShopTabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CreepSpotType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Crystal, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Currency, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Currency+DropType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: BeauRoutine.Curve, BeauRoutine
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CustomNpcAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CustomUnitTalkAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DamageType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.DateTime, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DateTimeRange, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DeepCloneType, AnotherTrickWebAPIShared
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackBowTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackFishingTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackGatheringTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackLoggingTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackMeleeTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackMiningTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackPistolTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackSkinningTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackUmbTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackWandTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackWaterTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultAttackWheatTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DefaultPrefabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DefaultStatsUnitItemEffect, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DefaultVariant, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DestroySpawnVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DestroyVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DGHBalanceAbilityEffect, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DGHBalanceUnitSettings, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DGHDialogText, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DGHTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Dialog, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DialogEntry, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DialogOption, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[DamageType, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ElementalDamageType, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[LastResistance.BaseAbilityTalentAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[HarvestData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[System.Collections.Generic.List`1[[HarvestSpotIndexData,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[System.Collections.Generic.List`1[[HarvestUnitNodeData,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[System.Collections.Generic.List`1[[TrickAudioId,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GameActionType, Assembly-CSharp],[TrickNpcIntroductionData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GenderType, Assembly-CSharp],[TrickAudioId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GenderType, Assembly-CSharp],[UnitGenderAnimationData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[GenderType, Assembly-CSharp],[UnitGruntData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[IDropable, Assembly-CSharp],[System.Single,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceGameObject,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceSprite,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.Single,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[GearRefineData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[LastResistance.ItemEffectAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.Collections.Generic.List`1[[TalentNode,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.Collections.Generic.List`1[[TrickAudioId,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[QuestRewardTierData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.String,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[TrickAchievementReward,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[TrickDefaultAbilityId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[TrickZoneId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnitRankData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[WeaponRefineData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[System.Single,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[ItemData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[ItemId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[System.Collections.Generic.List`1[[ItemPrefabData,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[SubStat+SubStatTypes,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[SubStatItemTypesData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[ItemTypes, Assembly-CSharp],[TrickZoneId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[QuestFrequency, Assembly-CSharp],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[System.Single,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[System.Collections.Generic.List`1[[System.Single,
+      mscorlib]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[System.Collections.Generic.List`1[[ItemDrop,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[System.Collections.Generic.List`1[[RefineRequirementData,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[ShopProductData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[Rarities, Assembly-CSharp],[SubStatRarityData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[EasyMobile.RewardedAdNetwork,
+      Assembly-CSharp],[System.Single, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[EasyMobile.RewardedAdNetwork,
+      Assembly-CSharp],[System.Int32, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[LastResistance.StatsBoostTypes,
+      Assembly-CSharp],[TalentValueData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[LastResistance.StatsBoostTypes,
+      Assembly-CSharp],[TrickLocalizationId, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[AssetReferenceAudioClip,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceSprite,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.Dictionary`2[[System.Int32,
+      mscorlib],[System.Collections.Generic.List`1[[TalentNode, Assembly-CSharp]],
+      mscorlib]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Single,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[LastResistance.LevelUnlock,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[IDropable,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[TrickAudioId,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[System.Type,
+      mscorlib]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Int64,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[TalentValueData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.Transform,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[TrickIAPProduct,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[SubStat+SubStatTypes, Assembly-CSharp],[SubStatTypeData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[TrickLanguages, Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceT`1[[TrickLanguagePack,
+      Assembly-CSharp]], Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[TrickLanguages, Assembly-CSharp],[System.String,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[TrickTieredDropTableId, Assembly-CSharp],[DropTableMergeType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[TrickUnitId, Assembly-CSharp],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[TrickUnitId, Assembly-CSharp],[System.Collections.Generic.List`1[[TrickPair`2[[System.Int32,
+      mscorlib],[System.Int32, mscorlib]], Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[AbilityEffectData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[UnityEngine.AnimationCurve,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceGameObject,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[UnityEngine.AddressableAssets.AssetReferenceSprite,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[System.String,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[TrickLocalizationId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[UnityEngine.Vector2Int,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceSprite,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[LastResistance.IPassiveTalentAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[System.Collections.Generic.List`1[[LastResistance.IPassiveTalentAction,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[System.Collections.Generic.List`1[[TrickFocusGroupId,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitAttributeType, Assembly-CSharp],[TrickFactionGroupId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[UnitTalkType, Assembly-CSharp],[UnitTalkData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[AnotherTrickWebAPIShared.Game.UserRole,
+      AnotherTrickWebAPIShared],[UnityEngine.Color, UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[AnotherTrickWebAPIShared.Game.UserRole,
+      AnotherTrickWebAPIShared],[System.String, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[WeaponTypes, Assembly-CSharp],[WeaponTypeData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[XpDrop+XpType, Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceSprite,
+      Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.Dictionary`2[[XpDrop+XpType, Assembly-CSharp],[UnityEngine.Color,
+      UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.DodgeRollTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.ResourceManagement.AsyncOperations.DownloadStatus, Unity.ResourceManager
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[UnityEngine.AnimationCurve, UnityEngine.CoreModule]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[IDropable, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[System.Int32, mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[ItemDrop, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[ItemTypes, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[Rarities, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[UnityEngine.AnimationCurve, UnityEngine.CoreModule]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[IDropable, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[System.Int32, mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[ItemDrop, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[ItemTypes, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[Rarities, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[TrickQuestReward, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1+Item[[TrickUnitGroupId, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[TrickQuestReward, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.DropTable`1[[TrickUnitGroupId, Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: DropTableMergeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ElementalDamageType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EntryConsumeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[DamageType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[ElementalDamageType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[GameActionType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[GenderType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[ItemTypes, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[QuestFrequency,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[Rarities, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[EasyMobile.RewardedAdNetwork,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[LastResistance.StatsBoostTypes,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[SubStat+SubStatTypes,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[TrickLanguages,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[UnitAttributeType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[UnitTalkType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[AnotherTrickWebAPIShared.Game.UserRole,
+      AnotherTrickWebAPIShared]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[WeaponTypes, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.EnumEqualityComparer`1[[XpDrop+XpType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EquipMeSomeGearTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EquipMeSomeHealthPotionTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EquipMeSomeManaPotionTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EquipMeSomeSkillTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ExecuteModulesVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ExecuteOnDestroyVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: FactionGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.FindTargetType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: FleeFromTargetTrickUnitAbilityCastBehavior, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Single, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[System.Single, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: FocusGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Func`2[[System.Int32, mscorlib],[UnityEngine.Vector3, UnityEngine.CoreModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameActionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[GameActionType, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameEventVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameManagerData+ChatGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameManagerData+FLRGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameManagerData+GameGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameMode, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GameSettingsTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearGenData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearMerchantNpcIntroductionData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearPrefabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearRefineData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearVariant, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GearXp, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: GenderType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[GenderType, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+      mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Gold, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Gradient, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.GradientAlphaKey, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.GradientAlphaKey[], UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.GradientColorKey, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.GradientColorKey[], UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.GradientMode, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HarvestData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HarvestSpotIndexData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HarvestUnitNodeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.HashSet`1[[ItemTypes, Assembly-CSharp]],
+      System.Core
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HordeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HordeSpawnData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: HordeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.HumanBodyBones, UnityEngine.AnimationModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.HumanBodyBones, UnityEngine.AnimationModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: IDropable, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[DamageType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[ElementalDamageType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[GameActionType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[GenderType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[IDropable, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[System.Int32, mscorlib]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[ItemTypes, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[QuestFrequency, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[Rarities, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[EasyMobile.RewardedAdNetwork,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[LastResistance.StatsBoostTypes,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[System.String, mscorlib]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[SubStat+SubStatTypes,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[TrickLanguages, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[TrickTieredDropTableId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[TrickUnitId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[System.Type, mscorlib]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[UnitAttributeType,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[UnitTalkType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[AnotherTrickWebAPIShared.Game.UserRole,
+      AnotherTrickWebAPIShared]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[WeaponTypes, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.IEqualityComparer`1[[XpDrop+XpType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ImpactAbilitySpawnData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: InAppPurchaseManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Int32, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[System.Int32, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: InteractNpcTrickCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: InventorySlotDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.IPassiveTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.IProcData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.IRandomizer, trick-engine
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation,
+      Unity.ResourceManager
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ITalentActionId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemAvailabilityData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemData+DefaultData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemData+GearData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemDropType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ItemEffectAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemEffectValueData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[ItemId, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemPrefabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemPrefabData+ItemGenerationData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemSet, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ItemTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ITrickAdmobMediationAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: JsonTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Keyframe, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Keyframe[], UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: KillTrickCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.LayerMask, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.LayerMask, UnityEngine.CoreModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LeaderboardTabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LevelManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.LevelUnlock, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[LastResistance.LevelUnlock, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.LevelUnlockType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.AbilityBehaviorProcTypeData+ProcAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.AbilityBehaviorProcTypeData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.AbilityHitData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.AbilityHitVisualData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnityEngine.AnimationCurve, UnityEngine.CoreModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.AnimationClip,
+      UnityEngine.AnimationModule]], Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnityEngine.AddressableAssets.AssetReferenceT`1[[TrickModularSkinnedRendererData,
+      Assembly-CSharp]], Unity.Addressables]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.BaseAbilityTalentAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.BehaviorState, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[CharacterPresetData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[CollectTargetData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ContractShopProductData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ContractShopTabData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[CustomNpcAction, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DateTimeRange, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DefaultVariant, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DGHBalanceAbilityEffect, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DGHDialogText, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DGHTutorial, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[Dialog, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DialogEntry, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[DialogOption, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1[[ItemDrop,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[UnityEngine.AnimationCurve,
+      UnityEngine.CoreModule]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[IDropable,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[System.Int32,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[ItemDrop,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[ItemTypes,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[Rarities,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[TrickQuestReward,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.DropTable`1+Item[[TrickUnitGroupId,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[FactionGroup, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Single, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[FocusGroup, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[GameActionType, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[GearVariant, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[HarvestSpotIndexData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[HarvestUnitNodeData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[HordeData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[IDropable, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.ImpactAbilitySpawnData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.IPassiveTalentAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation,
+      Unity.ResourceManager]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemDrop, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemId, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemPrefabData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemSet, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ItemTypes, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ITrickAdmobMediationAdapter, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LeaderboardTabData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.LevelUnlock, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[ItemDrop,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[ShopProductData,
+      Assembly-CSharp]], mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[TrickPair`2[[TrickUnitId,
+      Assembly-CSharp],[System.Int32, mscorlib]], Assembly-CSharp]], mscorlib]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[PetData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[QuestRewardTierSubEntry, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[RefineRequirementData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ScenarioSpawnInfo, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ShopProductData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[ShopTabData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SkillSocketSlotData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SkinData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SkinDataAttachment, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SpawnInfo, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SpawnInfoSet, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SubStat+SubStatTypes, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[SubStat, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TalentNode, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TieredDropTable, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TradeData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TradeDataRoot, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.TrickAbilityBehavior,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickAchievementRecordData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickAchievementUnlock, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickActiveAbilityId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickAudioId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCastAssetChainData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickFocusGroupId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickGameModuleBase, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.TrickMTCondition, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.TrickMTGroup, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.TrickMTTest, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.TrickMTVariable, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickCore.TrickMTVariableData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables],[System.Collections.Generic.Dictionary`2[[UnitAttributeType,
+      Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables]], mscorlib]], Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[DateTimeRange, Assembly-CSharp],[System.Single,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[DateTimeRange, Assembly-CSharp],[System.Collections.Generic.List`1[[ShopProductData,
+      Assembly-CSharp]], mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.Single, mscorlib],[System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[TrickPair`2[[TrickUnitId,
+      Assembly-CSharp],[System.Int32, mscorlib]], Assembly-CSharp]], mscorlib]],
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.Int32, mscorlib],[TrickCore.DropTable`1[[Rarities,
+      Assembly-CSharp]], Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.Int32, mscorlib],[System.Int32,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[Rarities, Assembly-CSharp],[System.Int32,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.String, mscorlib],[UnityEngine.Color,
+      UnityEngine.CoreModule]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.String, mscorlib],[System.Single,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[ShopTabData,
+      Assembly-CSharp]], mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[System.String, mscorlib],[TutorialHelperData,
+      Assembly-CSharp]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[TrickUnitId, Assembly-CSharp],[System.Int32,
+      mscorlib]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[TrickUnitId, Assembly-CSharp],[UnityEngine.Vector3,
+      UnityEngine.CoreModule]], Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPair`2[[UnityEngine.Vector2Int,
+      UnityEngine.CoreModule],[HordeSpawnData, Assembly-CSharp]], Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickPassiveAbilityId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickQuest, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickRenderTextureLocationData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickSpawnAssetData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickTalentActionLevelUnlockData,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickTieredDropTableId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickTutorialId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickUnitId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickUnitRespawnParticle, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickVisualModule, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickVisualRoot, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickVisualSystem, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[TrickZone, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[System.Type, mscorlib]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnitData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnitGroup, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnitTalkData+DialogData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnitTier, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[UnitVariant, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[LastResistance.WeaponAbilityTalentAction,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[WeaponAnimationData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.List`1[[XPBoostSaveData, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Int64, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: K4os.Compression.LZ4.LZ4Level, trick-engine
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Material, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: MonsterSummonToken, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.MoveCasterData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: MoveVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: MultiRandomItemDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: MultivariateTestingData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NewGamePart1Tutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NewGamePart2Tutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NewGamePart3Tutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NewGamePart4Tutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NotificationTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: NullDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Object, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.ObjectEqualityComparer`1[[IDropable, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.ObjectEqualityComparer`1[[TrickTieredDropTableId,
+      Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.ObjectEqualityComparer`1[[TrickUnitId, Assembly-CSharp]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Collections.Generic.ObjectEqualityComparer`1[[System.Type, mscorlib]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CodeStage.AntiCheat.ObscuredTypes.ObscuredBool, ACTk.Runtime
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CodeStage.AntiCheat.ObscuredTypes.ObscuredFloat, ACTk.Runtime
+    IsCustom: 0
+    Emit: 1
+  - TypeName: CodeStage.AntiCheat.ObscuredTypes.ObscuredInt, ACTk.Runtime
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ObtainItemTrickCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: OpenHuntMenuTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: OpenNodeManageMenuTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: OptionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.ParticleSystem+MinMaxGradient, UnityEngine.ParticleSystemModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.ParticleSystem+MinMaxGradient, UnityEngine.ParticleSystemModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.ParticleSystemGradientMode, UnityEngine.ParticleSystemModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: PetData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: PlayAudioVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: PowerUpGearTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataAnyEffectTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataApplyEffectTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataCastAbility, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataCustomActionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataDamageAroundHitInfo, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataDictTalentValueData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataDictTalentValueDataStat, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataEffectTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataNumEffectTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreHitInfoValue, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreKey, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreKeyStat, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreOperation, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreOperationFloat, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataStoreType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTalentValueData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTalentValueDataStat, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTarget, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTransferAbilityEffect, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTween, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProcDataTween+TweenType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ProductResetTimeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Purchasing.ProductType, UnityEngine.Purchasing
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.ProjectileAbilitySpawnData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ProjectileDodgeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ProjectileMoveType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: PurchaseCooldownType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: PusherTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: QuestAvailableAt, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: QuestFrequency, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: QuestRewardTierData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: QuestRewardTierSubEntry, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RandomItemDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RandomListDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RandomPetDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RandomSkillRuneDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RandomSkinDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Rarities, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[Rarities, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.RaycastHit, UnityEngine.PhysicsModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.RaycastHit[], UnityEngine.PhysicsModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RefineRequirementData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RestoreAttributeCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RESTTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RestTutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: EasyMobile.RewardedAdNetwork, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: RotateVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ScaleVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ScenarioSpawnInfo, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Scrap, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ScreenShakeVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ServerLogTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ShopProductData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ShopTabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ShopUIData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SignalRTrickGameModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.SkillBookItemEffectAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkillSocketSlotData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.SkillVisibilityType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataAttachment, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataBackAttachment, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataBase, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataBoots, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataChest, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataElbowAttachment, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataGloves, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataHelmet, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataHipsAttachment, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataKneePads, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataLegs, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataLowerArm, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataShoulders, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDataUpperArm, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SkinTRS, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Space, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SpawnAssetVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SpawnInfo, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SpawnInfoSet, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Stage, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.StatsBoostTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: StopAudioVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: StorageSlotDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.String, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubscriptionCardDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubscriptionCardDrop+CardType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStat, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStat+SubStatTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStatBonusIncreaseData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStatItemTypesData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStatRarityData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SubStatTypeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: SurfaceAudioType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TalentNode, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TalentTreeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TalentValueData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[TalentValueData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TieredDropTable, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TradeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TradeDataRoot, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Transform, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.TrickAbilityBehavior, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAbilityBehaviorId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.TrickAbilityHitVisualDataId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.TrickAbilityTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAchievementRecordData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAchievementRecordDataId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAchievementReward, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAchievementUnlock, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAchievementUnlockId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickActiveAbilityId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAdColonyAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAppLovinAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickAudioId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCastAssetChainData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCastAssetDataClass, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCharacterObjectGroups, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCharacterObjectListsAllGender, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickChartBoostNetworkAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCompressionType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickConditionBase, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickDefaultAbilityId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickFacebookAudienceNetworkAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickFactionGroupId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickFocusGroupId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickGameModuleBase, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickIAPProduct, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickInMobiNetworkAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickIronSourceAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickItemSetId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickLanguagePack, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickLanguages, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickLocalizationId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickModularSkinnedRendererData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTCondition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTConditionalOperatorType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTConditionCurrentStageLevel, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTTest, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTVariable, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTVariableData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickCore.TrickMTVariableId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickNpcIntroductionData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables],[System.Collections.Generic.Dictionary`2[[UnitAttributeType,
+      Assembly-CSharp],[UnityEngine.AddressableAssets.AssetReferenceT`1[[UnityEngine.Material,
+      UnityEngine.CoreModule]], Unity.Addressables]], mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[DateTimeRange, Assembly-CSharp],[System.Single, mscorlib]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[DateTimeRange, Assembly-CSharp],[System.Collections.Generic.List`1[[ShopProductData,
+      Assembly-CSharp]], mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.Single, mscorlib],[System.Int32, mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.Single, mscorlib],[System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[TrickPair`2[[TrickUnitId,
+      Assembly-CSharp],[System.Int32, mscorlib]], Assembly-CSharp]], mscorlib]],
+      mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.Int32, mscorlib],[TrickCore.DropTable`1[[Rarities,
+      Assembly-CSharp]], Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.Int32, mscorlib],[System.Int32, mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[Rarities, Assembly-CSharp],[System.Int32, mscorlib]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.String, mscorlib],[UnityEngine.Color, UnityEngine.CoreModule]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.String, mscorlib],[System.Single, mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.String, mscorlib],[System.Collections.Generic.List`1[[ShopTabData,
+      Assembly-CSharp]], mscorlib]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[System.String, mscorlib],[TutorialHelperData, Assembly-CSharp]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[TrickUnitId, Assembly-CSharp],[System.Int32, mscorlib]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[TrickUnitId, Assembly-CSharp],[UnityEngine.Vector3, UnityEngine.CoreModule]],
+      Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPair`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[HordeSpawnData,
+      Assembly-CSharp]], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickPassiveAbilityId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickQuest, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickQuestId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickQuestReward, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickReferenceStatsId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickRenderTextureLocationData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickRespawnParticleId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickSkinId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[TrickSkinId, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickSpawnAssetData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickTalentActionLevelUnlockData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickTapjoyNetworkAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickTieredDropTableId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickTutorialId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickUnitAbilityCastBehavior, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickUnitGroupId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickUnitId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[TrickUnitId, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickUnitRespawnParticle, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickUnityAdsAdapter, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualLoopType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualRoot, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualSystem, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualSystemId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickVisualTargetType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickWeaponAnimationDataId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickXpBoostId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickZone, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TrickZoneId, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Tutorial, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialAnchorPosition, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialCustomUnitTalkAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialHelperData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialShowType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: TutorialSpriteType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Type, mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UIManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Unit, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: Unit[], Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitAttributeType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnitAttributeType, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitGenderAnimationData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitGroup, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitGroupCategory, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitGruntData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitManagerData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitRankData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitStatsData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnitStatsData, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitTalkData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitTalkData+DialogData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitTalkType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitTier, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.UnitType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnitVariant, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnparentVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: AnotherTrickWebAPIShared.Game.UserRole, AnotherTrickWebAPIShared
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UtilityPointDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UtilityTreeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: ValueType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Vector2, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.Vector2, UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Vector2Int, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.Vector2Int, UnityEngine.CoreModule]],
+      mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.Vector3, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WaitForVisualModule, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WaitForVisualModule+WaitMethod, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: LastResistance.WeaponAbilityTalentAction, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponAnimationData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponBodyItemPrefabData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponRefineData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponTypeData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponTypes, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: System.Nullable`1[[WeaponTypes, Assembly-CSharp]], mscorlib
+    IsCustom: 0
+    Emit: 1
+  - TypeName: WeaponXp, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: UnityEngine.WrapMode, UnityEngine.CoreModule
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XpBoostDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XpBoostExtendType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XPBoostSaveData, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XpDrop, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XpDrop+XpDropType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
+  - TypeName: XpDrop+XpType, Assembly-CSharp
+    IsCustom: 0
+    Emit: 1
