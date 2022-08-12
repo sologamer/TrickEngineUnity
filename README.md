@@ -65,10 +65,25 @@ SeedRandom.Default.RandomItems(dropTable, 2, false);
 
 ## TrickGame
 
+UIManager
+UIMenu
+
 ## TrickREST
+
+RESTGet<T>
+RESTPost<T>
+RESTDelete<T>
 
 ## TrickSQL / TrickMySQL
 
+
+
 ## TrickTime
 
+TrickTime.CurrentServerTime
+
 ## TrickRandomizer
+
+SeedRandom.Default
+StrongRandom.Default
+TrickIRandomizer.DefaultPcg32
