@@ -1,5 +1,9 @@
 # TrickEngineUnity
-Utility Framework for developing games in Unity
+Utility Framework for developing games in Unity to improve your work flow. With a bunch of written utility classes and helper functions.
+
+Usages a collection of third party plugins to make these things work. 
+
+The modules are flexible and some can be completely removed if you ain't using it. No need to use and SQL in your Unity project? Delete the [TrickSQL](#tricksql--trickmysql) and [TrickMySQL](#tricksql--trickmysql) folder.
 
 ### Table of contents
 1. [TrickCore](#trickcore)
@@ -9,6 +13,7 @@ Utility Framework for developing games in Unity
 5. [TrickREST](#trickrest)
 6. [TrickSQL / TrickMySQL](#tricksql--trickmysql)
 7. [TrickTime](#tricktime)
+8. [TrickBuilder](#trickbuilder)
 
 ## TrickCore
 Required for all other modules
@@ -16,6 +21,8 @@ Required for all other modules
 ## TrickAddressables
 
 ## TrickDropTable
+
+#### Depends on: [TrickCore](#trickcore)
 
 #### What is a DropTable
 Equivalent to a Loot Table which is a set of items is put into a ``DropTable<T>``. This is just a bucket of items with a weight. 
@@ -72,7 +79,9 @@ TODO readme: UIMenu
 ## TrickREST
 
 TODO readme: RESTGet<T>
+
 TODO readme: RESTPost<T>
+
 TODO readme: RESTDelete<T>
 
 ## TrickSQL / TrickMySQL
@@ -87,16 +96,28 @@ TODO readme: TrickTime / TrickTime.CurrentServerTime
 ## TrickRandomizer
 
 TODO readme: SeedRandom.Default
+
 TODO readme: StrongRandom.Default
+
 TODO readme: TrickIRandomizer.DefaultPcg32
+
+## TrickBuilder
+
+Support building using a project with UCB/Jenkins
+TODO readme: explain how to use the TrickBuilder tool
 
 ## Dependencies
 
 ####Core Modules
 BeauRoutine - https://github.com/BeauPrime/BeauRoutine (MIT License)
+
 RestClient - https://github.com/proyecto26/RestClient (MIT License)
+
+Newtonsoft.Json - https://github.com/JamesNK/Newtonsoft.Json (MIT License)
 
 ####Used by TrickSql / TrickMySql
 Mysql C# - https://github.com/mysql-net/MySqlConnector (MIT License)
+
 protobuf C# - https://github.com/protobuf-net/protobuf-net (BSD License)
+
 Dapper - https://github.com/DapperLib/Dapper (Apache 2.0 License)
