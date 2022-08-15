@@ -121,7 +121,7 @@ namespace TrickCore
                 TrickTask.StartNewTask(async () =>
                 {
                     var response = await request.GetResponseAsync();
-                    await using var dataStream = response.GetResponseStream();
+                    using var dataStream = response.GetResponseStream();
                     if (dataStream != null)
                     {
                         using var reader = new StreamReader(dataStream);

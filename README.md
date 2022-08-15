@@ -65,25 +65,38 @@ SeedRandom.Default.RandomItems(dropTable, 2, false);
 
 ## TrickGame
 
-UIManager
-UIMenu
+TODO readme: UIManager
+
+TODO readme: UIMenu
 
 ## TrickREST
 
-RESTGet<T>
-RESTPost<T>
-RESTDelete<T>
+TODO readme: RESTGet<T>
+TODO readme: RESTPost<T>
+TODO readme: RESTDelete<T>
 
 ## TrickSQL / TrickMySQL
 
+TODO readme: show usages
 
 
 ## TrickTime
 
-TrickTime.CurrentServerTime
+TODO readme: TrickTime / TrickTime.CurrentServerTime
 
 ## TrickRandomizer
 
-SeedRandom.Default
-StrongRandom.Default
-TrickIRandomizer.DefaultPcg32
+TODO readme: SeedRandom.Default
+TODO readme: StrongRandom.Default
+TODO readme: TrickIRandomizer.DefaultPcg32
+
+## Dependencies
+
+####Core Modules
+BeauRoutine - https://github.com/BeauPrime/BeauRoutine (MIT License)
+RestClient - https://github.com/proyecto26/RestClient (MIT License)
+
+####Used by TrickSql / TrickMySql
+Mysql C# - https://github.com/mysql-net/MySqlConnector (MIT License)
+protobuf C# - https://github.com/protobuf-net/protobuf-net (BSD License)
+Dapper - https://github.com/DapperLib/Dapper (Apache 2.0 License)

@@ -85,6 +85,8 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
     }
     #endif
 
+#if UNITY_ADDRESSABLES && ENABLE_ADDRESSABLESMANAGER
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -117,6 +119,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
         }
         Debug.Log("[FastInitializeAddressables] Addressables initialized!");
     }
+#endif
 
     public bool ReleaseAsset(AddressableGroupType group, UnityEngine.Object obj)
     {
@@ -807,11 +810,12 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
         if (!InCondition()) yield return new WaitUntil(InCondition);
     }
 
+#if UNITY_ADDRESSABLES && ENABLE_ADDRESSABLESMANAGER
     public IEnumerator LoadAddressables(bool withRemote, AsyncResultData result, Action startDownloadCallback = null)
     {
         if (!withRemote)
         {
-            using (new StepTimeLog($"[LoadAddressables] Initialize (withRemote: {withRemote})"))
+            using (new TrickStepTimeLog($"[LoadAddressables] Initialize (withRemote: {withRemote})"))
             {
                 AsyncResultData initializeAddressables = new AsyncResultData();
                 yield return InitializeAddressables(initializeAddressables);
@@ -825,7 +829,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
 
         if (withRemote)
         {
-            using (new StepTimeLog($"[LoadAddressables] Release instances"))
+            using (new TrickStepTimeLog($"[LoadAddressables] Release instances"))
             {
                 yield return null;
                 ReleaseAllInstances(AddressableGroupType.Lobby);
@@ -833,7 +837,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
             }
             
             // Check for a catalog update
-            using (new StepTimeLog("[Local] LoadAddressables"))
+            using (new TrickStepTimeLog("[Local] LoadAddressables"))
             {
                 AsyncResultData checkCatalogUpdates = new AsyncResultData();
                 yield return CheckUpdateCatalog(checkCatalogUpdates);
@@ -843,7 +847,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
                 }
             }
 
-            using (new StepTimeLog("[Remote] LoadAddressables"))
+            using (new TrickStepTimeLog("[Remote] LoadAddressables"))
                 yield return RemoteLoadAddressablesFast(result, startDownloadCallback);
         }
         
@@ -1073,7 +1077,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
         
         var resourceLocationResult = new AsyncResultData();
 
-        using (new StepTimeLog($"[RemoteLoadAddressablesFast] GetAllResourceLocations"))
+        using (new TrickStepTimeLog($"[RemoteLoadAddressablesFast] GetAllResourceLocations"))
             yield return GetAllResourceLocations(resourceLocationResult, locations);
         
         if (!(resourceLocationResult.Data is List<IResourceLocation> resourceLocations))
@@ -1127,7 +1131,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
             }
         }
         
-        using (new StepTimeLog($"[RemoteLoadAddressablesFast] GetDownloadSize (num={resourceLocations.Count})"))
+        using (new TrickStepTimeLog($"[RemoteLoadAddressablesFast] GetDownloadSize (num={resourceLocations.Count})"))
             yield return this.StartMultiCoroutineConcurrent(resourceLocations.Count, GameManager.Instance.RoutineAllocationCapacity / 2, ConcurrentGetDownloadSize);
         
         long remoteSize = remoteKeySizes.Values.Sum();
@@ -1173,6 +1177,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
 
         EndAddressableDownloadFunc?.Invoke();
     }
+#endif
 
     public IEnumerator GetAllResourceLocations(AsyncResultData result, IEnumerable<object> keys)
     {
