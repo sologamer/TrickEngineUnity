@@ -6,8 +6,8 @@ public class iOSTrickBuild : TrickBuild, IFastLaneModule
     {
         var session = new iOSTrickBuild();
         if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.BuildVersion);
-        string fullPathAndName = $"{args.OutputDirectory}{args.AppName}.app";
+        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
+        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.app";
         session.StartBuild(fullPathAndName, BuildTargetGroup.iOS, BuildTarget.iOS, BuildOptions.None);
     }
 

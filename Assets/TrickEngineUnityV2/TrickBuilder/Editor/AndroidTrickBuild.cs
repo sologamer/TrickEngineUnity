@@ -6,8 +6,8 @@ public class AndroidTrickBuild : TrickBuild, IFastLaneModule
     {
         var session = new AndroidTrickBuild();
         if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.BuildVersion);
-        string fullPathAndName = $"{args.OutputDirectory}{args.AppName}.aab";
+        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
+        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.aab";
         session.StartBuild(fullPathAndName, BuildTargetGroup.Android, BuildTarget.Android, BuildOptions.None);
     }
 
@@ -15,8 +15,8 @@ public class AndroidTrickBuild : TrickBuild, IFastLaneModule
     {
         var session = new AndroidTrickBuild();
         if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.BuildVersion);
-        string fullPathAndName = $"{args.OutputDirectory}{args.AppName}.apk";
+        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
+        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.apk";
         session.StartBuild(fullPathAndName, BuildTargetGroup.Android, BuildTarget.Android, BuildOptions.None);
     }
 

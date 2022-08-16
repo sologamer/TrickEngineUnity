@@ -6,8 +6,8 @@ public class OsxTrickBuild : TrickBuild
     {
         var session = new OsxTrickBuild();
         if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.BuildVersion);
-        string fullPathAndName = $"{args.OutputDirectory}{args.AppName}.app";
+        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
+        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.app";
         session.StartBuild(fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneOSX, BuildOptions.None);
     }
 }

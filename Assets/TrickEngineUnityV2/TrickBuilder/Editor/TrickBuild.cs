@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using System.Linq;
+using System.Text;
+using Newtonsoft.Json;
+using TrickCore;
 using UnityEditor.Build.Reporting;
 
 public abstract class TrickBuild
@@ -67,7 +71,7 @@ public abstract class TrickBuild
         Console.WriteLine($"[{GetType().Name}] Version set to {PlayerSettings.bundleVersion} (code={buildVersion})");
     }
 
-    protected bool FindArgs(out (string AppName, int BuildVersion, int BuildVersionOffset, string OutputDirectory) tuple)
+    protected bool FindArgs(out (TrickBuildConfig config, TrickBuildManifest manifest) tuple)
     {
         tuple = default;
         string[] commandLineArgs = Environment.GetCommandLineArgs();
@@ -77,25 +81,57 @@ public abstract class TrickBuild
                     2)
                 .TakeWhile(x => !x.StartsWith("-")).ToList();
 
-        if (argumentInOrder.Count < 4)
+        if (argumentInOrder.Count < 2)
         {
-            Console.WriteLine($"[{GetType().Name}] ERROR: FindArgs failed to parse. Expected -executeMethod <App Name> <{{BUILD_NUMBER}}> <build number offset> <output>");
+            Console.WriteLine($"[{GetType().Name}] ERROR: FindArgs failed to parse. Expected -executeMethod <config file> <manifest base64>");
             return false;
         }
 
-        if (!int.TryParse(argumentInOrder[1], out var buildVersion))
+        if (!File.Exists(argumentInOrder[0]))
         {
-            Console.WriteLine($"[{GetType().Name}] ERROR: FindArgs failed to the build version at index 1.");
+            Console.WriteLine($"The file '{argumentInOrder[0]}' doesn't exists");
             return false;
         }
+        var text = File.ReadAllText(argumentInOrder[0]);
+        
+        Console.WriteLine("TODO-REMOVE: [Config]: " + text);
+        var config = text.DeserializeJson<TrickBuildConfig>();
+        var manifest = argumentInOrder[1].DeserializeJsonBase64<TrickBuildManifest>();
+        Console.WriteLine("TODO-REMOVE: [Manifest]: " + manifest.SerializeToJson(true, true));
 
-        if (!int.TryParse(argumentInOrder[2], out var buildVersionOffset))
-        {
-            Console.WriteLine($"[{GetType().Name}] ERROR: FindArgs failed to the build version offset at index 2.");
-            return false;
-        }
-
-        tuple = (argumentInOrder[0], buildVersion, buildVersionOffset, argumentInOrder[3]);
+        tuple = (config, manifest);
         return true;
     }
+}
+
+
+/// <summary>
+/// From a config file, user static settings
+/// </summary>
+[JsonObject]
+public class TrickBuildConfig
+{
+    public string AppName;
+    public int BuildVersionOffset;
+
+    public AndroidTrickBuildConfig Android = new AndroidTrickBuildConfig();
+}
+
+[JsonObject]
+public class AndroidTrickBuildConfig
+{
+    public string AndroidKeyStorePath;
+    public string AndroidKeyStorePass;
+    public string AndroidAliasName;
+    public string AndroidAliasPass;
+}
+
+/// <summary>
+/// From the builder (jenkins)
+/// </summary>
+[JsonObject]
+public class TrickBuildManifest
+{
+    public int BuildVersion;
+    public string OutputDirectory;
 }

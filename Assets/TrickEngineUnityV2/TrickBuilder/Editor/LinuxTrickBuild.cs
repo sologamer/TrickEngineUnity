@@ -6,8 +6,8 @@ public class LinuxTrickBuild : TrickBuild
     {
         var session = new LinuxTrickBuild();
         if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.BuildVersion);
-        string fullPathAndName = $"{args.OutputDirectory}{args.AppName}.x64";
+        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
+        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.x64";
         session.StartBuild(fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64, BuildOptions.None);
     }
 }
