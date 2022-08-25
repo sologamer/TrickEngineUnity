@@ -29,7 +29,7 @@ namespace Litdex.Security.RNG
 		/// <returns>
 		///		A 64-bit unsigned integer.
 		///	</returns>
-		protected abstract ulong Next();
+		protected new abstract ulong Next();
 
 		#endregion Protected Method
 

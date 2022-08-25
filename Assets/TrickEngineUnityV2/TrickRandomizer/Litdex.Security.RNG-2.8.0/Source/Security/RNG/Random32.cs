@@ -29,7 +29,7 @@ namespace Litdex.Security.RNG
 		/// <returns>
 		///		A 32-bit unsigned integer.
 		///	</returns>
-		protected abstract uint Next();
+		protected new abstract uint Next();
 
 		#endregion Protected Method
 

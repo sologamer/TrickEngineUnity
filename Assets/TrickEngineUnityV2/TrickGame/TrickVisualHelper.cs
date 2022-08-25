@@ -9,52 +9,57 @@ namespace TrickCore
 {
     public class TrickVisualHelper : MonoBehaviour
     {
-        public bool ParticleSystemInjectStartColor = true;
-        public bool ParticleSystemInjectColorOverTime = true;
-        public bool ParticleSystemInjectColorBySpeed = true;
-    
-        public CanvasGroup CurrentCanvasGroup { get; set; }
+        public bool particleSystemInjectStartColor = true;
+        public bool particleSystemInjectColorOverTime = true;
+        public bool particleSystemInjectColorBySpeed = true;
+
+        internal CanvasGroup CurrentCanvasGroup;
     
         // ps
         private bool _initializeForPS;
-        private ParticleSystem.MinMaxGradient? _initMainModuleStartColor;
-        private ParticleSystem.MinMaxGradient? _initColorOverTimeColor;
-        private ParticleSystem.MinMaxGradient? _initColorBySpeed;
+        internal ParticleSystem.MinMaxGradient? InitMainModuleStartColor;
+        internal ParticleSystem.MinMaxGradient? InitColorOverTimeColor;
+        internal ParticleSystem.MinMaxGradient? InitColorBySpeed;
     
         // ui
-        private bool _initializeForUI;
-        private Routine _fadeRoutine;
-        private Routine _scaleRoutine;
-        private Routine _shakeRoutine;
-        private Vector3? _localScale;
-        private RectTransform _blurInside;
-        private RectTransform _blurOutside;
-        private Image _highlightMain;
-        private Color? _originalBlurColor;
-        private TrickHighlightBlur _borderBlur;
+        internal bool InitializeForUI;
+        internal Routine FadeRoutine;
+        internal Routine TransitionRoutine;
+        internal Routine ScaleRoutine;
+        internal Routine ShakeRoutine;
+        internal Vector3? LocalScale;
+        internal RectTransform BlurInside;
+        internal RectTransform BlurOutside;
+        internal Image HighlightMain;
+        internal Color? OriginalBlurColor;
+        internal TrickHighlightBlur BorderBlur;
+        internal Vector2? OriginalAnchorPosition;
 
-        private void TryInitializePS()
+        internal void TryInitializePS()
         {
             if (_initializeForPS) return;
         
             _initializeForPS = true;
         }
-    
-        private void TryInitializeUI()
+
+        internal void TryInitializeUI()
         {
-            if (_initializeForUI) return;
+            if (InitializeForUI) return;
             CurrentCanvasGroup = GetComponent<CanvasGroup>();
             if (CurrentCanvasGroup == null) CurrentCanvasGroup = gameObject.AddComponent<CanvasGroup>();
-            _initializeForUI = true;
+            InitializeForUI = true;
         }
-    
-        public static void SetAlpha(MonoBehaviour mono, float alpha)
+    }
+
+    public static class TrickVisualHelperExtensions
+    {
+        public static void SetAlpha(this MonoBehaviour mono, float alpha)
         {
             var rt = mono.transform as RectTransform;
             SetAlpha(rt, alpha);
         }
-    
-        public static void SetAlpha(RectTransform mono, float alpha)
+
+        public static void SetAlpha(this RectTransform mono, float alpha)
         {
             var tb = mono.GetComponent<TrickVisualHelper>();
             if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
@@ -62,14 +67,14 @@ namespace TrickCore
             tb.CurrentCanvasGroup.alpha = alpha;
         }
 
-        public static void SetHighlighted(RectTransform mono, Image highlightBorderImage, HighlightState highlightState)
+        public static void SetHighlighted(this RectTransform mono, Image highlightBorderImage, HighlightState highlightState)
         {
             var trickButton = mono.GetComponent<TrickVisualMono>();
             if (trickButton == null) trickButton = mono.gameObject.AddComponent<TrickVisualMono>();
             trickButton.SetHighlighted(highlightBorderImage, highlightState);
         }
 
-        public static void SetHighlighted(MonoBehaviour mono, Image highlightBorderImage, HighlightState highlightState)
+        public static void SetHighlighted(this MonoBehaviour mono, Image highlightBorderImage, HighlightState highlightState)
         {
             var trickButton = mono.GetComponent<TrickVisualMono>();
             if (trickButton == null) trickButton = mono.gameObject.AddComponent<TrickVisualMono>();
@@ -79,110 +84,143 @@ namespace TrickCore
                 var highlightChild = trickButton.transform.Find("HighlightBorder");
                 if (highlightChild != null) trickButton.HighlightBorderImage = highlightChild.GetComponent<Image>();
             }
+
             trickButton.enabled = false;
             trickButton.SetHighlighted(highlightBorderImage, highlightState);
         }
-    
-        public static Routine Fade(MonoBehaviour mono, float fadeTarget = 0.0f, float fadeTime = 0.25f, float delay = 0.0f,
+
+        public static void SetCanvasGroupInteractable(this MonoBehaviour mono, bool interactable, bool blockRaycast)
+        {
+            var tb = mono.GetComponent<TrickVisualHelper>();
+            if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
+            tb.TryInitializeUI();
+            tb.CurrentCanvasGroup.interactable = interactable;
+            tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast;
+        }
+        
+        public static void SetCanvasGroupInteractable(this RectTransform mono, bool? interactable, bool? blockRaycast)
+        {
+            var tb = mono.GetComponent<TrickVisualHelper>();
+            if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
+            tb.TryInitializeUI();
+            if (interactable != null) tb.CurrentCanvasGroup.interactable = interactable.Value;
+            if (blockRaycast != null) tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast.Value;
+        }
+        
+        public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float fadeTime = 0.25f,
+            float delay = 0.0f,
             float? setAlpha = null, bool interactable = false, bool withoutHost = false, Action completeAction = null)
         {
             var rt = mono.transform as RectTransform;
-            if (rt != null) return Fade(rt, fadeTarget, fadeTime, delay, setAlpha, interactable, withoutHost, completeAction);
+            if (rt != null)
+                return Fade(rt, fadeTarget, fadeTime, delay, setAlpha, interactable, withoutHost, completeAction);
             return default;
         }
-    
-        public static Routine Fade(RectTransform mono, float fadeTarget = 0.0f, float fadeTime = 0.25f, float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false, Action completeAction = null)
+
+        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, float fadeTime = 0.25f,
+            float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false,
+            Action completeAction = null)
         {
             var tb = mono.GetComponent<TrickVisualHelper>();
             if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
             tb.TryInitializeUI();
             if (setAlpha != null) tb.CurrentCanvasGroup.alpha = setAlpha.GetValueOrDefault();
             var tween = tb.CurrentCanvasGroup.FadeTo(fadeTarget, fadeTime).DelayBy(delay).OnComplete(completeAction);
-            tb._fadeRoutine.Replace(withoutHost ? tween.Play() : tween.Play(tb));
-            tb.CurrentCanvasGroup.interactable = interactable;
-            tb.CurrentCanvasGroup.blocksRaycasts = interactable;
-            return tb._fadeRoutine;
+            tb.FadeRoutine.Replace(withoutHost ? tween.Play() : tween.Play(tb));
+            tb.SetCanvasGroupInteractable(interactable, interactable);
+            return tb.FadeRoutine;
         }
 
-        public static Routine FadeIn(MonoBehaviour mono, float fadeTime = 0.25f, float delay = 0.0f, float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
+        public static Routine FadeIn(this MonoBehaviour mono, float fadeTime = 0.25f, float delay = 0.0f,
+            float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(MonoBehaviour mono, float fadeTime = 0.25f, float delay = 0.0f, float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
+        public static Routine FadeOut(this MonoBehaviour mono, float fadeTime = 0.25f, float delay = 0.0f,
+            float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        public static Routine FadeIn(RectTransform mono, float fadeTime = 0.25f, float delay = 0.0f, float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
+        public static Routine FadeIn(this RectTransform mono, float fadeTime = 0.25f, float delay = 0.0f,
+            float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(RectTransform mono, float fadeTime = 0.25f, float delay = 0.0f, float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
+        public static Routine FadeOut(this RectTransform mono, float fadeTime = 0.25f, float delay = 0.0f,
+            float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        public static Routine ScaleTransformPingPong(MonoBehaviour mono, float scaleTarget, float scaleDuration = 0.35f, float delay = 0.0f, Action startCallback = null) => ScaleTransformPingPong(mono.transform as RectTransform, scaleTarget, scaleDuration, delay, startCallback);
-        public static Routine ScaleTransformPingPong(RectTransform mono, float scaleTarget, float scaleDuration = 0.35f, float delay = 0.0f, Action startCallback = null)
+        public static Routine ScaleTransformPingPong(this MonoBehaviour mono, float scaleTarget, float scaleDuration = 0.35f,
+            float delay = 0.0f, Action startCallback = null) => ScaleTransformPingPong(mono.transform as RectTransform,
+            scaleTarget, scaleDuration, delay, startCallback);
+
+        public static Routine ScaleTransformPingPong(this RectTransform mono, float scaleTarget, float scaleDuration = 0.35f,
+            float delay = 0.0f, Action startCallback = null)
         {
             var tb = mono.GetComponent<TrickVisualHelper>();
             if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
             tb.TryInitializeUI();
-            tb._localScale ??= mono.localScale;
-            tb._localScale = tb._localScale.Value;
-        
-            return tb._scaleRoutine.Replace(mono.ScaleTo(tb._localScale.Value * scaleTarget, new TweenSettings()
-            {
-                Time = scaleDuration,
-                Curve = Curve.Smooth
-            }).DelayBy(delay).OnStart(startCallback).Yoyo().OnComplete(() =>
-            {
-                mono.localScale = tb._localScale.Value;
-            }).Play(tb));
+            tb.LocalScale ??= mono.localScale;
+            tb.LocalScale = tb.LocalScale.Value;
+
+            return tb.ScaleRoutine.Replace(mono.ScaleTo(tb.LocalScale.Value * scaleTarget, new TweenSettings()
+                {
+                    Time = scaleDuration,
+                    Curve = Curve.Smooth
+                }).DelayBy(delay).OnStart(startCallback).Yoyo()
+                .OnComplete(() => { mono.localScale = tb.LocalScale.Value; }).Play(tb));
         }
-    
-        public static void ResetParticleSystemColor(ParticleSystem particleSystem, Color color, bool injectChildSystems)
+
+        public static void ResetParticleSystemColor(this ParticleSystem particleSystem, Color color, bool injectChildSystems)
         {
             if (particleSystem == null) return;
             var visualHelper = particleSystem.GetComponent<TrickVisualHelper>();
             if (visualHelper == null) visualHelper = particleSystem.gameObject.AddComponent<TrickVisualHelper>();
             visualHelper.TryInitializePS();
-        
+
             void ResetParticleColor(ParticleSystem ps)
             {
-                if (visualHelper._initMainModuleStartColor != null)
+                if (visualHelper.InitMainModuleStartColor != null)
                 {
-                    if (visualHelper.ParticleSystemInjectStartColor)
+                    if (visualHelper.particleSystemInjectStartColor)
                     {
                         var mainModule = ps.main;
-                        mainModule.startColor = visualHelper._initMainModuleStartColor.Value;
+                        mainModule.startColor = visualHelper.InitMainModuleStartColor.Value;
                     }
 
-                    if (visualHelper.ParticleSystemInjectColorOverTime)
+                    if (visualHelper.particleSystemInjectColorOverTime)
                     {
                         var colorOverTimeModule = ps.colorOverLifetime;
-                        if (colorOverTimeModule.enabled && visualHelper._initColorOverTimeColor != null) colorOverTimeModule.color = visualHelper._initColorOverTimeColor.Value;
+                        if (colorOverTimeModule.enabled && visualHelper.InitColorOverTimeColor != null)
+                            colorOverTimeModule.color = visualHelper.InitColorOverTimeColor.Value;
                     }
 
-                    if (visualHelper.ParticleSystemInjectColorBySpeed)
+                    if (visualHelper.particleSystemInjectColorBySpeed)
                     {
                         var colorBySpeedModule = ps.colorBySpeed;
-                        if (colorBySpeedModule.enabled && visualHelper._initColorBySpeed != null) colorBySpeedModule.color = visualHelper._initColorBySpeed.Value;
+                        if (colorBySpeedModule.enabled && visualHelper.InitColorBySpeed != null)
+                            colorBySpeedModule.color = visualHelper.InitColorBySpeed.Value;
                     }
                 }
             }
+
             if (injectChildSystems)
             {
-                foreach (var ps in particleSystem.GetComponentsInChildren<ParticleSystem>()) SetParticleSystemColor(ps, color, false);
+                foreach (var ps in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                    SetParticleSystemColor(ps, color, false);
             }
             else
             {
                 ResetParticleColor(particleSystem);
             }
         }
-        public static void SetParticleSystemColor(ParticleSystem particleSystem, Color color, bool injectChildSystems)
+
+        public static void SetParticleSystemColor(this ParticleSystem particleSystem, Color color, bool injectChildSystems)
         {
             if (particleSystem == null) return;
             var visualHelper = particleSystem.GetComponent<TrickVisualHelper>();
@@ -196,18 +234,22 @@ namespace TrickCore
                     mode = minMaxGradient.mode,
                     colorMin = minMaxGradient.colorMin,
                     colorMax = minMaxGradient.colorMax,
-                    gradientMin = minMaxGradient.gradientMin != null ? new Gradient()
-                    {
-                        mode = minMaxGradient.gradientMin.mode,
-                        alphaKeys = minMaxGradient.gradientMin.alphaKeys.ToArray(),
-                        colorKeys = minMaxGradient.gradientMin.colorKeys.ToArray(),
-                    } : minMaxGradient.gradientMin,
-                    gradientMax = minMaxGradient.gradientMax != null ? new Gradient()
-                    {
-                        mode = minMaxGradient.gradientMax.mode,
-                        alphaKeys = minMaxGradient.gradientMax.alphaKeys.ToArray(),
-                        colorKeys = minMaxGradient.gradientMax.colorKeys.ToArray(),
-                    } : minMaxGradient.gradientMax,
+                    gradientMin = minMaxGradient.gradientMin != null
+                        ? new Gradient()
+                        {
+                            mode = minMaxGradient.gradientMin.mode,
+                            alphaKeys = minMaxGradient.gradientMin.alphaKeys.ToArray(),
+                            colorKeys = minMaxGradient.gradientMin.colorKeys.ToArray(),
+                        }
+                        : minMaxGradient.gradientMin,
+                    gradientMax = minMaxGradient.gradientMax != null
+                        ? new Gradient()
+                        {
+                            mode = minMaxGradient.gradientMax.mode,
+                            alphaKeys = minMaxGradient.gradientMax.alphaKeys.ToArray(),
+                            colorKeys = minMaxGradient.gradientMax.colorKeys.ToArray(),
+                        }
+                        : minMaxGradient.gradientMax,
                 };
                 switch (newGradient.mode)
                 {
@@ -223,6 +265,7 @@ namespace TrickCore
                             temp.color = color;
                             arr[i] = temp;
                         }
+
                         newGradient.gradient.colorKeys = arr;
                         break;
                     }
@@ -241,6 +284,7 @@ namespace TrickCore
                                 temp.color = color;
                                 minArr[i] = temp;
                             }
+
                             newGradient.gradientMin.colorKeys = minArr;
                         }
 
@@ -253,6 +297,7 @@ namespace TrickCore
                                 temp.color = color;
                                 maxArr[i] = temp;
                             }
+
                             newGradient.gradientMax.colorKeys = maxArr;
                         }
 
@@ -268,47 +313,50 @@ namespace TrickCore
 
             void SetParticleColor(ParticleSystem ps)
             {
-                if (visualHelper.ParticleSystemInjectStartColor)
+                if (visualHelper.particleSystemInjectStartColor)
                 {
                     var mainModule = ps.main;
-                    visualHelper._initMainModuleStartColor ??= mainModule.startColor;
+                    visualHelper.InitMainModuleStartColor ??= mainModule.startColor;
 
-                    var minMaxGradient = visualHelper._initMainModuleStartColor.Value;
+                    var minMaxGradient = visualHelper.InitMainModuleStartColor.Value;
                     mainModule.startColor = GetProcessedMinMaxGradient(minMaxGradient);
                 }
 
-                if (visualHelper.ParticleSystemInjectColorOverTime)
+                if (visualHelper.particleSystemInjectColorOverTime)
                 {
                     var colorOverTimeModule = ps.colorOverLifetime;
                     if (colorOverTimeModule.enabled)
                     {
-                        visualHelper._initColorOverTimeColor ??= colorOverTimeModule.color;
-                        colorOverTimeModule.color = GetProcessedMinMaxGradient(visualHelper._initColorOverTimeColor.Value);
+                        visualHelper.InitColorOverTimeColor ??= colorOverTimeModule.color;
+                        colorOverTimeModule.color =
+                            GetProcessedMinMaxGradient(visualHelper.InitColorOverTimeColor.Value);
                     }
                 }
 
-                if (visualHelper.ParticleSystemInjectColorBySpeed)
+                if (visualHelper.particleSystemInjectColorBySpeed)
                 {
                     var colorBySpeedModule = ps.colorBySpeed;
                     if (colorBySpeedModule.enabled)
                     {
-                        visualHelper._initColorBySpeed ??= colorBySpeedModule.color;
-                        colorBySpeedModule.color = GetProcessedMinMaxGradient(visualHelper._initColorBySpeed.Value);
+                        visualHelper.InitColorBySpeed ??= colorBySpeedModule.color;
+                        colorBySpeedModule.color = GetProcessedMinMaxGradient(visualHelper.InitColorBySpeed.Value);
                     }
                 }
             }
 
             if (injectChildSystems)
             {
-                foreach (var ps in particleSystem.GetComponentsInChildren<ParticleSystem>()) SetParticleSystemColor(ps, color, false);
+                foreach (var ps in particleSystem.GetComponentsInChildren<ParticleSystem>())
+                    SetParticleSystemColor(ps, color, false);
             }
             else
             {
                 SetParticleColor(particleSystem);
             }
         }
-    
-        public static void Shake(MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f, float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut)
+
+        public static void Shake(this MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f,
+            float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut)
         {
             IEnumerator HandleShake()
             {
@@ -322,7 +370,8 @@ namespace TrickCore
                     yield return tr.RotateTo(Vector3.one * shake, new TweenSettings(tweenDuration, tweenCurve), Axis.Z);
                     yield return Routine.WaitSeconds(pauseDuration);
                     if (tr == null) yield break;
-                    yield return tr.RotateTo(Vector3.one * -shake, new TweenSettings(tweenDuration, tweenCurve), Axis.Z);
+                    yield return tr.RotateTo(Vector3.one * -shake, new TweenSettings(tweenDuration, tweenCurve),
+                        Axis.Z);
 
                     if (i % 3 == 0)
                     {
@@ -333,18 +382,127 @@ namespace TrickCore
                     i++;
                 }
             }
-        
+
             var visualHelper = mono.GetComponent<TrickVisualHelper>();
             if (visualHelper == null) visualHelper = mono.gameObject.AddComponent<TrickVisualHelper>();
             visualHelper.TryInitializeUI();
 
-            if (b) visualHelper._shakeRoutine = visualHelper._shakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
+            if (b)
+                visualHelper.ShakeRoutine =
+                    visualHelper.ShakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
             else
             {
                 visualHelper.transform.SetRotation(Vector3.zero, Axis.Z);
-                visualHelper._shakeRoutine.Stop();
+                visualHelper.ShakeRoutine.Stop();
             }
         }
+
+        public static void TransitionIn(this RectTransform registerRoot, TweenSettings tweenSettings,
+            TrickTransitionDirection direction, Action completeCallback = null)
+        {
+            if (registerRoot == null) return;
+            var visualHelper = registerRoot.GetComponent<TrickVisualHelper>();
+            if (visualHelper == null) visualHelper = registerRoot.gameObject.AddComponent<TrickVisualHelper>();
+            visualHelper.TryInitializeUI();
+
+            var rt = registerRoot;
+            var siz = rt.rect.size;
+            var anchor = rt.anchoredPosition;
+            visualHelper.OriginalAnchorPosition ??= anchor;
+            switch (direction)
+            {
+                case TrickTransitionDirection.None:
+                    break;
+                case TrickTransitionDirection.Left:
+                    rt.anchoredPosition = new Vector2(-siz.x, anchor.y);
+                    visualHelper.TransitionRoutine = rt
+                        .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Top:
+                    rt.anchoredPosition = new Vector2(anchor.x, siz.y);
+                    visualHelper.TransitionRoutine = rt
+                        .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Right:
+                    rt.anchoredPosition = new Vector2(siz.x, anchor.y);
+                    visualHelper.TransitionRoutine = rt
+                        .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Bottom:
+                    rt.anchoredPosition = new Vector2(anchor.x, -siz.y);
+                    visualHelper.TransitionRoutine = rt
+                        .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
+
+        public static void TransitionIn(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
+            TrickTransitionDirection direction, Action completeCallback = null)
+        {
+            TransitionIn((RectTransform)registerRoot.transform, tweenSettings, direction, completeCallback);
+        }
+
+        public static void TransitionOut(this RectTransform registerRoot, TweenSettings tweenSettings,
+            TrickTransitionDirection direction, Action completeCallback = null)
+        {
+            if (registerRoot == null) return;
+
+            var visualHelper = registerRoot.GetComponent<TrickVisualHelper>();
+            if (visualHelper == null) visualHelper = registerRoot.gameObject.AddComponent<TrickVisualHelper>();
+            visualHelper.TryInitializeUI();
+
+            visualHelper.Fade();
+            
+            var rt = registerRoot;
+            var siz = rt.rect.size;
+            var anchor = rt.anchoredPosition;
+            visualHelper.OriginalAnchorPosition ??= anchor;
+            switch (direction)
+            {
+                case TrickTransitionDirection.None:
+                    break;
+                case TrickTransitionDirection.Left:
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(-siz.x, anchor.y), tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Top:
+                    rt.anchoredPosition = new Vector2(anchor.x, siz.y);
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(anchor.x, siz.y), tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Right:
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(siz.x, anchor.y), tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                case TrickTransitionDirection.Bottom:
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(anchor.x, -siz.y), tweenSettings)
+                        .OnComplete(completeCallback).Play();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
+
+        public static void TransitionOut(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
+            TrickTransitionDirection direction, Action completeCallback = null)
+        {
+            TransitionOut((RectTransform)registerRoot.transform, tweenSettings, direction, completeCallback);
+        }
+    }
+
+    public enum TrickTransitionDirection
+    {
+        None,
+        Left,
+        Top,
+        Right,
+        Bottom,
     }
 
     public class TrickVisualMono : MonoBehaviour
@@ -370,12 +528,12 @@ namespace TrickCore
                     if (go == null) yield break;
                     if (HighlightBorderImage != null)
                     {
-                        yield return TrickVisualHelper.Fade(HighlightBorderImage, HighlightBorderAlphaRange.x, 0.3f, 0.0f,
+                        yield return HighlightBorderImage.Fade(HighlightBorderAlphaRange.x, 0.3f, 0.0f,
                             null,
                             true);
                         yield return Routine.WaitSeconds(1.0f);
                         if (go == null) yield break;
-                        yield return TrickVisualHelper.Fade(HighlightBorderImage, HighlightBorderAlphaRange.y, 0.5f, 0.0f,
+                        yield return HighlightBorderImage.Fade(HighlightBorderAlphaRange.y, 0.5f, 0.0f,
                             null,
                             true);
                     }

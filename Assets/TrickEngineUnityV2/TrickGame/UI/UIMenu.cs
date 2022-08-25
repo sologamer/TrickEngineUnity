@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BeauRoutine;
+using TrickCore;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -10,9 +11,32 @@ public abstract class UIMenu : MonoBehaviour
     private const float TargetScaleWidth = 1920f;
     private const float TargetScaleReference = TargetScaleWidth / 1080f;
 
+    
+    /// <summary>
+    /// The way the menu is transitioned in
+    /// </summary>
+    [Header("Transition")]
+    public TrickTransitionDirection TransitionDirectionIn;
+    
+    /// <summary>
+    /// The way the menu is transitioned out
+    /// </summary>
+    public TrickTransitionDirection TransitionDirectionOut;
+    
+    /// <summary>
+    /// The time/curve of the transition
+    /// </summary>
+    public TweenSettings TransitionTweenSettings;
+    
+    /// <summary>
+    /// The panel transform of the menu, used for smooth menu transitions
+    /// </summary>
+    public RectTransform TransitionPanelTransform;
+    
     /// <summary>
     /// Handle screen size scaling
     /// </summary>
+    [Header("Settings")]
     public bool ScaleWithScreen = true;
     
     /// <summary>
@@ -233,6 +257,16 @@ public abstract class UIMenu : MonoBehaviour
         if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] SHOW {this}");
 #endif
 
+        if (TransitionPanelTransform != null)
+        {
+            TransitionPanelTransform.gameObject.SetActive(true);
+            TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
+            TransitionPanelTransform.TransitionIn(TransitionTweenSettings, TransitionDirectionIn, () =>
+            {
+                TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+            });
+        }
+
         return this;
     }
 
@@ -243,29 +277,49 @@ public abstract class UIMenu : MonoBehaviour
     {
         if (!_isOpen) return;
         _isOpen = false;
-        gameObject.SetActive(false);
-        if (_canvas != null) _canvas.sortingOrder = _startingSortingOrder;
-
-        _manager.MenuHideEvent?.Invoke(this);
-        if (DisableMainCamera)
+        
+        if (TransitionPanelTransform != null)
         {
-            if (_mainCamera == null) _mainCamera = Camera.main;
-            if (_mainCamera != null) _mainCamera.enabled = true;
+            TransitionPanelTransform.gameObject.SetActive(true);
+            TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
+            TransitionPanelTransform.TransitionOut(TransitionTweenSettings, TransitionDirectionOut, () =>
+            {
+                InternalHide();
+                TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+            });
+        }
+        else
+        {
+            InternalHide();
         }
 
-        if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
+        void InternalHide()
         {
-            asset.renderScale = _renderScaleBefore;
-        }
+            gameObject.SetActive(false);
+            
+            if (_canvas != null) _canvas.sortingOrder = _startingSortingOrder;
 
-        if (HideCallbackOnceQueue.Count > 0)
-        {
-            HideCallbackOnceQueue.Pop()?.Invoke();
-        }
+            _manager.MenuHideEvent?.Invoke(this);
+            if (DisableMainCamera)
+            {
+                if (_mainCamera == null) _mainCamera = Camera.main;
+                if (_mainCamera != null) _mainCamera.enabled = true;
+            }
+
+            if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
+            {
+                asset.renderScale = _renderScaleBefore;
+            }
+
+            if (HideCallbackOnceQueue.Count > 0)
+            {
+                HideCallbackOnceQueue.Pop()?.Invoke();
+            }
 
 #if UNITY_EDITOR
-        if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] HIDE {this}");
+            if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] HIDE {this}");
 #endif
+        }
     }
 
     /// <summary>

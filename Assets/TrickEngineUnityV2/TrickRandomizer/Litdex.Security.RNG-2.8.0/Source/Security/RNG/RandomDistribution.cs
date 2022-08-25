@@ -26,7 +26,7 @@ namespace Litdex.Security.RNG
 			}
 
 			//while (threadSafe)
-			// TODO some prng algo infinite loop			
+			/*// TODO some prng algo infinite loop			
 			while (false)
 			{
 				var u1 = this.NextDouble();
@@ -38,7 +38,7 @@ namespace Litdex.Security.RNG
 				{
 					return mean + z * std;
 				}
-			}
+			}*/
 
 			if (this._NextGaussian != 0)
 			{
