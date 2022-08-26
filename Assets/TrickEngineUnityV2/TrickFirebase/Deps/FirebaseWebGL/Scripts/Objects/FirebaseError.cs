@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using TrickCore;
 
-namespace FirebaseWebGL.Scripts.Objects
+namespace TrickCore
 {
     [Serializable, JsonObject]
     public class FirebaseError

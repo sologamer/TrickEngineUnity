@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace FirebaseWebGL.Scripts.Objects
+namespace TrickCore
 {
     [Serializable]
     public class FirebaseUserOld

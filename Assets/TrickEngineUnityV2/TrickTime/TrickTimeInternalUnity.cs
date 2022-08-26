@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Net;
+using BeauRoutine;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -11,7 +12,7 @@ namespace TrickCore
     {
         public Func<IEnumerator> FetchServerTimeFunc { get; set; }
 
-        private TrickTimeMono _mono;
+        private Routine _fetchRoutine;
 
         public TrickTimeInternalUnity(string endpoint, bool isRestEndpoint, Action fetchFailCallback, bool injectRandomnessForNoCache = true)
         {
@@ -86,19 +87,10 @@ namespace TrickCore
 
             // We are somehow off by some seconds, lets try to fetch the server time
             if (!(Mathf.Abs(prevClockDiff) >= 2.5f * Time.timeScale)) return;
+            
             // We local compensate, but we MUST make a request to the server, otherwise we will never know if it was forwarded or not
-            if (_mono == null)
-            {
-                var go = new GameObject("TrickTime")
-                {
-                    hideFlags = HideFlags.HideAndDontSave
-                };
-                _mono = go.AddComponent<TrickTimeMono>();
-                Object.DontDestroyOnLoad(_mono);
-            }
-
-            if (FetchServerTimeFunc != null)
-                _mono.StartCoroutine(FetchServerTimeFunc.Invoke());
+            if (!_fetchRoutine.Exists() && FetchServerTimeFunc != null)
+                _fetchRoutine = Routine.Start(FetchServerTimeFunc.Invoke());
         }
 
         public static IEnumerator FetchServerTime(string endPoint, bool isRestEndpoint, Action<DateTime> fetchServerTimeResult, Action failedToFetch)

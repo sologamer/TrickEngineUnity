@@ -2,41 +2,44 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-/// <summary>
-/// A stub object to support dynamic instantiating of an object
-/// </summary>
-public class DynamicMonoTrickPool : MonoBehaviour, ITrickPool
+namespace TrickCore
 {
-    public bool IsClaimed
+    /// <summary>
+    /// A stub object to support dynamic instantiating of an object
+    /// </summary>
+    public class DynamicMonoTrickPool : MonoBehaviour, ITrickPool
     {
-        get => RedirectTarget?.IsClaimed ?? _isClaimed;
-        set
+        public bool IsClaimed
         {
-            _isClaimed = value;
-            if (RedirectTarget != null) RedirectTarget.IsClaimed = _isClaimed;
+            get => RedirectTarget?.IsClaimed ?? _isClaimed;
+            set
+            {
+                _isClaimed = value;
+                if (RedirectTarget != null) RedirectTarget.IsClaimed = _isClaimed;
+            }
         }
-    }
 
-    public AssetReferenceGameObject AssetReferenceGameObject { get; set; }
-    public AddressableGroupType AssetGroupType { get; set; }
+        public AssetReferenceGameObject AssetReferenceGameObject { get; set; }
+        public TrickAssetGroupId AssetGroupType { get; set; }
 
-    public ITrickPool RedirectTarget;
+        public ITrickPool RedirectTarget;
     
-    private bool _isClaimed;
+        private bool _isClaimed;
 
-    public void Claim()
-    {
-        RedirectTarget?.Claim();
-    }
+        public void Claim()
+        {
+            RedirectTarget?.Claim();
+        }
 
-    public void Release()
-    {
-        RedirectTarget?.Release();
-    }
+        public void Release()
+        {
+            RedirectTarget?.Release();
+        }
 
-    public void OnInstantiated()
-    {
-        RedirectTarget?.OnInstantiated();
+        public void OnInstantiated()
+        {
+            RedirectTarget?.OnInstantiated();
+        }
     }
 }
 #endif

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Proyecto26;
 
-namespace FirebaseWebGL.Scripts.FirebaseBridge
+namespace TrickCore
 {
     public static class FirebaseFunctions
     {

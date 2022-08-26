@@ -785,7 +785,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   scriptingDefineSymbols:
     Standalone: ODIN_VALIDATOR;ODIN_INSPECTOR;ODIN_INSPECTOR_3
-    WebGL: ODIN_VALIDATOR;ODIN_INSPECTOR;ODIN_INSPECTOR_3
+    WebGL: UNITY_ADDRESSABLES
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

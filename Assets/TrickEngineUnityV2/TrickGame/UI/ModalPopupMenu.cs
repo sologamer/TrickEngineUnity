@@ -69,7 +69,6 @@ public partial class ModalPopupMenu : UIMenu
     public override void Hide()
     {
         base.Hide();
-        TransitionPanelTransform.gameObject.SetActive(false);
         _updater.Stop();
     }
 
@@ -100,18 +99,38 @@ public partial class ModalPopupMenu : UIMenu
     private static void ExecutePopupQueue()
     {
         if (PopupDataQueue.Count <= 0) return;
-        var data = PopupDataQueue.Dequeue();
-        switch (data.Popup)
+        
+        var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
+        if (instance.IsOpen)
         {
-            case PopupQueueData.PopupType.Ok:
-                ShowOkModal(data.Title, data.Description, data.OkText, data.OkAction, data.DescriptionUpdater);
-                break;
-            case PopupQueueData.PopupType.YesNo:
-                ShowYesNoModal(data.Title, data.Description, data.YesText, data.NoText, data.YesAction, data.NoAction, data.DescriptionUpdater);
-                break;
-            case PopupQueueData.PopupType.ButtonModal:
-                ShowButtonsModal(data.Title, data.Description, data.Button1, data.Button2, data.Button3, data.DescriptionUpdater);
-                break;
+            // wait until popup closes, before we show again
+            IEnumerator WaitToExecuteQueue()
+            {
+                yield return Routine.WaitCondition(() => !instance.IsOpen);
+                ExecuteQueue();
+            }
+            Routine.Start(WaitToExecuteQueue());
+        }
+        else
+        {
+            ExecuteQueue();
+        }
+
+        void ExecuteQueue()
+        {
+            var data = PopupDataQueue.Dequeue();
+            switch (data.Popup)
+            {
+                case PopupQueueData.PopupType.Ok:
+                    ShowOkModal(data.Title, data.Description, data.OkText, data.OkAction, data.DescriptionUpdater);
+                    break;
+                case PopupQueueData.PopupType.YesNo:
+                    ShowYesNoModal(data.Title, data.Description, data.YesText, data.NoText, data.YesAction, data.NoAction, data.DescriptionUpdater);
+                    break;
+                case PopupQueueData.PopupType.ButtonModal:
+                    ShowButtonsModal(data.Title, data.Description, data.Button1, data.Button2, data.Button3, data.DescriptionUpdater);
+                    break;
+            }
         }
     }
 

@@ -1,26 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using FirebaseWebGL.Scripts.Objects;
-using Newtonsoft.Json;
-using TrickCore;
 using UnityEngine;
 
-public static class TrickFirebaseFirestore
+namespace TrickCore
 {
-    public static void GetDocument(string collectionPath, string documentId,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
+    public static class TrickFirebaseFirestore
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void GetDocument(string collectionPath, string documentId,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            Debug.Log("[GetDocument]: " + collectionPath + "/" + documentId);
-            FirebaseManager.Instance.Register(nameof(GetDocument), callbackOrFallback, false, collectionPath+documentId);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.GetDocument(collectionPath, documentId,
-                nameof(FirebaseManager), $"{nameof(GetDocument)}Callback", $"{nameof(GetDocument)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                Debug.Log("[GetDocument]: " + collectionPath + "/" + documentId);
+                FirebaseManager.Instance.Register(nameof(GetDocument), callbackOrFallback, false, collectionPath+documentId);
+                FirebaseFirestore.GetDocument(collectionPath, documentId,
+                    nameof(FirebaseManager), $"{nameof(GetDocument)}Callback", $"{nameof(GetDocument)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Document($"{collectionPath}/{documentId}")
                 .GetSnapshotAsync(Firebase.Firestore.Source.Server)
@@ -39,21 +37,21 @@ public static class TrickFirebaseFirestore
                         null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void GetDocumentsInCollection(string collectionPath,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void GetDocumentsInCollection(string collectionPath,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(GetDocumentsInCollection), callbackOrFallback, false, collectionPath);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.GetDocumentsInCollection(collectionPath,
-                nameof(FirebaseManager), $"{nameof(GetDocumentsInCollection)}Callback",
-                $"{nameof(GetDocumentsInCollection)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(GetDocumentsInCollection), callbackOrFallback, false, collectionPath);
+                FirebaseFirestore.GetDocumentsInCollection(collectionPath,
+                    nameof(FirebaseManager), $"{nameof(GetDocumentsInCollection)}Callback",
+                    $"{nameof(GetDocumentsInCollection)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Collection($"{collectionPath}").GetSnapshotAsync(Firebase.Firestore.Source.Server)
                 .ContinueWith(task =>
@@ -70,21 +68,21 @@ public static class TrickFirebaseFirestore
                         querySnapshot.Documents.ToDictionary(snapshot => snapshot.Id, snapshot => snapshot.ToDictionary()).SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void SetDocument(string collectionPath, string documentId, Dictionary<string, object> value,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void SetDocument(string collectionPath, string documentId, Dictionary<string, object> value,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(SetDocument), callbackOrFallback, false, collectionPath+documentId);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.SetDocument(collectionPath,
-                documentId, value.SerializeToJson(false, true), nameof(FirebaseManager), $"{nameof(SetDocument)}Callback",
-                $"{nameof(SetDocument)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(SetDocument), callbackOrFallback, false, collectionPath+documentId);
+                FirebaseFirestore.SetDocument(collectionPath,
+                    documentId, value.SerializeToJson(false, true), nameof(FirebaseManager), $"{nameof(SetDocument)}Callback",
+                    $"{nameof(SetDocument)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Document($"{collectionPath}/{documentId}").SetAsync(value)
                 .ContinueWith(task =>
@@ -99,20 +97,20 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void AddDocument(string collectionPath, Dictionary<string, object> value,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void AddDocument(string collectionPath, Dictionary<string, object> value,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(AddDocument), callbackOrFallback, false, collectionPath);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.AddDocument(collectionPath,
-                value.SerializeToJson(false, true), nameof(FirebaseManager), $"{nameof(AddDocument)}Callback", $"{nameof(AddDocument)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(AddDocument), callbackOrFallback, false, collectionPath);
+                FirebaseFirestore.AddDocument(collectionPath,
+                    value.SerializeToJson(false, true), nameof(FirebaseManager), $"{nameof(AddDocument)}Callback", $"{nameof(AddDocument)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Collection($"{collectionPath}").AddAsync(value)
                 .ContinueWith(task =>
@@ -127,21 +125,21 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((task.Result.Path, null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void UpdateDocument(string collectionPath, string documentId, Dictionary<string,object> value,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void UpdateDocument(string collectionPath, string documentId, Dictionary<string,object> value,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(UpdateDocument), callbackOrFallback, false, collectionPath+documentId);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.UpdateDocument(collectionPath,
-                documentId, value.SerializeToJson(false, true), nameof(FirebaseManager),
-                $"{nameof(UpdateDocument)}Callback", $"{nameof(UpdateDocument)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(UpdateDocument), callbackOrFallback, false, collectionPath+documentId);
+                FirebaseFirestore.UpdateDocument(collectionPath,
+                    documentId, value.SerializeToJson(false, true), nameof(FirebaseManager),
+                    $"{nameof(UpdateDocument)}Callback", $"{nameof(UpdateDocument)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Document($"{collectionPath}/{documentId}").UpdateAsync(value)
                 .ContinueWith(task =>
@@ -156,21 +154,21 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void DeleteDocument(string collectionPath, string documentId,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void DeleteDocument(string collectionPath, string documentId,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(DeleteDocument), callbackOrFallback, false, collectionPath+documentId);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.DeleteDocument(collectionPath,
-                documentId, nameof(FirebaseManager),
-                $"{nameof(DeleteDocument)}Callback", $"{nameof(DeleteDocument)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(DeleteDocument), callbackOrFallback, false, collectionPath+documentId);
+                FirebaseFirestore.DeleteDocument(collectionPath,
+                    documentId, nameof(FirebaseManager),
+                    $"{nameof(DeleteDocument)}Callback", $"{nameof(DeleteDocument)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Firestore.FirebaseFirestore.DefaultInstance.Document($"{collectionPath}/{documentId}").DeleteAsync()
                 .ContinueWith(task =>
@@ -185,21 +183,21 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void DeleteField(string collectionPath, string documentId, string field,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void DeleteField(string collectionPath, string documentId, string field,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(DeleteField), callbackOrFallback, false, collectionPath+documentId+field);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.DeleteField(collectionPath,
-                documentId, field, nameof(FirebaseManager),
-                $"{nameof(DeleteField)}Callback", $"{nameof(DeleteField)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(DeleteField), callbackOrFallback, false, collectionPath+documentId+field);
+                FirebaseFirestore.DeleteField(collectionPath,
+                    documentId, field, nameof(FirebaseManager),
+                    $"{nameof(DeleteField)}Callback", $"{nameof(DeleteField)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             var value = new Dictionary<string, object>()
             {
@@ -220,21 +218,21 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void AddElementInArrayField(string collectionPath, string documentId, string field, string value,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void AddElementInArrayField(string collectionPath, string documentId, string field, string value,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(AddElementInArrayField), callbackOrFallback, false, collectionPath+documentId+field);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.AddElementInArrayField(collectionPath,
-                documentId, field, value, nameof(FirebaseManager),
-                $"{nameof(AddElementInArrayField)}Callback", $"{nameof(AddElementInArrayField)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(AddElementInArrayField), callbackOrFallback, false, collectionPath+documentId+field);
+                FirebaseFirestore.AddElementInArrayField(collectionPath,
+                    documentId, field, value, nameof(FirebaseManager),
+                    $"{nameof(AddElementInArrayField)}Callback", $"{nameof(AddElementInArrayField)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             var element = new Dictionary<string, object>()
             {
@@ -253,23 +251,23 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void RemoveElementInArrayField(string collectionPath, string documentId, string field, string value,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void RemoveElementInArrayField(string collectionPath, string documentId, string field, string value,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(RemoveElementInArrayField), callbackOrFallback, false, collectionPath+documentId+field+value);
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(RemoveElementInArrayField), callbackOrFallback, false, collectionPath+documentId+field+value);
 
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.RemoveElementInArrayField(collectionPath,
-                documentId, field, value,
-                nameof(FirebaseManager),
-                $"{nameof(RemoveElementInArrayField)}Callback", $"{nameof(RemoveElementInArrayField)}Fallback");
-        }
-        else
-        {
+                FirebaseFirestore.RemoveElementInArrayField(collectionPath,
+                    documentId, field, value,
+                    nameof(FirebaseManager),
+                    $"{nameof(RemoveElementInArrayField)}Callback", $"{nameof(RemoveElementInArrayField)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             var element = new Dictionary<string, object>()
             {
@@ -288,22 +286,22 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void IncrementFieldValue(string collectionPath, string documentId, string field, int increment,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void IncrementFieldValue(string collectionPath, string documentId, string field, int increment,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(IncrementFieldValue), callbackOrFallback, false, collectionPath+documentId+field+increment);
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(IncrementFieldValue), callbackOrFallback, false, collectionPath+documentId+field+increment);
 
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.IncrementFieldValue(collectionPath,
-                documentId, field, increment, nameof(FirebaseManager),
-                $"{nameof(IncrementFieldValue)}Callback", $"{nameof(IncrementFieldValue)}Fallback");
-        }
-        else
-        {
+                FirebaseFirestore.IncrementFieldValue(collectionPath,
+                    documentId, field, increment, nameof(FirebaseManager),
+                    $"{nameof(IncrementFieldValue)}Callback", $"{nameof(IncrementFieldValue)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             var element = new Dictionary<string, object>()
             {
@@ -322,26 +320,26 @@ public static class TrickFirebaseFirestore
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
     private static Dictionary<string, Firebase.Firestore.ListenerRegistration> FirebaseListeners = new();
 #endif
 
-    public static void ListenForDocumentChange(string collectionPath, string documentId, bool includeMetadataUpdates,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void ListenForDocumentChange(string collectionPath, string documentId, bool includeMetadataUpdates,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(ListenForDocumentChange), callbackOrFallback, true, collectionPath + documentId + includeMetadataUpdates);
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(ListenForDocumentChange), callbackOrFallback, true, collectionPath + documentId + includeMetadataUpdates);
 
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.ListenForDocumentChange(
-                collectionPath, documentId, includeMetadataUpdates,
-                nameof(FirebaseManager), $"{nameof(ListenForDocumentChange)}Callback", $"{nameof(ListenForDocumentChange)}Fallback");
-        }
-        else
-        {
+                FirebaseFirestore.ListenForDocumentChange(
+                    collectionPath, documentId, includeMetadataUpdates,
+                    nameof(FirebaseManager), $"{nameof(ListenForDocumentChange)}Callback", $"{nameof(ListenForDocumentChange)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             void Listen(Firebase.Firestore.DocumentSnapshot snapshot)
             {
@@ -357,42 +355,42 @@ public static class TrickFirebaseFirestore
                     ? Firebase.Firestore.MetadataChanges.Include
                     : Firebase.Firestore.MetadataChanges.Exclude, Listen);
 #endif
+            }
         }
-    }
 
-    public static void StopListeningForDocumentChange(string collectionPath, string documentId,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void StopListeningForDocumentChange(string collectionPath, string documentId,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(StopListeningForDocumentChange), callbackOrFallback, false, collectionPath+documentId);
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(StopListeningForDocumentChange), callbackOrFallback, false, collectionPath+documentId);
 
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.StopListeningForDocumentChange(collectionPath,
-                documentId, nameof(FirebaseManager), $"{nameof(StopListeningForDocumentChange)}Callback", $"{nameof(StopListeningForDocumentChange)}Fallback");
-        }
-        else
-        {
+                FirebaseFirestore.StopListeningForDocumentChange(collectionPath,
+                    documentId, nameof(FirebaseManager), $"{nameof(StopListeningForDocumentChange)}Callback", $"{nameof(StopListeningForDocumentChange)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             FirebaseListeners.Remove($"Document{collectionPath}/{documentId}");
             
             TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
 #endif
+            }
         }
-    }
 
-    public static void ListenForCollectionChange(string collectionPath, bool includeMetadataUpdates,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void ListenForCollectionChange(string collectionPath, bool includeMetadataUpdates,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(ListenForCollectionChange), callbackOrFallback, true, collectionPath + includeMetadataUpdates);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.ListenForCollectionChange(
-                collectionPath, includeMetadataUpdates, nameof(FirebaseManager),
-                $"{nameof(ListenForCollectionChange)}Callback", $"{nameof(ListenForCollectionChange)}Fallback"
-            );
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(ListenForCollectionChange), callbackOrFallback, true, collectionPath + includeMetadataUpdates);
+                FirebaseFirestore.ListenForCollectionChange(
+                    collectionPath, includeMetadataUpdates, nameof(FirebaseManager),
+                    $"{nameof(ListenForCollectionChange)}Callback", $"{nameof(ListenForCollectionChange)}Fallback"
+                );
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             void Listen(Firebase.Firestore.QuerySnapshot querySnapshot)
             {
@@ -407,25 +405,26 @@ public static class TrickFirebaseFirestore
                 ? Firebase.Firestore.MetadataChanges.Include
                 : Firebase.Firestore.MetadataChanges.Exclude, Listen);
 #endif
+            }
         }
-    }
-    public static void StopListeningForCollectionChange(string collectionPath,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void StopListeningForCollectionChange(string collectionPath,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(StopListeningForCollectionChange), callbackOrFallback, false, collectionPath);
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(StopListeningForCollectionChange), callbackOrFallback, false, collectionPath);
 
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseFirestore.StopListeningForCollectionChange(collectionPath,
-                nameof(FirebaseManager),$"{nameof(StopListeningForCollectionChange)}Callback", $"{nameof(StopListeningForCollectionChange)}Fallback"
-            );
-        }
-        else
-        {
+                FirebaseFirestore.StopListeningForCollectionChange(collectionPath,
+                    nameof(FirebaseManager),$"{nameof(StopListeningForCollectionChange)}Callback", $"{nameof(StopListeningForCollectionChange)}Fallback"
+                );
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             FirebaseListeners.Remove($"Collection{collectionPath}");
             TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
 #endif
+            }
         }
     }
 }

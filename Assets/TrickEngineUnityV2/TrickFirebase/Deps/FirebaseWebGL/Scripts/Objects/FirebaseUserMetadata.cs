@@ -1,7 +1,6 @@
 ﻿using System;
-using UnityEngine;
 
-namespace FirebaseWebGL.Scripts.Objects
+namespace TrickCore
 {
     [Serializable]
     public class FirebaseUserMetadata

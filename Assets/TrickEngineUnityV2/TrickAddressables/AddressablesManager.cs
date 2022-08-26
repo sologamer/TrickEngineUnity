@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BeauRoutine;
-using Sirenix.OdinInspector;
 using TrickCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -18,93 +17,67 @@ using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using WaitUntil = UnityEngine.WaitUntil;
-#if UNITY_EDITOR
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
-#endif
 
-public class AddressablesManager : MonoSingleton<AddressablesManager>
+namespace TrickCore
 {
-    [ShowInInspector, NonSerialized] private readonly Dictionary<AddressableGroupType, HashSet<GameObject>> _assets =
-        new Dictionary<AddressableGroupType, HashSet<GameObject>>()
-        {
-            {AddressableGroupType.Game, new HashSet<GameObject>()},
-            {AddressableGroupType.Lobby, new HashSet<GameObject>()},
-            {AddressableGroupType.ReleaseOnDestroy, new HashSet<GameObject>()}
-        };
+    /// <summary>
+    /// TODO: Refactor the AddressablesManager, support usage of Tasks
+    /// </summary>
+    public class AddressablesManager : MonoSingleton<AddressablesManager>
+    {
+        private readonly Dictionary<TrickAssetGroupId, HashSet<GameObject>> _assets =
+            new()
+            {
+                {TrickAssetGroupId.ManualReleaseAssetGroupId, new HashSet<GameObject>()},
+            };
     
-    [ShowInInspector, NonSerialized] private readonly Dictionary<AddressableGroupType, HashSet<UnityEngine.Object>> _assetObjects =
-        new Dictionary<AddressableGroupType, HashSet<UnityEngine.Object>>()
-        {
-            {AddressableGroupType.Game, new HashSet<UnityEngine.Object>()},
-            {AddressableGroupType.Lobby, new HashSet<UnityEngine.Object>()},
-            {AddressableGroupType.ReleaseOnDestroy, new HashSet<UnityEngine.Object>()},
-        };
+        private readonly Dictionary<TrickAssetGroupId, HashSet<Object>> _assetObjects =
+            new()
+            {
+                {TrickAssetGroupId.ManualReleaseAssetGroupId, new HashSet<Object>()},
+            };
     
-    [ShowInInspector, NonSerialized]
-    private readonly List<UnityEngine.Object> _dontDestroyAssets = new List<UnityEngine.Object>();
-    public List<string> Labels = new List<string>();
-    private string _addressablesVersion;
-    private readonly List<Action<bool>> _localInvokeQueue = new List<Action<bool>>();
-    private readonly List<Action<bool>> _remoteInvokeQueue = new List<Action<bool>>();
+        private static Dictionary<string, AssetReferenceGameObject> CachedArGoes { get; } = new();
+    
+        private readonly List<Object> _dontDestroyAssets = new();
+        private string _addressablesVersion;
+        private readonly List<Action<bool>> _localInvokeQueue = new();
+        private readonly List<Action<bool>> _remoteInvokeQueue = new();
 
-    [NonSerialized] public Action<object> ConcurrentDownloadStartFunc = null;
-    [NonSerialized] public Action<object, DownloadStatus> ConcurrentDownloadUpdateFunc = null;
-    [NonSerialized] public Action<object> ConcurrentDownloadCompleteFunc = null;
-    [NonSerialized] public Action<List<IResourceLocation>, Dictionary<string, long>> InitializeAddressableDownloadFunc = null;
-    [NonSerialized] public Action<List<IResourceLocation>, Dictionary<string, long>> InitializeAddressableDownloadFuncFast = null;
-    [NonSerialized] public Action EndAddressableDownloadFunc = null;
-    private const int CONCURRENT_STEPS = 100;
-    
-    public bool LocalInitialized { get; set; }
-    public bool RemoteInitialized { get; set; }
+        public Action<object> ConcurrentDownloadStartFunc { get; set; } = null;
+        public Action<object, DownloadStatus> ConcurrentDownloadUpdateFunc { get; set; } = null;
+        public Action<object> ConcurrentDownloadCompleteFunc { get; set; } = null;
+        public Action<List<IResourceLocation>, Dictionary<string, long>> InitializeAddressableDownloadFunc { get; set; } = null;
+        public Action<List<IResourceLocation>, Dictionary<string, long>> InitializeAddressableDownloadFuncFast { get; set; } = null;
+        public Action EndAddressableDownloadFunc { get; set; } = null;
 
-    public int NumInstantiatingAssets { get; set; }
-    public int NumLoadingAssets { get; set; }
+        private const int CONCURRENT_STEPS = 100;
+    
+        public bool LocalInitialized { get; set; }
+        public bool RemoteInitialized { get; set; }
+
+        public int NumInstantiatingAssets { get; set; }
+        public int NumLoadingAssets { get; set; }
 
 #if UNITY_EDITOR
 
-    public List<GameObject> GetAssetsGameObjects(AddressableGroupType group)
-    {
-        return _assets[group].ToList();
-    }
+        public List<GameObject> GetAssetsGameObjects(TrickAssetGroupId group)
+        {
+            return _assets[group].ToList();
+        }
     
-    public List<Object> GetAssetsObjects(AddressableGroupType group)
-    {
-        return _assetObjects[group].ToList();
-    }
+        public List<Object> GetAssetsObjects(TrickAssetGroupId group)
+        {
+            return _assetObjects[group].ToList();
+        }
     
-    [Button]
-    public void UpdateAllLabels()
-    {
-        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.GetSettings(false);
-        HashSet<string> usedLabels = new HashSet<string>();
-        foreach (var label in from @group in settings.groups from entry in @group.entries from label in entry.labels.Where(label => !usedLabels.Contains(label)) select label)
-            usedLabels.Add(label);
-        Labels = usedLabels.ToList();
-    }
-    #endif
+#endif
 
 #if UNITY_ADDRESSABLES && ENABLE_ADDRESSABLESMANAGER
 
     protected override void Initialize()
     {
         base.Initialize();
-        
-        //BetterStreamingAssets.Initialize();
-        
-        if (!PlayerPrefs.HasKey("FirstTimeInit_V3"))
-        {
-            PlayerPrefs.SetInt("FirstTimeInit_V3", 1);
-            PlayerPrefs.Save();
-            
-            // Make sure we clear the cache, if it's a new game
-            Caching.ClearCache();
-            
-            // Reset this key
-            PlayerPrefs.DeleteKey(Addressables.kAddressablesRuntimeDataPath);
-        }
-
         Routine.Start(FastInitializeAddressables());
     }
 
@@ -121,263 +94,253 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
     }
 #endif
 
-    public bool ReleaseAsset(AddressableGroupType group, UnityEngine.Object obj)
-    {
-        if (_dontDestroyAssets.Contains(obj))
+        public bool ReleaseAsset(TrickAssetGroupId group, Object obj)
         {
-            Debug.LogError($"[ReleaseAsset] Addressable asset {obj} is in the _dontDestroyAssets list");
-            return false;
-        }
+            if (_dontDestroyAssets.Contains(obj))
+            {
+                Debug.LogError($"[ReleaseAsset] Addressable asset {obj} is in the _dontDestroyAssets list");
+                return false;
+            }
 
-        if (obj is GameObject go)
-        {
-            if (_assets[group].Remove(go))
+            if (obj is GameObject go)
             {
-                // Disable auto-release, since we release it here
-                if (group == AddressableGroupType.ReleaseOnDestroy)
+                if (_assets[group].Remove(go))
                 {
-                    var helper = go.GetComponent<AddressableAssetHelper>();
-                    if (helper != null) helper.enabled = false;
-                }
+                    // Disable auto-release, since we release it here
+                    if (group == TrickAssetGroupId.ManualReleaseAssetGroupId)
+                    {
+                        var helper = go.GetComponent<AddressableAssetHelper>();
+                        if (helper != null) helper.enabled = false;
+                    }
                 
-                Addressables.ReleaseInstance(go);
-                if (go != null) Destroy(go);
-                return true;
+                    Addressables.ReleaseInstance(go);
+                    if (go != null) Destroy(go);
+                    return true;
+                }
             }
-        }
-        else
-        {
-            if (_assetObjects[group].Remove(obj))
+            else
             {
-                Addressables.Release(obj);
-                return true;
+                if (_assetObjects[group].Remove(obj))
+                {
+                    Addressables.Release(obj);
+                    return true;
+                }
             }
-        }
        
         
-        return false;
-    }
+            return false;
+        }
     
-    [Button]
-    public void ReleaseAllInstances(AddressableGroupType group)
-    {
-        _assets[group].Except(_dontDestroyAssets.OfType<GameObject>()).Where(o => o != null).ToList()
-            .ForEach(o => Addressables.ReleaseInstance(o));
-        _assetObjects[group].Except(_dontDestroyAssets).Where(o => o != null).ToList().ForEach(Addressables.Release);
+        public void ReleaseAllInstances(TrickAssetGroupId group)
+        {
+            _assets[group].Except(_dontDestroyAssets.OfType<GameObject>()).Where(o => o != null).ToList()
+                .ForEach(o => Addressables.ReleaseInstance(o));
+            _assetObjects[group].Except(_dontDestroyAssets).Where(o => o != null).ToList().ForEach(Addressables.Release);
         
-        _assetObjects[group].Clear();
-        _assets[group].Clear();
-    }
-
-    public void DontDestroyAsset(AddressableGroupType group, UnityEngine.Object o)
-    {
-        if (o == null) return;
-        _dontDestroyAssets.Add(o);
-        if (o is GameObject go)
-            _assets[group].Remove(go);
-        else
-            _assetObjects[group].Remove(o);
-    }
-
-    public void RemoveDontDestroyAsset(AddressableGroupType group, UnityEngine.Object o)
-    {
-        if (o == null) return;
-        if (!_dontDestroyAssets.Remove(o)) return;
-        if (o is GameObject go)
-            _assets[@group].Add(go);
-        else
-            _assetObjects[@group].Add(o);
-    }
-
-    public void InstantiateAssetAsync(AddressableGroupType group, AssetReference ar, Vector3 position, Quaternion quaternion,
-        Transform parent, Action<GameObject> callback)
-    {
-        if (!ar.IsValidReference())
-        {
-            Debug.LogError("Not a valid reference");
-            callback?.Invoke(null);
-            return;
+            _assetObjects[group].Clear();
+            _assets[group].Clear();
         }
+
+        public void DontDestroyAsset(TrickAssetGroupId group, Object o)
+        {
+            if (o == null) return;
+            _dontDestroyAssets.Add(o);
+            if (o is GameObject go)
+                _assets[group].Remove(go);
+            else
+                _assetObjects[group].Remove(o);
+        }
+
+        public void RemoveDontDestroyAsset(TrickAssetGroupId group, Object o)
+        {
+            if (o == null) return;
+            if (!_dontDestroyAssets.Remove(o)) return;
+            if (o is GameObject go)
+                _assets[@group].Add(go);
+            else
+                _assetObjects[@group].Add(o);
+        }
+
+        public void InstantiateAssetAsync(TrickAssetGroupId group, AssetReference ar, Vector3 position, Quaternion quaternion,
+            Transform parent, Action<GameObject> callback)
+        {
+            if (!ar.IsValidReference())
+            {
+                Debug.LogError("Not a valid reference");
+                callback?.Invoke(null);
+                return;
+            }
         
-        if (!(ar is AssetReferenceGameObject arGo))
-        {
-            if (!CachedArGoes.TryGetValue(ar.AssetGUID, out arGo))
-                CachedArGoes.AddOrReplace(ar.AssetGUID, arGo = new AssetReferenceGameObject(ar.AssetGUID));
-        }
+            if (!(ar is AssetReferenceGameObject arGo))
+            {
+                if (!CachedArGoes.TryGetValue(ar.AssetGUID, out arGo))
+                    CachedArGoes.AddOrReplace(ar.AssetGUID, arGo = new AssetReferenceGameObject(ar.AssetGUID));
+            }
 
-        void OnCompleted(AsyncOperationHandle<GameObject> handle)
-        {
-            HandleGameObjectResult(group, ar, handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null, callback);
-        }
+            void OnCompleted(AsyncOperationHandle<GameObject> handle)
+            {
+                HandleGameObjectResult(group, ar, handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null, callback);
+            }
 
 #if UNITY_EDITOR && EDITOR_QUICK_INSTANTIATE
-        if (ar.editorAsset is GameObject go)
-        {
-            HandleGameObjectResult(group, ar, Instantiate(go, position, quaternion, parent), callback);
-        }
-        else
-        {
-            var op = ar.InstantiateAsync(position, quaternion, parent);
-            if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
-            else op.Completed += OnCompleted;
-        }
+            if (ar.editorAsset is GameObject go)
+            {
+                HandleGameObjectResult(group, ar, Instantiate(go, position, quaternion, parent), callback);
+            }
+            else
+            {
+                var op = ar.InstantiateAsync(position, quaternion, parent);
+                if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
+                else op.Completed += OnCompleted;
+            }
 #else
         var op = ar.InstantiateAsync(position, quaternion, parent);
         if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
         else op.Completed += OnCompleted;
 #endif
-    }
-
-    public static Dictionary<string, AssetReferenceGameObject> CachedArGoes { get; } = new Dictionary<string, AssetReferenceGameObject>();
-
-    public void InstantiateAssetAsync(AddressableGroupType group, AssetReference ar, Transform parent, Action<GameObject> callback)
-    {
-        if (!ar.IsValidReference())
-        {
-            Debug.LogError("Not a valid reference");
-            callback?.Invoke(null);
-            return;
         }
 
-        NumInstantiatingAssets++;
-
-        void OnCompleted(AsyncOperationHandle<GameObject> handle)
+        public void InstantiateAssetAsync(TrickAssetGroupId group, AssetReference ar, Transform parent, Action<GameObject> callback)
         {
-            HandleGameObjectResult(group, ar, handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null, callback);
-        }
-
-        #if UNITY_EDITOR && EDITOR_QUICK_INSTANTIATE
-        if (ar.editorAsset is GameObject go)
-        {
-            HandleGameObjectResult(group, ar, Instantiate(go, parent), callback);
-        }
-        else
-        {
-            var op = ar.InstantiateAsync(parent);
-            if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
-            else op.Completed += OnCompleted;
-        }
-        #else
-        var op = ar.InstantiateAsync(parent);
-        if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
-        else op.Completed += OnCompleted;
-        #endif
-    }
-    
-    private void HandleGameObjectResult(AddressableGroupType @group, AssetReference ar, GameObject handleResult, Action<GameObject> callback)
-    {
-        NumInstantiatingAssets--;
-        if (handleResult != null)
-        {
-            _assets[@group].Add(handleResult);
-                
-            if (handleResult.TryGetComponent<ITrickPool>(out var poolObject))
+            if (!ar.IsValidReference())
             {
-                poolObject.AssetGroupType = @group;
-                        
-                if (!(ar is AssetReferenceGameObject arGo))
-                {
-                    if (!CachedArGoes.TryGetValue(ar.AssetGUID, out arGo))
-                        CachedArGoes.AddOrReplace(ar.AssetGUID, arGo = new AssetReferenceGameObject(ar.AssetGUID));
-                }
-                        
-                poolObject.AssetReferenceGameObject = arGo;
-
-                poolObject.OnInstantiated();
+                Debug.LogError("Not a valid reference");
+                callback?.Invoke(null);
+                return;
             }
 
-            if (@group == AddressableGroupType.ReleaseOnDestroy)
+            NumInstantiatingAssets++;
+
+            void OnCompleted(AsyncOperationHandle<GameObject> handle)
             {
-                if (!handleResult.TryGetComponent<AddressableAssetHelper>(out var helper))
-                    helper = handleResult.AddComponent<AddressableAssetHelper>();
-                helper.IsUsingManager = true;
-                helper.AddData(handleResult);
+                HandleGameObjectResult(group, ar, handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : null, callback);
             }
-        }
-            
-        callback?.Invoke(handleResult);
-    }
 
-    public IEnumerator InstantiateAssetCoroutine(AddressableGroupType group, AssetReferenceGameObject value, Action<GameObject> callback)
-    {
-        yield return Routine.Inline(InstantiateAssetCoroutine(group, value, null, callback));
-    }
-    
-    public IEnumerator InstantiateAssetCoroutine(AddressableGroupType group, AssetReferenceGameObject value, Transform parent, Action<GameObject> callback)
-    {
-        if (!value.IsValidReference())
-        {
-            Debug.LogError($"Not a valid reference - {value?.AssetGUID}");
-            callback?.Invoke(null);
-            yield break;
-        }
-
-        bool loaded = false;
-        GameObject go = null;
-        InstantiateAssetAsync(group, value, parent, o =>
-        {
-            go = o;
-            // if (go != null)
-            // {
-            //     go.transform.localPosition = Vector3.zero;
-            //     go.transform.localRotation = Quaternion.identity;
-            // }
-
-            loaded = true;
-        });
-
-        bool InCondition() => loaded;
-
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        callback?.Invoke(go);
-    }
-
-    public void LoadAssetAsync<T>(AddressableGroupType group, AssetReference value, Action<T> callback)
-        where T : UnityEngine.Object
-    {
-        if (!value.IsValidReference())
-        {
-            Debug.LogError("Not a valid reference");
-            callback?.Invoke(null);
-            return;
-        }
-
-        bool loaded = false;
-        if (value.IsValid())
-        {
-            bool mustRegister = false;
-            var op = value.OperationHandle;
-            if (!op.IsValid() || op.Result == null)
+#if UNITY_EDITOR && EDITOR_QUICK_INSTANTIATE
+            if (ar.editorAsset is GameObject go)
             {
-                var newOp = Addressables.LoadAssetAsync<T>(value.RuntimeKey);
-                mustRegister = true;
-                NumLoadingAssets++;
-                void OnNewOpOnCompleted(AsyncOperationHandle<T> handle)
-                {
-                    NumLoadingAssets--;
-                    HandleOperation(handle);
-                }
-
-                if (newOp.Status == AsyncOperationStatus.Succeeded) OnNewOpOnCompleted(newOp);
-                else newOp.Completed += OnNewOpOnCompleted;
+                HandleGameObjectResult(group, ar, Instantiate(go, parent), callback);
             }
             else
             {
-                HandleOperation(op);
+                var op = ar.InstantiateAsync(parent);
+                if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
+                else op.Completed += OnCompleted;
+            }
+#else
+        var op = ar.InstantiateAsync(parent);
+        if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
+        else op.Completed += OnCompleted;
+#endif
+        }
+    
+        private void HandleGameObjectResult(TrickAssetGroupId group, AssetReference ar, GameObject handleResult, Action<GameObject> callback)
+        {
+            NumInstantiatingAssets--;
+            if (handleResult != null)
+            {
+                _assets[group].Add(handleResult);
+                
+                if (handleResult.TryGetComponent<ITrickPool>(out var poolObject))
+                {
+                    poolObject.AssetGroupType = group;
+                        
+                    if (!(ar is AssetReferenceGameObject arGo))
+                    {
+                        if (!CachedArGoes.TryGetValue(ar.AssetGUID, out arGo))
+                            CachedArGoes.AddOrReplace(ar.AssetGUID, arGo = new AssetReferenceGameObject(ar.AssetGUID));
+                    }
+                        
+                    poolObject.AssetReferenceGameObject = arGo;
+
+                    poolObject.OnInstantiated();
+                }
+
+                if (@group == TrickAssetGroupId.ManualReleaseAssetGroupId)
+                {
+                    if (!handleResult.TryGetComponent<AddressableAssetHelper>(out var helper))
+                        helper = handleResult.AddComponent<AddressableAssetHelper>();
+                    helper.IsUsingManager = true;
+                    helper.AddData(handleResult);
+                }
             }
             
-            void HandleOperation(AsyncOperationHandle asyncOperationHandle)
+            callback?.Invoke(handleResult);
+        }
+
+        public IEnumerator InstantiateAssetCoroutine(TrickAssetGroupId group, AssetReferenceGameObject value, Action<GameObject> callback)
+        {
+            yield return Routine.Inline(InstantiateAssetCoroutine(group, value, null, callback));
+        }
+    
+        public IEnumerator InstantiateAssetCoroutine(TrickAssetGroupId group, AssetReferenceGameObject value, Transform parent, Action<GameObject> callback)
+        {
+            if (!value.IsValidReference())
             {
-                if (asyncOperationHandle.Status == AsyncOperationStatus.Failed)
+                Debug.LogError($"Not a valid reference - {value?.AssetGUID}");
+                callback?.Invoke(null);
+                yield break;
+            }
+
+            bool loaded = false;
+            GameObject go = null;
+            InstantiateAssetAsync(group, value, parent, o =>
+            {
+                go = o;
+                loaded = true;
+            });
+
+            bool InCondition() => loaded;
+
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            callback?.Invoke(go);
+        }
+
+        public void LoadAssetAsync<T>(TrickAssetGroupId group, AssetReference value, Action<T> callback)
+            where T : Object
+        {
+            if (!value.IsValidReference())
+            {
+                Debug.LogError("Not a valid reference");
+                callback?.Invoke(null);
+                return;
+            }
+
+            bool loaded = false;
+            if (value.IsValid())
+            {
+                bool mustRegister = false;
+                var op = value.OperationHandle;
+                if (!op.IsValid() || op.Result == null)
                 {
-                    if (asyncOperationHandle.OperationException != null)
+                    var newOp = Addressables.LoadAssetAsync<T>(value.RuntimeKey);
+                    mustRegister = true;
+                    NumLoadingAssets++;
+                    void OnNewOpOnCompleted(AsyncOperationHandle<T> handle)
                     {
-                        Debug.LogError(asyncOperationHandle.OperationException.ToString());
+                        NumLoadingAssets--;
+                        HandleOperation(handle);
                     }
+
+                    if (newOp.Status == AsyncOperationStatus.Succeeded) OnNewOpOnCompleted(newOp);
+                    else newOp.Completed += OnNewOpOnCompleted;
                 }
-                
-                if (asyncOperationHandle.IsValid())
+                else
                 {
+                    HandleOperation(op);
+                }
+            
+                void HandleOperation(AsyncOperationHandle asyncOperationHandle)
+                {
+                    if (asyncOperationHandle.Status == AsyncOperationStatus.Failed)
+                    {
+                        if (asyncOperationHandle.OperationException != null)
+                        {
+                            Debug.LogError(asyncOperationHandle.OperationException.ToString());
+                        }
+                    }
+
+                    if (!asyncOperationHandle.IsValid()) return;
                     if (asyncOperationHandle.Result != null && typeof(T) == typeof(GameObject) &&
                         asyncOperationHandle.Result is GameObject go)
                     {
@@ -385,7 +348,7 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
                         {
                             poolObject.AssetGroupType = group;
                             
-                            if (!(value is AssetReferenceGameObject arGo))
+                            if (value is not AssetReferenceGameObject arGo)
                             {
                                 if (!CachedArGoes.TryGetValue(value.AssetGUID, out arGo))
                                     CachedArGoes.AddOrReplace(value.AssetGUID, arGo = new AssetReferenceGameObject(value.AssetGUID));
@@ -399,416 +362,271 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
                     callback?.Invoke(asyncOperationHandle.Result as T);
                 }
             }
-        }
-        else
-        {
-            NumLoadingAssets++;
-
-            void OnCompleted(AsyncOperationHandle<T> handle)
-            {
-                if (handle.Status == AsyncOperationStatus.Failed)
-                {
-                    if (handle.OperationException != null)
-                    {
-                        Debug.LogError(handle.OperationException.ToString());
-                    }
-                }
-                HandleLoadResult(@group, value,
-                    handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : default, ref loaded, callback);
-            }
-
-#if UNITY_EDITOR && EDITOR_QUICK_LOAD
-            if (value.editorAsset is T tObject)
-            {
-                HandleLoadResult(@group, value, tObject, ref loaded, callback);
-            }
             else
             {
-                var op = value.LoadAssetAsync<T>();
-                if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
-                else op.Completed += OnCompleted;
-            }
+                NumLoadingAssets++;
+
+                void OnCompleted(AsyncOperationHandle<T> handle)
+                {
+                    if (handle.Status == AsyncOperationStatus.Failed)
+                    {
+                        if (handle.OperationException != null)
+                        {
+                            Debug.LogError(handle.OperationException.ToString());
+                        }
+                    }
+                    HandleLoadResult(@group, value,
+                        handle.Status == AsyncOperationStatus.Succeeded ? handle.Result : default, ref loaded, callback);
+                }
+
+#if UNITY_EDITOR && EDITOR_QUICK_LOAD
+                if (value.editorAsset is T tObject)
+                {
+                    HandleLoadResult(@group, value, tObject, ref loaded, callback);
+                }
+                else
+                {
+                    var op = value.LoadAssetAsync<T>();
+                    if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
+                    else op.Completed += OnCompleted;
+                }
 #else
             var op = value.LoadAssetAsync<T>();
             if (op.Status == AsyncOperationStatus.Succeeded) OnCompleted(op);
             else op.Completed += OnCompleted;
 #endif
 
+            }
         }
-    }
 
-    public IEnumerator LoadAssetCoroutine<T>(AddressableGroupType group, AssetReference value, Action<T> callback) where T : UnityEngine.Object
-    {
-        if (!value.IsValidReference())
+        public IEnumerator LoadAssetCoroutine<T>(TrickAssetGroupId group, AssetReference value, Action<T> callback) where T : Object
         {
-            Debug.LogError("Not a valid reference");
-            callback?.Invoke(null);
-            yield break;
-        }
+            if (!value.IsValidReference())
+            {
+                Debug.LogError("Not a valid reference");
+                callback?.Invoke(null);
+                yield break;
+            }
         
-        T asset = default;
+            T asset = default;
 
-        bool loaded = false;
-        LoadAssetAsync<T>(group, value, o =>
-        {
-            asset = o;
-            loaded = true;
-        });
-        bool InCondition() => loaded;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        callback?.Invoke(asset);
-    }
+            bool loaded = false;
+            LoadAssetAsync<T>(group, value, o =>
+            {
+                asset = o;
+                loaded = true;
+            });
+            bool InCondition() => loaded;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            callback?.Invoke(asset);
+        }
     
-    private void HandleLoadResult<T>(AddressableGroupType @group, AssetReference value, T handleResult, ref bool loaded, Action<T> callback) where T : Object
-    {
-        NumLoadingAssets--;
-
-        if (handleResult != null && typeof(T) == typeof(GameObject) && handleResult is GameObject go)
+        private void HandleLoadResult<T>(TrickAssetGroupId group, AssetReference value, T handleResult, ref bool loaded, Action<T> callback) where T : Object
         {
-            var poolObject = go.GetComponent<ITrickPool>();
-            if (poolObject != null)
-            {
-                poolObject.AssetGroupType = @group;
+            NumLoadingAssets--;
 
-                if (!(value is AssetReferenceGameObject arGo))
+            if (handleResult != null && typeof(T) == typeof(GameObject) && handleResult is GameObject go)
+            {
+                var poolObject = go.GetComponent<ITrickPool>();
+                if (poolObject != null)
                 {
-                    if (!CachedArGoes.TryGetValue(value.AssetGUID, out arGo)) CachedArGoes.AddOrReplace(value.AssetGUID, arGo = new AssetReferenceGameObject(value.AssetGUID));
-                }
+                    poolObject.AssetGroupType = @group;
 
-                poolObject.AssetReferenceGameObject = arGo;
-            }
-        }
-
-        if (handleResult != null) _assetObjects[@group].Add(handleResult);
-        
-        callback?.Invoke(handleResult);
-        loaded = true;
-    }
-
-    public IEnumerator InstantiateAssetCoroutine(AddressableGroupType group, AssetReferenceGameObject value, Vector3 position,
-        Quaternion quaternion,
-        Transform parent, Action<GameObject> callback)
-    {
-        if (!value.IsValidReference())
-        {
-            Debug.LogError("Not a valid reference");
-            callback?.Invoke(null);
-            yield break;
-        }
-        
-        bool loaded = false;
-        GameObject go = null;
-        InstantiateAssetAsync(group, value, position, quaternion, parent, o =>
-        {
-            go = o;
-            loaded = true;
-        });
-
-        bool InCondition() => loaded;
-
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        callback?.Invoke(go);
-    }
-
-    /*private IEnumerator ReadFromStreamingAssets(string filePath, Action<string> callback)
-    {
-        string fullPath = $"{Application.streamingAssetsPath}/{filePath}";
-        Debug.Log("ReadFromStreamingAssets: " + fullPath);
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            using (UnityWebRequest uwr = UnityWebRequest.Get(fullPath))
-            {
-                yield return uwr.SendWebRequest();
-                if (uwr.isNetworkError || uwr.isHttpError)
-                {
-                    Debug.LogError("www error:" + uwr.error + " " + filePath);
-                }
-                else
-                {
-                    callback?.Invoke(uwr.downloadHandler.text);
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("Reading file: " + filePath);
-            string content = null;
-            if (BetterStreamingAssets.FileExists(filePath))
-            {
-                Debug.Log("BSA Read");
-                content = BetterStreamingAssets.ReadAllText(filePath);
-            }
-
-            if (content == null)
-            {
-                Debug.Log("FileIO Read (full)");
-                if (File.Exists(fullPath))
-                {
-                    content = File.ReadAllText(fullPath);
-                }
-            }
-
-            if (content == null)
-            {
-                Debug.Log("FileIO Read (filePath)");
-                if (File.Exists(filePath))
-                {
-                    content = File.ReadAllText(filePath);
-                }
-            }
-            
-            callback?.Invoke(content);
-        }
-    }*/
-    
-    public IEnumerator InitializeAddressables(AsyncResultData result)
-    {
-        result.Result = null;
-        
-        // var path = Addressables.ResolveInternalId(PlayerPrefs.GetString(Addressables.kAddressablesRuntimeDataPath,
-        //     $"{Addressables.RuntimePath}/settings.json"));
-        //
-        // var addressablesSettingsData = TrickCore.JsonExtensions.DeserializeJson<AddressablesSettingsData>(File.ReadAllText(path));
-        // var catalogLocation = addressablesSettingsData?.CatalogLocations.FirstOrDefault(data => data.Keys.Any(s => s == "AddressablesMainContentCatalogRemoteHash"));
-        // if (catalogLocation != null)
-        // {
-        //     string hashLocation = catalogLocation.InternalId;
-        //     string pathWithoutRoot = hashLocation.Replace(RESTHelper.Settings.BaseUrl, string.Empty);
-        //     yield return new RESTGet<string>(pathWithoutRoot, null, s =>
-        //     {
-        //         Debug.Log($"Result: {s}");
-        //         if (string.IsNullOrEmpty(s) || s.Length != 32)
-        //         {
-        //             result.Result = false;
-        //         }
-        //     }, new RequestFailHandler(() =>
-        //         {
-        //             result.Result = false;
-        //         }, true));
-        //
-        //     if (result.Result != null && !result.Result.GetValueOrDefault())
-        //         yield break;
-        //     
-        //     void Completed(AsyncOperationHandle<IResourceLocator> handle)
-        //     {
-        //         Debug.Log("Addressables Initialize Status " + handle.Status);
-        //         result.Result = handle.Status == AsyncOperationStatus.Succeeded;
-        //     }
-        //
-        //     var initOp = Addressables.InitializeAsync();
-        //     initOp.Completed += Completed;
-        // }
-        // else
-        // {
-        //     result.Result = false;
-        // }
-
-        // // Try the game version
-        // AsyncResultData catalog = new AsyncResultData();
-        // yield return new RESTGet<string>($"addressables/{GameManager.Instance.GetPlatform()}/catalog_{GameManager.ToAndroidVersion(Application.version).ToString()}.hash", null, s =>
-        // {
-        //     Debug.Log($"Result: {s} (version={GameManager.ToAndroidVersion(Application.version).ToString()})");
-        //     if (string.IsNullOrEmpty(s) || s.Length != 32)
-        //     {
-        //         catalog.Result = false;
-        //     }
-        //     else
-        //     {
-        //         catalog.Result = true;
-        //         catalog.Data = s;
-        //     }
-        // }, new RequestFailHandler(() =>
-        //     {
-        //         result.Result = false;
-        //     }, true));
-        //
-        // // Fallback to version 1
-        // if (catalog.Result != null && !catalog.Result.GetValueOrDefault())
-        // {
-        //     catalog = new AsyncResultData();
-        //     yield return new RESTGet<string>($"addressables/{GameManager.Instance.GetPlatform()}/catalog_1.hash", null,
-        //         s =>
-        //         {
-        //             Debug.Log($"Result: {s} (version=1)");
-        //             if (string.IsNullOrEmpty(s) || s.Length != 32)
-        //             {
-        //                 catalog.Result = false;
-        //             }
-        //             else
-        //             {
-        //                 catalog.Result = true;
-        //                 catalog.Data = s;
-        //             }
-        //         }, new RequestFailHandler(() => { catalog.Result = false; }, true));
-        //
-        //     if (catalog.Result != null && !catalog.Result.GetValueOrDefault())
-        //     {
-        //         // Failed
-        //         result.Result = false;
-        //         yield break;
-        //     }
-        //     else
-        //     {
-        //         yield return UpdateSettings("1", result.Data is string hash ? hash : null);
-        //     }
-        // }
-        // else
-        // {
-        //     yield return UpdateSettings(GameManager.ToAndroidVersion(Application.version).ToString(), result.Data is string hash ? hash : null);
-        // }
-
-
-        bool? addressableInitializeResult = null;
-        void Completed(AsyncOperationHandle<IResourceLocator> handle)
-        {
-            Debug.Log("Addressables Initialize Status " + handle.Status);
-            result.Result = handle.Status == AsyncOperationStatus.Succeeded;
-            addressableInitializeResult = handle.Status == AsyncOperationStatus.Succeeded;
-        }
-
-        Debug.Log("Trying to initialize Addressables");
-        try
-        {
-            Addressables.InitializeAsync().Completed += Completed;
-        }
-        catch (Exception)
-        {
-            // Redo it one more time
-            Debug.Log("[Failed] Retrying to initialize Addressables");
-            Addressables.InitializeAsync().Completed += Completed;
-        }
-        Debug.Log("Waiting for addressables initialize to complete");
-
-        bool InCondition() => addressableInitializeResult != null && result.Result != null;
-
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        Debug.Log("Addressables Initialize Result: " + result.Result.GetValueOrDefault());
-    }
-
-    public IEnumerator GetDownloadSize(AsyncResultData result, object key)
-    {
-        result.Result = null;
-        
-        void Completed(AsyncOperationHandle<long> handle)
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                result.Data = new KeyValuePair<object, long>(key, handle.Result);
-                result.Result = true;
-            }
-            else
-            {
-                result.Data = null;
-                result.Result = false;
-            }
-            Addressables.Release(handle);
-        }
-
-        AsyncOperationHandle<long> op;
-        if (key is string s)
-        {
-            op = Addressables.GetDownloadSizeAsync(s);
-        }
-        else if (key is IEnumerable keys)
-        {
-            op = Addressables.GetDownloadSizeAsync(keys);
-        }
-        else
-        {
-            op = Addressables.GetDownloadSizeAsync(key);
-        }
-        op.Completed += Completed;
-
-        bool InCondition() => result.Result != null;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-    }
-
-    public IEnumerator DownloadDependenciesAsync(AsyncResultData result, object key, Action<object> downloadStart, Action<object, DownloadStatus> downloadUpdate, Action<object> downloadComplete)
-    {
-        result.Result = null;
-        
-        void Completed(AsyncOperationHandle handle)
-        {
-            result.Result = handle.Status == AsyncOperationStatus.Succeeded;
-            Addressables.Release(handle);
-        }
-
-        downloadStart?.Invoke(key);
-        AsyncOperationHandle downloadOp;
-
-        if (key is IList<IResourceLocation> locations)
-            downloadOp = Addressables.DownloadDependenciesAsync(locations, true);
-        else
-            downloadOp = Addressables.DownloadDependenciesAsync(key, true);
-
-        var routine = Routine.Start(PercentageWatcher(key, downloadOp, downloadUpdate));
-        downloadOp.Completed += Completed;
-        bool InCondition() => result.Result != null;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        downloadComplete?.Invoke(key);
-        routine.Stop();
-    }
-
-    private IEnumerator PercentageWatcher(object key, AsyncOperationHandle op, Action<object, DownloadStatus> downloadUpdate)
-    {
-        while (!op.IsDone)
-        {
-            downloadUpdate?.Invoke(key, op.GetDownloadStatus());
-            yield return null;
-        }
-    }
-
-    public IEnumerator CheckUpdateCatalog(AsyncResultData result)
-    {
-        void Completed(AsyncOperationHandle<List<string>> operationHandle)
-        {
-            if (operationHandle.Status == AsyncOperationStatus.Succeeded)
-            {
-                Debug.Log($"Catalogs to update: {string.Join(",", operationHandle.Result)}");
-
-                List<object> officialKeys = Addressables.ResourceLocators.SelectMany(locator => locator.Keys)
-                    .ToList();
-
-                if (operationHandle.Result.Count > 0)
-                {
-                    void UpdateCatalogsCompleted(AsyncOperationHandle<List<IResourceLocator>> asyncOperationHandle)
+                    if (value is not AssetReferenceGameObject arGo)
                     {
-                        if (asyncOperationHandle.Status == AsyncOperationStatus.Succeeded)
-                        {
-                            Debug.Log("Updated catalogs (" + asyncOperationHandle.Result.Count + ")");
-                            result.Result = true;
-                            List<object> keys = asyncOperationHandle.Result.SelectMany(locator => locator.Keys).ToList();
-                            result.Data = keys;
-                            
-                            Debug.Log($"Downloaded Locators: " + keys.Count);
-                            Debug.Log($"Total Resource locators count: " + officialKeys.Count);
-                        }
-                        else
-                        {
-                            result.Result = false;
-                        }
+                        if (!CachedArGoes.TryGetValue(value.AssetGUID, out arGo)) CachedArGoes.AddOrReplace(value.AssetGUID, arGo = new AssetReferenceGameObject(value.AssetGUID));
                     }
 
-                    Addressables.UpdateCatalogs(operationHandle.Result).Completed += UpdateCatalogsCompleted;
+                    poolObject.AssetReferenceGameObject = arGo;
+                }
+            }
+
+            if (handleResult != null) _assetObjects[@group].Add(handleResult);
+        
+            callback?.Invoke(handleResult);
+            loaded = true;
+        }
+
+        public IEnumerator InstantiateAssetCoroutine(TrickAssetGroupId group, AssetReferenceGameObject value, Vector3 position,
+            Quaternion quaternion,
+            Transform parent, Action<GameObject> callback)
+        {
+            if (!value.IsValidReference())
+            {
+                Debug.LogError("Not a valid reference");
+                callback?.Invoke(null);
+                yield break;
+            }
+        
+            bool loaded = false;
+            GameObject go = null;
+            InstantiateAssetAsync(group, value, position, quaternion, parent, o =>
+            {
+                go = o;
+                loaded = true;
+            });
+
+            bool InCondition() => loaded;
+
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            callback?.Invoke(go);
+        }
+    
+        public IEnumerator InitializeAddressables(AsyncResultData result)
+        {
+            result.Result = null;
+        
+            bool? addressableInitializeResult = null;
+            void Completed(AsyncOperationHandle<IResourceLocator> handle)
+            {
+                Debug.Log("Addressables Initialize Status " + handle.Status);
+                result.Result = handle.Status == AsyncOperationStatus.Succeeded;
+                addressableInitializeResult = handle.Status == AsyncOperationStatus.Succeeded;
+            }
+
+            Debug.Log("Trying to initialize Addressables");
+            try
+            {
+                Addressables.InitializeAsync().Completed += Completed;
+            }
+            catch (Exception)
+            {
+                // Redo it one more time
+                Debug.Log("[Failed] Retrying to initialize Addressables");
+                Addressables.InitializeAsync().Completed += Completed;
+            }
+            Debug.Log("Waiting for addressables initialize to complete");
+
+            bool InCondition() => addressableInitializeResult != null && result.Result != null;
+
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            Debug.Log("Addressables Initialize Result: " + result.Result.GetValueOrDefault());
+        }
+
+        public IEnumerator GetDownloadSize(AsyncResultData result, object key)
+        {
+            result.Result = null;
+        
+            void Completed(AsyncOperationHandle<long> handle)
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    result.Data = new KeyValuePair<object, long>(key, handle.Result);
+                    result.Result = true;
                 }
                 else
                 {
-                    result.Result = true;   
-                    result.Data = officialKeys;
-                    
-                    Debug.Log($"[Catalog-UpToDate] Total Resource locators count: " + officialKeys.Count);
+                    result.Data = null;
+                    result.Result = false;
                 }
+                Addressables.Release(handle);
+            }
+
+            AsyncOperationHandle<long> op;
+            if (key is string s)
+            {
+                op = Addressables.GetDownloadSizeAsync(s);
+            }
+            else if (key is IEnumerable keys)
+            {
+                op = Addressables.GetDownloadSizeAsync(keys);
             }
             else
             {
-                result.Result = false;
+                op = Addressables.GetDownloadSizeAsync(key);
+            }
+            op.Completed += Completed;
+
+            bool InCondition() => result.Result != null;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+        }
+
+        public IEnumerator DownloadDependenciesAsync(AsyncResultData result, object key, Action<object> downloadStart, Action<object, DownloadStatus> downloadUpdate, Action<object> downloadComplete)
+        {
+            result.Result = null;
+        
+            void Completed(AsyncOperationHandle handle)
+            {
+                result.Result = handle.Status == AsyncOperationStatus.Succeeded;
+                Addressables.Release(handle);
+            }
+
+            downloadStart?.Invoke(key);
+            AsyncOperationHandle downloadOp;
+
+            if (key is IList<IResourceLocation> locations)
+                downloadOp = Addressables.DownloadDependenciesAsync(locations, true);
+            else
+                downloadOp = Addressables.DownloadDependenciesAsync(key, true);
+
+            var routine = Routine.Start(PercentageWatcher(key, downloadOp, downloadUpdate));
+            downloadOp.Completed += Completed;
+            bool InCondition() => result.Result != null;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            downloadComplete?.Invoke(key);
+            routine.Stop();
+        }
+
+        private IEnumerator PercentageWatcher(object key, AsyncOperationHandle op, Action<object, DownloadStatus> downloadUpdate)
+        {
+            while (!op.IsDone)
+            {
+                downloadUpdate?.Invoke(key, op.GetDownloadStatus());
+                yield return null;
             }
         }
 
-        Addressables.CheckForCatalogUpdates().Completed += Completed;
-        bool InCondition() => result.Result != null;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-    }
+        public IEnumerator CheckUpdateCatalog(AsyncResultData result)
+        {
+            void Completed(AsyncOperationHandle<List<string>> operationHandle)
+            {
+                if (operationHandle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    Debug.Log($"Catalogs to update: {string.Join(",", operationHandle.Result)}");
+
+                    List<object> officialKeys = Addressables.ResourceLocators.SelectMany(locator => locator.Keys)
+                        .ToList();
+
+                    if (operationHandle.Result.Count > 0)
+                    {
+                        void UpdateCatalogsCompleted(AsyncOperationHandle<List<IResourceLocator>> asyncOperationHandle)
+                        {
+                            if (asyncOperationHandle.Status == AsyncOperationStatus.Succeeded)
+                            {
+                                Debug.Log("Updated catalogs (" + asyncOperationHandle.Result.Count + ")");
+                                result.Result = true;
+                                List<object> keys = asyncOperationHandle.Result.SelectMany(locator => locator.Keys).ToList();
+                                result.Data = keys;
+                            
+                                Debug.Log($"Downloaded Locators: " + keys.Count);
+                                Debug.Log($"Total Resource locators count: " + officialKeys.Count);
+                            }
+                            else
+                            {
+                                result.Result = false;
+                            }
+                        }
+
+                        Addressables.UpdateCatalogs(operationHandle.Result).Completed += UpdateCatalogsCompleted;
+                    }
+                    else
+                    {
+                        result.Result = true;   
+                        result.Data = officialKeys;
+                    
+                        Debug.Log($"[Catalog-UpToDate] Total Resource locators count: " + officialKeys.Count);
+                    }
+                }
+                else
+                {
+                    result.Result = false;
+                }
+            }
+
+            Addressables.CheckForCatalogUpdates().Completed += Completed;
+            bool InCondition() => result.Result != null;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+        }
 
 #if UNITY_ADDRESSABLES && ENABLE_ADDRESSABLESMANAGER
     public IEnumerator LoadAddressables(bool withRemote, AsyncResultData result, Action startDownloadCallback = null)
@@ -1179,168 +997,150 @@ public class AddressablesManager : MonoSingleton<AddressablesManager>
     }
 #endif
 
-    public IEnumerator GetAllResourceLocations(AsyncResultData result, IEnumerable<object> keys)
-    {
-        result.Result = null;
-        
-        var op = Addressables.LoadResourceLocationsAsync(keys, Addressables.MergeMode.Union, typeof(Object));
-        op.Completed +=
-            handle =>
-            {
-                result.Data = handle.Result;
-                result.Result = true;
-                Addressables.Release(handle);
-            };
-        
-        bool InCondition() => result.Result != null;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-    }
-
-    public void OnInitialized(Action<bool> action)
-    {
-        if (LocalInitialized) action?.Invoke(false);
-        else _localInvokeQueue.Add(action);
-        
-        if (RemoteInitialized) action?.Invoke(false);
-        else _remoteInvokeQueue.Add(action);
-    }
-
-    public class AssetToDownloadData
-    {
-        public IResourceLocation RootLocation;
-        
-        // Dependencies
-        public List<IResourceLocation> Deps = new List<IResourceLocation>();
-    }
-
-    public IEnumerator LoadSceneAssetCoroutine(AssetReference assetReference, LoadSceneMode loadSceneMode, Action<SceneInstance?> onSceneLoad)
-    {
-        if (!assetReference.IsValidReference())
+        public IEnumerator GetAllResourceLocations(AsyncResultData result, IEnumerable<object> keys)
         {
-            onSceneLoad?.Invoke(default);
-            yield break;
+            result.Result = null;
+        
+            var op = Addressables.LoadResourceLocationsAsync(keys, Addressables.MergeMode.Union, typeof(Object));
+            op.Completed +=
+                handle =>
+                {
+                    result.Data = handle.Result;
+                    result.Result = true;
+                    Addressables.Release(handle);
+                };
+        
+            bool InCondition() => result.Result != null;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
         }
-        
-        bool loaded = false;
-        SceneInstance? ret = default;
-        LoadSceneAssetAsync(assetReference, loadSceneMode, o =>
-        {
-            ret = o;
-            loaded = true;
-        });
 
-        bool InCondition() => loaded;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        
-        if (ret != null)
+        public void OnInitialized(Action<bool> action)
         {
-            bool InCondition2() => ret.Value.Scene.isLoaded;
-            if (!InCondition2()) yield return new WaitUntil(InCondition2);
+            if (LocalInitialized) action?.Invoke(false);
+            else _localInvokeQueue.Add(action);
+        
+            if (RemoteInitialized) action?.Invoke(false);
+            else _remoteInvokeQueue.Add(action);
         }
-        onSceneLoad?.Invoke(ret);
-    }
 
-    public void LoadSceneAssetAsync(AssetReference assetReference, LoadSceneMode loadSceneMode, Action<SceneInstance?> onSceneLoad)
-    {
-        var op = Addressables.LoadSceneAsync(assetReference, loadSceneMode);
-        op.Completed +=
-            handle =>
+        public IEnumerator LoadSceneAssetCoroutine(AssetReference assetReference, LoadSceneMode loadSceneMode, Action<SceneInstance?> onSceneLoad)
+        {
+            if (!assetReference.IsValidReference())
             {
-                onSceneLoad?.Invoke(handle.Result);
+                onSceneLoad?.Invoke(default);
+                yield break;
+            }
+        
+            bool loaded = false;
+            SceneInstance? ret = default;
+            LoadSceneAssetAsync(assetReference, loadSceneMode, o =>
+            {
+                ret = o;
+                loaded = true;
+            });
+
+            bool InCondition() => loaded;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+        
+            if (ret != null)
+            {
+                bool InCondition2() => ret.Value.Scene.isLoaded;
+                if (!InCondition2()) yield return new WaitUntil(InCondition2);
+            }
+            onSceneLoad?.Invoke(ret);
+        }
+
+        public void LoadSceneAssetAsync(AssetReference assetReference, LoadSceneMode loadSceneMode, Action<SceneInstance?> onSceneLoad)
+        {
+            var op = Addressables.LoadSceneAsync(assetReference, loadSceneMode);
+            op.Completed +=
+                handle =>
+                {
+                    onSceneLoad?.Invoke(handle.Result);
+                };
+        }
+
+        public IEnumerator UnloadSceneAssetCoroutine(SceneInstance instance, Action<bool> unloadCallback)
+        {
+            bool loaded = false;
+            bool ret = default;
+            UnloadSceneAssetAsync(instance, b =>
+            {
+                ret = b;
+                loaded = true;
+            });
+            bool InCondition() => loaded;
+            if (!InCondition()) yield return new WaitUntil(InCondition);
+            unloadCallback?.Invoke(ret);
+        }
+
+        public void UnloadSceneAssetAsync(SceneInstance instance, Action<bool> unloadCallback)
+        {
+            Addressables.UnloadSceneAsync(instance).Completed += handle =>
+            {
+                unloadCallback?.Invoke(handle.Status == AsyncOperationStatus.Succeeded);
             };
-    }
+        }
 
-    public IEnumerator UnloadSceneAssetCoroutine(SceneInstance instance, Action<bool> unloadCallback)
-    {
-        bool loaded = false;
-        bool ret = default;
-        UnloadSceneAssetAsync(instance, b =>
-        {
-            ret = b;
-            loaded = true;
-        });
-        bool InCondition() => loaded;
-        if (!InCondition()) yield return new WaitUntil(InCondition);
-        unloadCallback?.Invoke(ret);
-    }
-
-    public void UnloadSceneAssetAsync(SceneInstance instance, Action<bool> unloadCallback)
-    {
-        Addressables.UnloadSceneAsync(instance).Completed += handle =>
-        {
-            unloadCallback?.Invoke(handle.Status == AsyncOperationStatus.Succeeded);
-        };
-    }
-
-    public static void RuntimeReleaseAsset(AddressableGroupType @group, Object obj)
-    {
-#if UNITY_EDITOR && EDITOR_QUICK_LOAD && false
-        if (Application.isPlaying)
+        public static void RuntimeReleaseAsset(TrickAssetGroupId group, Object obj)
         {
             Instance.ReleaseAsset(group, obj);
         }
-        else
-        {
-            DestroyImmediate(obj, false);
-        }
-#else
-        Instance.ReleaseAsset(group, obj);
-#endif
-    }
 
-    public static IEnumerator RuntimeInstantiateAssetCoroutine(AddressableGroupType group,
-        AssetReferenceGameObject value, Action<GameObject> callback)
-    {
-        yield return RuntimeInstantiateAssetCoroutine(group, value, null, callback);
-    }
-    public static IEnumerator RuntimeInstantiateAssetCoroutine(AddressableGroupType group, AssetReferenceGameObject value, Transform parent, Action<GameObject> callback)
-    {
-#if UNITY_EDITOR
-        if (Application.isPlaying)
+        public static IEnumerator RuntimeInstantiateAssetCoroutine(TrickAssetGroupId group,
+            AssetReferenceGameObject value, Action<GameObject> callback)
         {
-            yield return Routine.Inline(Instance.InstantiateAssetCoroutine(group, value, parent, callback));
+            yield return RuntimeInstantiateAssetCoroutine(group, value, null, callback);
         }
-        else
+        public static IEnumerator RuntimeInstantiateAssetCoroutine(TrickAssetGroupId group, AssetReferenceGameObject value, Transform parent, Action<GameObject> callback)
         {
-            if (value.IsValidReference())
+#if UNITY_EDITOR
+            if (Application.isPlaying)
             {
-                var editorAsset = value.editorAsset;
-                if (editorAsset != null)
-                    callback?.Invoke(Instantiate(editorAsset));
-                else
-                    callback?.Invoke(default);
+                yield return Routine.Inline(Instance.InstantiateAssetCoroutine(group, value, parent, callback));
             }
             else
             {
-                callback?.Invoke(default);
+                if (value.IsValidReference())
+                {
+                    var editorAsset = value.editorAsset;
+                    if (editorAsset != null)
+                        callback?.Invoke(Instantiate(editorAsset));
+                    else
+                        callback?.Invoke(default);
+                }
+                else
+                {
+                    callback?.Invoke(default);
+                }
             }
-        }
 #else
         yield return Routine.Inline(Instance.InstantiateAssetCoroutine(group, value, parent, callback));
 #endif
-    }
-    public static IEnumerator RuntimeLoadAssetCoroutine<T>(AddressableGroupType group, AssetReference value,
-        Action<T> callback) where T : UnityEngine.Object
-    {
-#if UNITY_EDITOR
-        if (Application.isPlaying)
-        {
-            yield return Routine.Inline(Instance.LoadAssetCoroutine(group, value, callback));
         }
-        else
+        public static IEnumerator RuntimeLoadAssetCoroutine<T>(TrickAssetGroupId group, AssetReference value,
+            Action<T> callback) where T : Object
         {
-            if (value.IsValidReference())
+#if UNITY_EDITOR
+            if (Application.isPlaying)
             {
-                callback?.Invoke(value.editorAsset as T);
+                yield return Routine.Inline(Instance.LoadAssetCoroutine(group, value, callback));
             }
             else
             {
-                callback?.Invoke(default);
+                if (value.IsValidReference())
+                {
+                    callback?.Invoke(value.editorAsset as T);
+                }
+                else
+                {
+                    callback?.Invoke(default);
+                }
             }
-        }
 #else
         yield return Routine.Inline(Instance.LoadAssetCoroutine(group, value, callback));
 #endif
+        }
     }
 }
 #endif

@@ -1,10 +1,13 @@
-﻿public class AsyncResultData
+﻿namespace TrickCore
 {
-    public bool? Result;
-    public object Data;
-
-    public bool GetValueOrDefault()
+    public class AsyncResultData
     {
-        return Result.GetValueOrDefault();
+        public bool? Result;
+        public object Data;
+
+        public bool GetValueOrDefault()
+        {
+            return Result.GetValueOrDefault();
+        }
     }
 }

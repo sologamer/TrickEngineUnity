@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace FirebaseWebGL.Scripts.FirebaseBridge
+namespace TrickCore
 {
     public static class FirebaseStorage
     {

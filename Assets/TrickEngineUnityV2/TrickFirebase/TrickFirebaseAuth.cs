@@ -1,21 +1,20 @@
 using System;
-using FirebaseWebGL.Scripts.Objects;
-using Newtonsoft.Json.Serialization;
-using TrickCore;
 using UnityEngine;
 
-public static class TrickFirebaseAuth
+namespace TrickCore
 {
-    public static void CreateUserWithEmailAndPassword(string email, string password, Action<(string content, FirebaseError error)> callbackOrFallback)
+    public static class TrickFirebaseAuth
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void CreateUserWithEmailAndPassword(string email, string password, Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(CreateUserWithEmailAndPassword), callbackOrFallback, false, email+password);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseAuth.CreateUserWithEmailAndPassword(email, password,
-                nameof(FirebaseManager), $"{nameof(CreateUserWithEmailAndPassword)}Callback", $"{nameof(CreateUserWithEmailAndPassword)}Fallback");
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(CreateUserWithEmailAndPassword), callbackOrFallback, false, email+password);
+                FirebaseAuth.CreateUserWithEmailAndPassword(email, password,
+                    nameof(FirebaseManager), $"{nameof(CreateUserWithEmailAndPassword)}Callback", $"{nameof(CreateUserWithEmailAndPassword)}Fallback");
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Auth.FirebaseAuth.DefaultInstance.CreateUserWithEmailAndPasswordAsync(email, password)
                 .ContinueWith(task =>
@@ -34,20 +33,20 @@ public static class TrickFirebaseAuth
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((newUser.SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
     
-    public static void SignInWithEmailAndPassword(string email, string password,
-        Action<(string content, FirebaseError error)> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void SignInWithEmailAndPassword(string email, string password,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(SignInWithEmailAndPassword), callbackOrFallback, false, email+password);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseAuth.SignInWithEmailAndPassword(email, password,
-                nameof(FirebaseManager), $"{nameof(SignInWithEmailAndPassword)}Callback", $"{nameof(SignInWithEmailAndPassword)}Fallback");            
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(SignInWithEmailAndPassword), callbackOrFallback, false, email+password);
+                FirebaseAuth.SignInWithEmailAndPassword(email, password,
+                    nameof(FirebaseManager), $"{nameof(SignInWithEmailAndPassword)}Callback", $"{nameof(SignInWithEmailAndPassword)}Fallback");            
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Auth.FirebaseAuth.DefaultInstance.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(
                 task =>
@@ -65,25 +64,25 @@ public static class TrickFirebaseAuth
                     TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((newUser.SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
                 });
 #endif
+            }
         }
-    }
 
-    public static void OnAuthStateChanged(Action<TrickFirebaseRecords.FirebaseUser> callbackOrFallback)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void OnAuthStateChanged(Action<FirebaseUser> callbackOrFallback)
         {
-            FirebaseManager.Instance.Register(nameof(OnAuthStateChanged), tuple =>
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                callbackOrFallback?.Invoke(tuple.error != null
-                    ? null
-                    : tuple.content != "{}"
-                        ? tuple.content.DeserializeJsonTryCatch<TrickFirebaseRecords.FirebaseUser>()
-                        : null);
-            }, true);
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseAuth.OnAuthStateChanged(nameof(FirebaseManager), $"{nameof(OnAuthStateChanged)}Callback", $"{nameof(OnAuthStateChanged)}Fallback");            
-        }
-        else
-        {
+                FirebaseManager.Instance.Register(nameof(OnAuthStateChanged), tuple =>
+                {
+                    callbackOrFallback?.Invoke(tuple.error != null
+                        ? null
+                        : tuple.content != "{}"
+                            ? tuple.content.DeserializeJsonTryCatch<FirebaseUser>()
+                            : null);
+                }, true);
+                FirebaseAuth.OnAuthStateChanged(nameof(FirebaseManager), $"{nameof(OnAuthStateChanged)}Callback", $"{nameof(OnAuthStateChanged)}Fallback");            
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
 
             void OnDefaultInstanceOnStateChanged(object sender, EventArgs args)
@@ -93,7 +92,7 @@ public static class TrickFirebaseAuth
                     if (auth.CurrentUser != null)
                     {
                         var userJson = auth.CurrentUser.SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver);
-                        TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke(userJson.DeserializeJsonTryCatch<TrickFirebaseRecords.FirebaseUser>()));
+                        TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke(userJson.DeserializeJsonTryCatch<FirebaseUser>()));
                     }
                     else
                     {
@@ -105,20 +104,21 @@ public static class TrickFirebaseAuth
             Firebase.Auth.FirebaseAuth.DefaultInstance.StateChanged -= OnDefaultInstanceOnStateChanged;
             Firebase.Auth.FirebaseAuth.DefaultInstance.StateChanged += OnDefaultInstanceOnStateChanged;
 #endif
+            }
         }
-    }
 
-    public static void SignOut()
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        public static void SignOut()
         {
-            FirebaseWebGL.Scripts.FirebaseBridge.FirebaseAuth.SignOut();            
-        }
-        else
-        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseAuth.SignOut();            
+            }
+            else
+            {
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
             Firebase.Auth.FirebaseAuth.DefaultInstance.SignOut();
 #endif
+            }
         }
     }
 }

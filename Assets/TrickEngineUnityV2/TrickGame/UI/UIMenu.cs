@@ -13,6 +13,16 @@ public abstract class UIMenu : MonoBehaviour
 
     
     /// <summary>
+    /// Tween settings for fading in when showing the menu
+    /// </summary>
+    public TweenSettings ShowFadeInSettings;
+    
+    /// <summary>
+    /// Tween settings for fading in when hiding the menu
+    /// </summary>
+    public TweenSettings HideFadeOutSettings;
+
+    /// <summary>
     /// The way the menu is transitioned in
     /// </summary>
     [Header("Transition")]
@@ -148,7 +158,7 @@ public abstract class UIMenu : MonoBehaviour
         _rt.sizeDelta = new Vector2(TargetScaleWidth / scaleFactor, _rt.sizeDelta.y);
     }
 
-    public virtual Routine FadeIn(float fadeTime = 0.25f, float? alpha = null, Action callback = null)
+    public virtual Routine FadeIn(TweenSettings fadeTime, float? alpha = null, Action callback = null)
     {
         if (alpha != null) SetAlpha(alpha.Value);
         
@@ -170,7 +180,10 @@ public abstract class UIMenu : MonoBehaviour
         return _fadeRoutine;
     }
 
-    public virtual Routine FadeOut(float fadeTime = 0.25f, float? alpha = null, Action callback = null)
+    public virtual Routine FadeIn(float fadeTime = 0.25f, float? alpha = null, Action callback = null) =>
+        FadeIn(new TweenSettings(fadeTime), alpha, callback);
+
+    public virtual Routine FadeOut(TweenSettings fadeTime, float? alpha = null, Action callback = null)
     {
         if (alpha != null) SetAlpha(alpha.Value);
         _numFadeOuts++;
@@ -178,16 +191,20 @@ public abstract class UIMenu : MonoBehaviour
         if (_numFadeOuts == 1)
         {
             return _fadeRoutine.Replace(_canvasGroup != null
-                ? _canvasGroup.FadeTo(0.0f, fadeTime).OnStart(() =>
+                ? _canvasGroup.FadeTo(0.0f, fadeTime).OnComplete(() =>
                 {
                     _canvasGroup.blocksRaycasts = false;
                     _canvasGroup.interactable = false;
-                }).OnComplete(callback).Play()
+                    callback?.Invoke();
+                }).Play()
                 : default);
         }
         
         return _fadeRoutine;
     }
+
+    public virtual Routine FadeOut(float fadeTime = 0.25f, float? alpha = null, Action callback = null) =>
+        FadeOut(new TweenSettings(fadeTime), alpha, callback);
 
     /// <summary>
     /// Sets the depth of the fadeout
@@ -234,39 +251,49 @@ public abstract class UIMenu : MonoBehaviour
     public virtual UIMenu Show()
     {
         if (_isOpen) return this;
-        _isOpen = true;
+        
         if (ScaleWithScreen) Rescale();
         gameObject.SetActive(true);
-        _manager.MenuShowEvent?.Invoke(this);
-        LastShowTime = Time.realtimeSinceStartup;
-        if (DisableMainCamera)
-        {
-            if (_mainCamera == null) _mainCamera = Camera.main;
-            if (_mainCamera != null) _mainCamera.enabled = false;
-        }
-
-        if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
-        {
-            _renderScaleBefore = asset.renderScale;
-            
-            if (asset.renderScale < 1)
-                asset.renderScale = 1.0f;
-        }
-
-#if UNITY_EDITOR
-        if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] SHOW {this}");
-#endif
-
+        
         if (TransitionPanelTransform != null)
         {
-            TransitionPanelTransform.gameObject.SetActive(true);
             TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
             TransitionPanelTransform.TransitionIn(TransitionTweenSettings, TransitionDirectionIn, () =>
             {
                 TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+                InternalShow();
             });
         }
+        else
+        {
+            InternalShow();
+        }
+        FadeIn(ShowFadeInSettings);
 
+        void InternalShow()
+        {
+            _isOpen = true;
+            _manager.MenuShowEvent?.Invoke(this);
+            LastShowTime = Time.realtimeSinceStartup;
+            if (DisableMainCamera)
+            {
+                if (_mainCamera == null) _mainCamera = Camera.main;
+                if (_mainCamera != null) _mainCamera.enabled = false;
+            }
+
+            if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
+            {
+                _renderScaleBefore = asset.renderScale;
+            
+                if (asset.renderScale < 1)
+                    asset.renderScale = 1.0f;
+            }
+
+#if UNITY_EDITOR
+            if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] SHOW {this}");
+#endif
+        }
+        
         return this;
     }
 
@@ -276,25 +303,25 @@ public abstract class UIMenu : MonoBehaviour
     public virtual void Hide()
     {
         if (!_isOpen) return;
-        _isOpen = false;
         
         if (TransitionPanelTransform != null)
         {
-            TransitionPanelTransform.gameObject.SetActive(true);
             TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
             TransitionPanelTransform.TransitionOut(TransitionTweenSettings, TransitionDirectionOut, () =>
             {
-                InternalHide();
+                FadeOut(HideFadeOutSettings, null, InternalHide);
                 TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
             });
         }
         else
         {
-            InternalHide();
+            FadeOut(HideFadeOutSettings, null, InternalHide);
         }
 
         void InternalHide()
         {
+            _isOpen = false;
+            
             gameObject.SetActive(false);
             
             if (_canvas != null) _canvas.sortingOrder = _startingSortingOrder;

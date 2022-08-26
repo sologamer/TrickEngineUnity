@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace FirebaseWebGL.Scripts.Objects
+namespace TrickCore
 {
     [Serializable]
     public class FirebaseUserProvider

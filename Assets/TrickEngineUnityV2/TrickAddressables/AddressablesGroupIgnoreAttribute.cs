@@ -1,6 +1,9 @@
 ﻿using System;
 
-public class AddressablesGroupIgnoreAttribute : Attribute
+namespace TrickCore
 {
+    public class AddressablesGroupIgnoreAttribute : Attribute
+    {
     
+    }
 }

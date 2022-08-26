@@ -1,14 +1,15 @@
 ﻿#if UNITY_ADDRESSABLES
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BeauRoutine;
+using TrickCore;
 using UnityEngine;
-using UnityEngine.UI;
-
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace TrickCore
@@ -20,16 +21,16 @@ namespace TrickCore
             return ar != null && !string.IsNullOrEmpty(ar.AssetGUID);
         }
         
-        public static IEnumerator TrickLoadAssetCoroutine<T>(this AssetReferenceT<T> ar, Action<T> callback) where T : Object
+        public static IEnumerator RuntimeLoadAssetCoroutine<T>(this AssetReferenceT<T> ar, Action<T> callback) where T : Object
         {
-            yield return TrickLoadAssetCoroutine(ar as AssetReference, callback);
+            yield return RuntimeLoadAssetCoroutine(ar as AssetReference, callback);
         }
         
-        public static IEnumerator TrickLoadAssetCoroutine<T>(this AssetReference ar, Action<T> callback) where T : Object
+        public static IEnumerator RuntimeLoadAssetCoroutine<T>(this AssetReference ar, Action<T> callback) where T : Object
         {
             if (ar.IsValidReference())
             {
-                yield return AddressablesManager.Instance.LoadAssetCoroutine<T>(AddressableGroupType.Game, ar,
+                yield return AddressablesManager.RuntimeLoadAssetCoroutine<T>(TrickAssetGroupId.ManualReleaseAssetGroupId, ar,
                     asset => { callback?.Invoke(asset); });
             }
             else
@@ -38,17 +39,17 @@ namespace TrickCore
             }
         }
         
-        public static void TrickLoadAssetAsync<T>(this AssetReferenceT<T> ar, Action<T> callback) where T : Object
+        public static void RuntimeLoadAssetAsync<T>(this AssetReferenceT<T> ar, Action<T> callback) where T : Object
         {
-            TrickLoadAssetAsync(ar as AssetReference, callback);
+            RuntimeLoadAssetAsync(ar as AssetReference, callback);
         }
         
-        public static void TrickLoadAssetAsync<T>(this AssetReference ar, Action<T> callback) where T : Object
+        public static void RuntimeLoadAssetAsync<T>(this AssetReference ar, Action<T> callback) where T : Object
         {
             if (ar.IsValidReference())
             {
-                AddressablesManager.Instance.LoadAssetAsync<T>(AddressableGroupType.Game, ar,
-                    asset => { callback?.Invoke(asset); });
+                Routine.Start(AddressablesManager.RuntimeLoadAssetCoroutine<T>(TrickAssetGroupId.ManualReleaseAssetGroupId, ar,
+                    asset => { callback?.Invoke(asset); }));
             }
             else
             {
@@ -56,7 +57,7 @@ namespace TrickCore
             }
         }
 
-        public static IEnumerator TrickLoadAssetsCoroutine<T>(this IEnumerable<AssetReference> enumerable, Action<List<T>> callback) where T : Object
+        public static IEnumerator RuntimeLoadAssetsCoroutine<T>(this IEnumerable<AssetReference> enumerable, Action<List<T>> callback) where T : Object
         {
             if (enumerable == null)
             {
@@ -79,7 +80,7 @@ namespace TrickCore
                 int i1 = i;
                 var assetReference = list[i1];
                 result.Add(default);
-                enumerators.Add(AddressablesManager.Instance.LoadAssetCoroutine<T>(AddressableGroupType.Game, assetReference, asset =>
+                enumerators.Add(AddressablesManager.Instance.LoadAssetCoroutine<T>(TrickAssetGroupId.ManualReleaseAssetGroupId, assetReference, asset =>
                 {
                     result[i1] = asset;
                 }));
@@ -88,14 +89,14 @@ namespace TrickCore
             callback?.Invoke(result);
         }
         
-        public static IEnumerator TrickLoadAssetsCoroutine<T>(this IEnumerable<AssetReferenceT<T>> enumerable, Action<List<T>> callback) where T : Object
+        public static IEnumerator RuntimeLoadAssetsCoroutine<T>(this IEnumerable<AssetReferenceT<T>> enumerable, Action<List<T>> callback) where T : Object
         {
             if (enumerable == null)
             {
                 callback?.Invoke(new List<T>());
                 yield break;
             }
-            yield return TrickLoadAssetsCoroutine(enumerable.Cast<AssetReference>(), callback);
+            yield return RuntimeLoadAssetsCoroutine(enumerable.Cast<AssetReference>(), callback);
         }
     
         public static void SetSprite(this AssetReferenceSprite ar, Image instance, bool setActive = true)
@@ -118,61 +119,6 @@ namespace TrickCore
             {
                 if (ar.IsValid())
                 {
-                    /*IEnumerator LoadAsset()
-                    {
-                        bool mustRegister = false;
-                        var op = ar.OperationHandle;
-                        if (op.IsValid())
-                        {
-                            yield return op;
-
-                            if (!op.IsValid() || op.Result == null)
-                            {
-                                var newOp = Addressables.LoadAssetAsync<Sprite>(ar.RuntimeKey);
-                                yield return newOp;
-                                op = newOp;
-                            
-                                mustRegister = true;
-                            }
-                        }
-                        else
-                        {
-                            var newOp = Addressables.LoadAssetAsync<Sprite>(ar.RuntimeKey);
-                            yield return newOp;
-                            op = newOp;
-                            
-                            mustRegister = true;
-                        }
-
-                        if (op.IsValid() && op.Result is Sprite resultData)
-                        {
-                            if (instance == null)
-                            {
-                                if (resultData != null) Addressables.Release(resultData);
-                                yield break;
-                            }
-
-                            if (mustRegister && resultData != null)
-                            {
-                                var helper = instance.GetComponent<AddressableAssetHelper>();
-                                if (helper == null) helper = instance.gameObject.AddComponent<AddressableAssetHelper>();
-                                helper.IsUsingManager = false;
-                                helper.AddData(resultData);
-                            }
-                        
-                            instance.sprite = resultData;
-                            if (setActive) instance.gameObject.SetActive(instance.sprite != null);
-                        }
-                        else
-                        {
-                            if (instance == null) yield break;
-                            instance.sprite = null;
-                            if (setActive) instance.gameObject.SetActive(instance.sprite != null);
-                        }
-                    }
-                    
-                    Routine.Start(LoadAsset());*/
-                    
                     bool mustRegister = false;
                     var op = ar.OperationHandle;
                     
@@ -389,6 +335,12 @@ namespace TrickCore
                 action?.Invoke(null);
             }
         }
+    }
+    
+    public class AddressableSpriteInfo : MonoBehaviour
+    {
+        public string LastAssetGUID { get; set; }
+        public Sprite LoadedSprite { get; set; }
     }
 }
 #endif
