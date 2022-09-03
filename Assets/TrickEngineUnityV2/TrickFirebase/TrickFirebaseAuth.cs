@@ -120,5 +120,51 @@ namespace TrickCore
 #endif
             }
         }
+        
+    
+        public static void ChangePassword(string email, string currentPassword, string newPassword,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
+        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(ChangePassword), callbackOrFallback, false, email);
+                FirebaseAuth.ChangePassword(email, currentPassword, newPassword,
+                    nameof(FirebaseManager), $"{nameof(ChangePassword)}Callback", $"{nameof(ChangePassword)}Fallback");            
+            }
+            else
+            {
+#if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
+
+                if (Firebase.Auth.FirebaseAuth.DefaultInstance.CurrentUser != null)
+                {
+                    Firebase.Auth.FirebaseAuth.DefaultInstance.CurrentUser
+                        .ReauthenticateAsync(Firebase.Auth.EmailAuthProvider.GetCredential(email, currentPassword))
+                        .ContinueWith(
+                            task =>
+                            {
+                                if (task.IsCanceled || task.IsFaulted)
+                                {
+                                    TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((null, FirebaseError.FromException(task.Exception))));
+                                    return;
+                                }
+                                
+                                Debug.Log("Reauthenticate successful");
+                                
+                                Firebase.Auth.FirebaseAuth.DefaultInstance.CurrentUser.UpdatePasswordAsync(newPassword).ContinueWith(
+                                    changePasswordTask =>
+                                    {
+                                        if (changePasswordTask.IsCanceled || changePasswordTask.IsFaulted)
+                                        {
+                                            TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((null, FirebaseError.FromException(changePasswordTask.Exception))));
+                                            return;
+                                        }
+                                        Debug.Log("Change password successfully");
+                                        TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
+                                    });
+                            });
+                }
+#endif
+            }
+        }
     }
 }

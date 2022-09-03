@@ -38,6 +38,19 @@ namespace TrickCore
             string fallback);
         
         /// <summary>
+        /// Change password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="currentPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="objectName"></param>
+        /// <param name="callback"></param>
+        /// <param name="fallback"></param>
+        [DllImport("__Internal")]
+        public static extern void ChangePassword(string email, string currentPassword, string newPassword, string objectName, string callback,
+            string fallback);
+        
+        /// <summary>
         /// Signs in a user with Google
         /// </summary>
         /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>

@@ -58,6 +58,45 @@ mergeInto(LibraryManager.library, {
         }
     },
 
+    ChangePassword: function (email, currentPassword, newPassword, objectName, callback, fallback) {
+        var parsedEmail = UTF8ToString(email);
+        var parsedCurrentPassword = UTF8ToString(currentPassword);
+        var parsedNewPassword = UTF8ToString(newPassword);
+        var parsedObjectName = UTF8ToString(objectName);
+        var parsedCallback = UTF8ToString(callback);
+        var parsedFallback = UTF8ToString(fallback);
+		var persistentId = parsedEmail;
+        try {
+			var user = firebase.auth().currentUser;
+			var credential = firebase.auth.EmailAuthProvider.credential(
+				parsedEmail, 
+				parsedCurrentPassword
+			);
+			user.reauthenticateWithCredential(credential).then(function (authUser) {
+                var reAuthUser = authUser.user;
+				if (reAuthUser != null)
+				{
+					reAuthUser.updatePassword(parsedNewPassword).then(function () {
+						unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, "{}"+persistentId);
+					}).catch(function (error) {
+						unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+					});
+				}
+				else
+				{
+					var error = {};
+					error.message = "Failed to authenticate";
+					unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+				}
+			}).catch(function (error) {
+				unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+			});
+
+        } catch (error) {
+            unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+        }
+    },
+
     SignInWithGoogle: function (objectName, callback, fallback) {
         var parsedObjectName = UTF8ToString(objectName);
         var parsedCallback = UTF8ToString(callback);

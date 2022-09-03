@@ -186,6 +186,51 @@ namespace TrickCore
             }
         }
 
+        public static void GetField(string collectionPath, string documentId, string field,
+            Action<(string content, FirebaseError error)> callbackOrFallback)
+        {
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                FirebaseManager.Instance.Register(nameof(GetField), callbackOrFallback, false, collectionPath+documentId+field);
+                FirebaseFirestore.GetField(collectionPath,
+                    documentId, field, nameof(FirebaseManager),
+                    $"{nameof(GetField)}Callback", $"{nameof(GetField)}Fallback");
+            }
+            else
+            {
+#if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
+                Debug.Log("GET FIELD");
+                
+            Firebase.Firestore.FirebaseFirestore.DefaultInstance.Document($"{collectionPath}/{documentId}")
+                //.UpdateAsync(value)
+                .GetSnapshotAsync(Firebase.Firestore.Source.Server)
+                .ContinueWith(task =>
+                {
+                    if (task.IsCanceled || task.IsFaulted)
+                    {
+                        TrickEngine.SimpleDispatch(() =>
+                            callbackOrFallback?.Invoke((null, FirebaseError.FromException(task.Exception))));
+                        return;
+                    }
+
+                    if (task.Result.TryGetValue<string>(field, out var data))
+                    {
+                        TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((
+                            new
+                            {
+                                data = data
+                            }.SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
+                    }
+                    else
+                    {
+                        TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((
+                            new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
+                    }
+                });
+#endif
+            }
+        }
+
         public static void DeleteField(string collectionPath, string documentId, string field,
             Action<(string content, FirebaseError error)> callbackOrFallback)
         {

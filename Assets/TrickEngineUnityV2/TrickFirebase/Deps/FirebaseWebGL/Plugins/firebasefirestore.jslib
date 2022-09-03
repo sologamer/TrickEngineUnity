@@ -180,6 +180,31 @@ mergeInto(LibraryManager.library, {
         }
     },
 
+    GetField: function (collectionPath, documentId, field, objectName, callback, fallback) {
+        var parsedPath = UTF8ToString(collectionPath);
+        var parsedId = UTF8ToString(documentId);
+        var parsedField = UTF8ToString(field);
+        var parsedObjectName = UTF8ToString(objectName);
+        var parsedCallback = UTF8ToString(callback);
+        var parsedFallback = UTF8ToString(fallback);
+		var persistentId = "|*$|" + parsedPath+parsedId+parsedField;
+
+        try {
+			firebase.firestore().collection(parsedPath).get().then(function (querySnapshot) {
+
+                var docs = {};
+				var map = querySnapshot.docs.first.data();
+				docs["data"] = map.get(parsedField);
+
+                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(docs)+persistentId);
+            }).catch(function(error) {
+                unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+            });
+        } catch (error) {
+            unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+        }
+    },
+
     DeleteField: function (collectionPath, documentId, field, objectName, callback, fallback) {
         var parsedPath = UTF8ToString(collectionPath);
         var parsedId = UTF8ToString(documentId);
