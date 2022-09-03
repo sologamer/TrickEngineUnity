@@ -2,12 +2,24 @@
 
 public class LinuxTrickBuild : TrickBuild
 {
-    public static void Build()
+    protected override BuildPlayerOptions? OnPreBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "")
     {
-        var session = new LinuxTrickBuild();
-        if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
-        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.x64";
-        session.StartBuild(fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64, BuildOptions.None);
+        string fullPathAndName = $"{manifest.OutputDirectory}{config.AppName}.x64";
+        return new BuildPlayerOptions
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = fullPathAndName,
+            targetGroup = BuildTargetGroup.Standalone,
+            target = BuildTarget.StandaloneLinux64,
+            options = BuildOptions.None,
+        };
     }
+
+    protected override void OnPostBuild(TrickBuildConfig config, TrickBuildManifest manifest, string customBuildId = "")
+    {
+        
+    }
+
+    public static void Build() => new LinuxTrickBuild().TryBuild();
 }

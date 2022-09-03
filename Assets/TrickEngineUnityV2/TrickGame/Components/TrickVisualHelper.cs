@@ -351,7 +351,7 @@ namespace TrickCore
         }
 
         public static void Shake(this MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f,
-            float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut)
+            float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut, int loops = -1)
         {
             IEnumerator HandleShake()
             {
@@ -371,6 +371,11 @@ namespace TrickCore
                     if (i % 3 == 0)
                     {
                         yield return tr.RotateTo(Vector3.zero, new TweenSettings(tweenDuration, tweenCurve), Axis.Z);
+                        if (loops != -1)
+                        {
+                            loops--;
+                            if (loops == 0) yield break;
+                        }
                         yield return Routine.WaitSeconds(longPauseDuration);
                     }
 
@@ -383,8 +388,9 @@ namespace TrickCore
             visualHelper.TryInitializeUI();
 
             if (b)
-                visualHelper.ShakeRoutine =
-                    visualHelper.ShakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
+            {
+                visualHelper.ShakeRoutine = visualHelper.ShakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
+            }
             else
             {
                 visualHelper.transform.SetRotation(Vector3.zero, Axis.Z);

@@ -2,14 +2,26 @@
 
 public class iOSTrickBuild : TrickBuild, IFastLaneModule
 {
-    public static void Build()
+    protected override BuildPlayerOptions? OnPreBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "")
     {
-        var session = new iOSTrickBuild();
-        if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
-        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.app";
-        session.StartBuild(fullPathAndName, BuildTargetGroup.iOS, BuildTarget.iOS, BuildOptions.None);
+        string fullPathAndName = $"{manifest.OutputDirectory}{config.AppName}.app";
+        return new BuildPlayerOptions
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = fullPathAndName,
+            targetGroup = BuildTargetGroup.iOS,
+            target = BuildTarget.iOS,
+            options = BuildOptions.None,
+        };
     }
+
+    protected override void OnPostBuild(TrickBuildConfig config, TrickBuildManifest manifest, string customBuildId = "")
+    {
+        
+    }
+
+    public static void Build() => new iOSTrickBuild().TryBuild();
 
     public void HandleUpload()
     {

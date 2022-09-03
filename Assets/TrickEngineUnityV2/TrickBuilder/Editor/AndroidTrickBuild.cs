@@ -2,23 +2,32 @@
 
 public class AndroidTrickBuild : TrickBuild, IFastLaneModule
 {
-    public static void BuildBundle()
+    protected override BuildPlayerOptions? OnPreBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "")
     {
-        var session = new AndroidTrickBuild();
-        if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
-        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.aab";
-        session.StartBuild(fullPathAndName, BuildTargetGroup.Android, BuildTarget.Android, BuildOptions.None);
+        PlayerSettings.Android.keyaliasName = config.Android.AndroidAliasName;
+        PlayerSettings.Android.keyaliasPass = config.Android.AndroidAliasPass;
+        PlayerSettings.Android.keystoreName = config.Android.AndroidKeyStorePath;
+        PlayerSettings.Android.keystorePass = config.Android.AndroidKeyStorePass;
+        
+        string fullPathAndName = $"{manifest.OutputDirectory}{config.AppName}.aab";
+        return new BuildPlayerOptions
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = fullPathAndName,
+            targetGroup = BuildTargetGroup.Android,
+            target = BuildTarget.Android,
+            options = BuildOptions.None,
+        };
     }
 
-    public static void BuildApk()
+    protected override void OnPostBuild(TrickBuildConfig config, TrickBuildManifest manifest, string customBuildId = "")
     {
-        var session = new AndroidTrickBuild();
-        if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
-        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.apk";
-        session.StartBuild(fullPathAndName, BuildTargetGroup.Android, BuildTarget.Android, BuildOptions.None);
+        
     }
+
+    public static void BuildBundle() => new AndroidTrickBuild().TryBuild("bundle");
+    public static void BuildApk() => new AndroidTrickBuild().TryBuild("apk");
 
     public void HandleUpload()
     {

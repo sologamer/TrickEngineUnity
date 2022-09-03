@@ -23,9 +23,10 @@ public class UIManager : MonoSingleton<UIManager>
     public bool DisableMenuDebugging;
     
     public UnityEvent<int, int> ScreenSizeChangeEvent { get; } = new UnityEvent<int, int>();
-    public UnityEvent<UIMenu> MenuShowEvent { get; } = new UnityEvent<UIMenu>();
-    public UnityEvent<UIMenu> MenuHideEvent { get; } = new UnityEvent<UIMenu>();
-    
+    public UnityEvent<UIMenu> PreMenuShowEvent { get; } = new UnityEvent<UIMenu>();
+    public UnityEvent<UIMenu> PreMenuHideEvent { get; } = new UnityEvent<UIMenu>();
+    public UnityEvent<UIMenu> PostMenuShowEvent { get; } = new UnityEvent<UIMenu>();
+    public UnityEvent<UIMenu> PostMenuHideEvent { get; } = new UnityEvent<UIMenu>();
     
     #region Internal states
     private Vector2Int _lastScreenSize;

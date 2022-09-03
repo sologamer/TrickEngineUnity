@@ -255,6 +255,8 @@ public abstract class UIMenu : MonoBehaviour
         if (ScaleWithScreen) Rescale();
         gameObject.SetActive(true);
         
+        _manager.PreMenuShowEvent?.Invoke(this);
+        
         if (TransitionPanelTransform != null)
         {
             TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
@@ -273,7 +275,7 @@ public abstract class UIMenu : MonoBehaviour
         void InternalShow()
         {
             _isOpen = true;
-            _manager.MenuShowEvent?.Invoke(this);
+            _manager.PostMenuShowEvent?.Invoke(this);
             LastShowTime = Time.realtimeSinceStartup;
             if (DisableMainCamera)
             {
@@ -304,6 +306,8 @@ public abstract class UIMenu : MonoBehaviour
     {
         if (!_isOpen) return;
         
+        _manager.PreMenuHideEvent?.Invoke(this);
+        
         if (TransitionPanelTransform != null)
         {
             TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
@@ -326,7 +330,7 @@ public abstract class UIMenu : MonoBehaviour
             
             if (_canvas != null) _canvas.sortingOrder = _startingSortingOrder;
 
-            _manager.MenuHideEvent?.Invoke(this);
+            _manager.PostMenuHideEvent?.Invoke(this);
             if (DisableMainCamera)
             {
                 if (_mainCamera == null) _mainCamera = Camera.main;

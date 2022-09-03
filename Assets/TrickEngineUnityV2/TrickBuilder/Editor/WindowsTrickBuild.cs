@@ -2,12 +2,24 @@
 
 public class WindowsTrickBuild : TrickBuild
 {
-    public static void Build()
+    protected override BuildPlayerOptions? OnPreBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "")
     {
-        var session = new WindowsTrickBuild();
-        if (!session.FindArgs(out var args)) return;
-        session.SetVersion(args.manifest.BuildVersion + args.config.BuildVersionOffset);
-        string fullPathAndName = $"{args.manifest.OutputDirectory}{args.config.AppName}.exe";
-        session.StartBuild(fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64, BuildOptions.None);
+        string fullPathAndName = $"{manifest.OutputDirectory}{config.AppName}.exe";
+        return new BuildPlayerOptions
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = fullPathAndName,
+            targetGroup = BuildTargetGroup.Standalone,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.None,
+        };
     }
+
+    protected override void OnPostBuild(TrickBuildConfig config, TrickBuildManifest manifest, string customBuildId = "")
+    {
+        
+    }
+
+    public static void Build() => new WindowsTrickBuild().TryBuild();
 }

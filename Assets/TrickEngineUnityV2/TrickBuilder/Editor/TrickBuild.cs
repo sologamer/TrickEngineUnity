@@ -10,24 +10,44 @@ using UnityEditor.Build.Reporting;
 
 public abstract class TrickBuild
 {
-    private string[] GetEnabledScenes()
+    protected abstract BuildPlayerOptions? OnPreBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "");
+    protected abstract void OnPostBuild(TrickBuildConfig config,
+        TrickBuildManifest manifest, string customBuildId = "");
+
+    protected string[] GetEnabledScenes()
     {
         return EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => scene.path).ToArray();
     }
 
-    protected void StartBuild(string targetDir, BuildTargetGroup buildTargetGroup, BuildTarget buildTarget, BuildOptions buildOptions)
+    protected void TryBuild(string customBuildId = "")
     {
-        Console.WriteLine($"[{GetType().Name}] Building:{targetDir} buildTargetGroup:{buildTargetGroup} buildTarget:{buildTarget}");
+        if (!FindArgs(out var args)) return;
+        var buildPlayerOptions = OnPreBuild(args.config, args.manifest, customBuildId);
+        if (buildPlayerOptions == null) return;
+        StartBuild(customBuildId, args, buildPlayerOptions.Value);
+    }
+    
+    private void StartBuild(string customBuildId, (TrickBuildConfig config, TrickBuildManifest manifest) args,
+        BuildPlayerOptions buildPlayerOptions)
+    {
+        Console.WriteLine($"[{GetType().Name}] Building:{buildPlayerOptions.locationPathName} buildTargetGroup:{buildPlayerOptions.targetGroup} buildTarget:{buildPlayerOptions.target}");
 
-        bool switchResult = EditorUserBuildSettings.SwitchActiveBuildTarget(buildTargetGroup, buildTarget);
+        bool switchResult = EditorUserBuildSettings.SwitchActiveBuildTarget(buildPlayerOptions.targetGroup, buildPlayerOptions.target);
         if (!switchResult)
         {
-            Console.WriteLine($"[{GetType().Name}] Unable to change Build Target to: {buildTarget} Exiting...");
+            Console.WriteLine($"[{GetType().Name}] Unable to change Build Target to: {buildPlayerOptions.target} Exiting...");
             return;
         }
 
-        Console.WriteLine($"[{GetType().Name}] Starting to build for target {buildTarget}");
-        BuildReport buildReport = BuildPipeline.BuildPlayer(GetEnabledScenes(), targetDir, buildTarget, buildOptions);
+        Console.WriteLine($"[{GetType().Name}] Starting to build for target {buildPlayerOptions.target} (options: {buildPlayerOptions.options})");
+
+        buildPlayerOptions.scenes = GetEnabledScenes();
+        buildPlayerOptions.extraScriptingDefines ??= Array.Empty<string>();
+        var extraScriptingDefines = buildPlayerOptions.extraScriptingDefines.ToList();
+        extraScriptingDefines.Add("TRICKBUILDER");
+        buildPlayerOptions.extraScriptingDefines = extraScriptingDefines.Distinct().ToArray();
+        BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
         BuildSummary buildSummary = buildReport.summary;
         if (buildSummary.result == BuildResult.Succeeded)
         {
@@ -37,6 +57,8 @@ public abstract class TrickBuild
         {
             Console.WriteLine($"[{GetType().Name}] Build Failed took {buildSummary.totalTime.TotalSeconds:F1}s (totalErrors:{buildSummary.totalErrors})");
         }
+        
+        OnPostBuild(args.config, args.manifest, customBuildId);
     }
 
     /// <summary>
