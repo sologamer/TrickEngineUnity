@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 using TrickCore;
 using UnityEditor.Build.Reporting;
