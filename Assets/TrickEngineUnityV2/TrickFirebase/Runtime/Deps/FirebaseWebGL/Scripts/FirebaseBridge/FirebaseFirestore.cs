@@ -2,6 +2,7 @@
 
 namespace TrickCore
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
     public static class FirebaseFirestore
     {
         /// <summary>
@@ -199,4 +200,5 @@ namespace TrickCore
         public static extern void StopListeningForCollectionChange(string collectionPath, string objectName,
             string callback, string fallback);
     }
+#endif
 }

@@ -2,6 +2,7 @@
 
 namespace TrickCore
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
     public static class FirebaseStorage
     {
         /// <summary>
@@ -28,4 +29,5 @@ namespace TrickCore
         [DllImport("__Internal")]
         public static extern void DeleteFile(string path, string objectName, string callback, string fallback);
     }
+#endif
 }

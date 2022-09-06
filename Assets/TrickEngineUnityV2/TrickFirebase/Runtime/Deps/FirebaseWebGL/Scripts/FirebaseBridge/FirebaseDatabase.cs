@@ -2,6 +2,7 @@
 
 namespace TrickCore
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
     public static class FirebaseDatabase
     {
         /// <summary>
@@ -174,4 +175,5 @@ namespace TrickCore
         public static extern void ToggleBooleanWithTransaction(string path, string objectName, string callback,
             string fallback);
     }
+#endif
 }

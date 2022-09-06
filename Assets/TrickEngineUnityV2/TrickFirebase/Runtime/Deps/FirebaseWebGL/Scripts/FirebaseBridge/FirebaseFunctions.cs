@@ -5,6 +5,7 @@ using Proyecto26;
 
 namespace TrickCore
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
     public static class FirebaseFunctions
     {
         /// <summary>
@@ -45,4 +46,5 @@ namespace TrickCore
         [DllImport("__Internal")]
         private static extern string GetCurrentProjectId();
     }
+#endif
 }

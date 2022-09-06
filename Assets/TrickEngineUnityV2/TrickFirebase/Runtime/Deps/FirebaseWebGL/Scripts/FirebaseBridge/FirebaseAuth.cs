@@ -2,6 +2,7 @@
 
 namespace TrickCore
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
     public static class FirebaseAuth
     {
         /// <summary>
@@ -83,4 +84,5 @@ namespace TrickCore
         [DllImport("__Internal")]
         public static extern void SignOut();
     }
+#endif
 }
