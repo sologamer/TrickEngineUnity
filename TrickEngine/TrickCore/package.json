@@ -24,6 +24,6 @@
       "url":"https://github.com/sologamer"
    },
    "dependencies":{
-    "com.sologamer.trickengineunity.randomizer": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickRandomizer"
+    "com.sologamer.trickengineunity.randomizer": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickRandomizer#0.0.1"
    }
 }
