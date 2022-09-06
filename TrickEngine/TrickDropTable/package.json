@@ -1,5 +1,5 @@
 {
-   "name":"com.sologamer.trickengineunity.core",
+   "name":"com.sologamer.trickengineunity.droptable",
    "version":"0.0.1",
    "displayName":"Trick Engine Unity - Core",
    "description":"TrickEngineUnity Core Module",
@@ -24,6 +24,7 @@
       "url":"https://github.com/sologamer"
    },
    "dependencies":{
-    "com.sologamer.trickengineunity.core": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickCore"
+    "com.sologamer.trickengineunity.core": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickCore",
+    "com.sologamer.trickengineunity.randomizer": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickRandomizer"
    }
 }
