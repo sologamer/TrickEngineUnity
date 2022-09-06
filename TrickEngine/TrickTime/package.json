@@ -24,6 +24,6 @@
       "url":"https://github.com/sologamer"
    },
    "dependencies":{
-    "com.sologamer.trickengineunity.core": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickCore#0.0.1"
+    "com.sologamer.trickengineunity.core": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickCore#latest"
    }
 }
