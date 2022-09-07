@@ -23,11 +23,11 @@ namespace TrickCore
         /// <summary>
         /// Event whenever the user state changes. The user 'null' means Logout.
         /// </summary>
-        public UnityEvent<FirebaseUser> UserAuthStateChangedEvent { get; } = new UnityEvent<FirebaseUser>();
+        public UnityEvent<FirebaseUser> UserAuthStateChangedEvent { get; } = new();
         
-        private readonly Dictionary<string, Queue<Action<(string content, FirebaseError error)>>> _callbackQueueDict = new Dictionary<string, Queue<Action<(string content, FirebaseError error)>>>();
-        private readonly Dictionary<string, Action<(string content, FirebaseError error)>> _callbackPersistentDict = new Dictionary<string, Action<(string content, FirebaseError error)>>();
-        private readonly List<Action> _initializeCallback = new List<Action>();
+        private readonly Dictionary<string, Queue<Action<(string content, FirebaseError error)>>> _callbackQueueDict = new();
+        private readonly Dictionary<string, Action<(string content, FirebaseError error)>> _callbackPersistentDict = new();
+        private readonly List<Action> _initializeCallback = new ();
 
         public void OnInitialize(Action action)
         {
@@ -105,7 +105,13 @@ namespace TrickCore
         private void Exec(bool b, bool persistent, string method, string s)
         {
             const string persistentIdSeparator = "|*$|";
+            
+#if UNITY_2021_1_OR_NEWER
             var split = s.Split(persistentIdSeparator);
+#else
+            var split = s.Split(new []{persistentIdSeparator}, StringSplitOptions.None);
+#endif
+            
             int length = split.Length;
             string persistentId = length == 2 ? split[1] : string.Empty;
             string content = length == 1 ? s : split[0];
