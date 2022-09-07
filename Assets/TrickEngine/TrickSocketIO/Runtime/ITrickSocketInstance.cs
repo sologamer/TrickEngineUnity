@@ -13,9 +13,10 @@ namespace TrickCore
         /// <summary>
         /// Sends a message securely to the client
         /// </summary>
-        /// <param name="eventName"></param>
-        /// <param name="payload"></param>
-        void SendMessageSecure(string eventName, object payload)
+        /// <param name="eventName">The wrapped event name</param>
+        /// <param name="payload">The payload data</param>
+        /// <param name="rootEventName">The root event name, this is the socket.On('rootEventName', () => {action})</param>
+        void SendMessageSecure(string eventName, object payload, string rootEventName = nameof(TrickInternalSocketEventType.enc))
         {
             var message = new
             {
@@ -24,7 +25,7 @@ namespace TrickCore
             // Encrypt the message
             KeyExchange.EncryptMessage(KeyExchange.GetMySharedKey(), Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)), out var encrypt);
             // Convert the encrypted message to base64, since it's a binary buffer.
-            CurrentSocket.Emit("enc", Convert.ToBase64String(encrypt));
+            CurrentSocket.Emit(rootEventName, Convert.ToBase64String(encrypt));
         }
 
         /// <summary>

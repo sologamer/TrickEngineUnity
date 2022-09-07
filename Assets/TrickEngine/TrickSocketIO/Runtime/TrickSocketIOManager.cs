@@ -73,7 +73,7 @@ namespace TrickCore
                     {
                         socketId = socket.Id,
                         sharedSecret = Convert.ToBase64String(instance.KeyExchange.GetMySharedKey()),
-                    });
+                    }, nameof(TrickInternalSocketEventType.exchange_finish));
                 }
                 catch (Exception ex)
                 {
