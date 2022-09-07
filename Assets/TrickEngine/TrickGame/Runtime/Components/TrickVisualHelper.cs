@@ -7,6 +7,11 @@ using UnityEngine.UI;
 
 namespace TrickCore
 {
+    /// <summary>
+    /// Visual helper script for supporting tweening and such.
+    /// TODO: Will add more documentation on usage
+    /// Usage: Extensions methods are found in the class TrickVisualHelperExtensions (below here) with certain functions to tween, fade in, fade out and such.
+    /// </summary>
     public class TrickVisualHelper : MonoBehaviour
     {
         public bool particleSystemInjectStartColor = true;

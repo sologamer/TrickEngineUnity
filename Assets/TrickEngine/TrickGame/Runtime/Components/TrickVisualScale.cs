@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace TrickCore
 {
+    /// <summary>
+    /// Simple scaler script using BeauRoutine to scale the object
+    /// </summary>
     public class TrickVisualScale : MonoBehaviour
     {
         public TweenSettings TweenSettings;
