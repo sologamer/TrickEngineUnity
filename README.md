@@ -5,6 +5,25 @@ Usages a collection of third party plugins to make these things work.
 
 The modules are flexible and some can be completely removed if you ain't using it. No need to use and SQL in your Unity project? Delete the [TrickSQL](#tricksql--trickmysql) and [TrickMySQL](#tricksql--trickmysql) folder.
 
+
+#### Install Using Unity Package Manager
+Open the Package Manager->"Add package from git URL..." and add this url:
+
+https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM
+
+
+#### Install Using Git (for Unity 2018.3 or later)
+
+Find the manifest.json file in the Packages folder of your project and edit it to look like this:
+```js
+{
+ "dependencies": {
+ "com.sologamer.trickengineunity.upm": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM",
+ ...
+ },
+}
+```
+
 ### Table of contents
 1. [TrickCore](#trickcore)
 2. [TrickAddressables](#trickaddressables)
@@ -69,25 +88,6 @@ SeedRandom.Default.RandomItems(dropTable, 2, true);
 // Roll the droptable 3 times, and returns 3 items from it. Don't allow pulling duplicates
 SeedRandom.Default.RandomItems(dropTable, 2, false);
 ````
-
-#### Using Unity Package Manager
-Open the Package Manager->"Add package from git URL..." and add this url:
-
-https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM
-
-
-#### Using Git (for Unity 2018.3 or later)
-
-Find the manifest.json file in the Packages folder of your project and edit it to look like this:
-```js
-{
- "dependencies": {
- "com.sologamer.trickengineunity.upm": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM",
- ...
- },
-}
-```
-
 
 
 ## TrickGame
