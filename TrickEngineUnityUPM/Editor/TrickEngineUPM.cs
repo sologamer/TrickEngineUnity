@@ -14,7 +14,7 @@ public class TrickEngineUPM : EditorWindow
 {
     public static TrickEngineUPM Instance { get; set; }
 
-    private static Dictionary<string, Request> ActiveRequests = new Dictionary<string, Request>();
+    private Dictionary<string, Request> ActiveRequests = new Dictionary<string, Request>();
 
     private Dictionary<string, TrickEnginePackage> _packageData =
         new Dictionary<string, TrickEnginePackage>();
@@ -223,6 +223,10 @@ public class TrickEngineUPM : EditorWindow
                 removeList.RemoveAt(0);
                 ActiveRequests["add_or_remove"] = Client.Remove(key);
                 if (removeList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Remove");
+                
+                if (ActiveRequests.Count == 1)
+                    EditorApplication.update += Progress;
+                
                 return;
             }
         }
@@ -236,6 +240,9 @@ public class TrickEngineUPM : EditorWindow
                 addList.RemoveAt(0);
                 ActiveRequests["add_or_remove"] = Client.Add(key);
                 if (addList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Add");
+                
+                if (ActiveRequests.Count == 1)
+                    EditorApplication.update += Progress;
             }
         }
         
@@ -300,14 +307,20 @@ public class TrickEngineUPM : EditorWindow
 
     private static void Progress()
     {
-        if (ActiveRequests.Count > 0)
+        if (Instance == null)
         {
-            if (ActiveRequests.All(request => request.Value.Status != StatusCode.InProgress))
+            EditorApplication.update -= Progress;
+            return;
+        }
+        if (Instance.ActiveRequests.Count > 0)
+        {
+            if (Instance.ActiveRequests.All(request => request.Value.Status != StatusCode.InProgress))
             {
-                if (Instance != null) Instance.FetchPackages();
-                ActiveRequests.Clear();
+                Instance.FetchPackages();
+                Instance.ActiveRequests.Clear();
+                ProcessPackageKey();
             }
-            if (ActiveRequests.Count == 0)
+            if (Instance.ActiveRequests.Count == 0)
                 EditorApplication.update -= Progress;
         }
     }
