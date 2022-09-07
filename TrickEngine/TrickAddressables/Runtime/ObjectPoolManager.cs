@@ -11,7 +11,7 @@ namespace TrickCore
     public class ObjectPoolManager : MonoSingleton<ObjectPoolManager>
     {
         public Action<ITrickPool> PoolObjectCustomCreateAction { get; set; } = null;
-        public Dictionary<TrickAssetGroupId, Dictionary<string, TrickObjectPoolAsync<ITrickPool>>> AssetReferencePoolDict { get; } = new();
+        public Dictionary<TrickAssetGroupId, Dictionary<string, TrickObjectPoolAsync<ITrickPool>>> AssetReferencePoolDict { get; } = new Dictionary<TrickAssetGroupId, Dictionary<string, TrickObjectPoolAsync<ITrickPool>>>();
 
         protected override void Initialize()
         {

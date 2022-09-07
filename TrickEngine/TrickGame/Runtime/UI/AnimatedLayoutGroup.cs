@@ -11,7 +11,7 @@ public class AnimatedLayoutGroup : MonoBehaviour
 
     private LayoutGroup _layoutGroup;
     
-    public List<AnimatedLayoutLink> ParentLinks = new();
+    public List<AnimatedLayoutLink> ParentLinks = new List<AnimatedLayoutLink>();
     
     private AnimatedLayoutGroup _cloned;
     private AnimatedLayoutGroup _parent;

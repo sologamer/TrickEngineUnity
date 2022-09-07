@@ -359,7 +359,7 @@ namespace TrickCore
         }
 
 #if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
-    private static Dictionary<string, Firebase.Firestore.ListenerRegistration> FirebaseListeners = new();
+    private static Dictionary<string, Firebase.Firestore.ListenerRegistration> FirebaseListeners = new Dictionary<string, Firebase.Firestore.ListenerRegistration>();
 #endif
 
         public static void ListenForDocumentChange(string collectionPath, string documentId, bool includeMetadataUpdates,

@@ -23,11 +23,11 @@ namespace TrickCore
         /// <summary>
         /// Event whenever the user state changes. The user 'null' means Logout.
         /// </summary>
-        public UnityEvent<FirebaseUser> UserAuthStateChangedEvent { get; } = new();
+        public UnityEvent<FirebaseUser> UserAuthStateChangedEvent { get; } = new UnityEvent<FirebaseUser>();
         
-        private readonly Dictionary<string, Queue<Action<(string content, FirebaseError error)>>> _callbackQueueDict = new();
-        private readonly Dictionary<string, Action<(string content, FirebaseError error)>> _callbackPersistentDict = new();
-        private readonly List<Action> _initializeCallback = new ();
+        private readonly Dictionary<string, Queue<Action<(string content, FirebaseError error)>>> _callbackQueueDict = new Dictionary<string, Queue<Action<(string content, FirebaseError error)>>>();
+        private readonly Dictionary<string, Action<(string content, FirebaseError error)>> _callbackPersistentDict = new Dictionary<string, Action<(string content, FirebaseError error)>>();
+        private readonly List<Action> _initializeCallback = new List<Action>();
 
         public void OnInitialize(Action action)
         {

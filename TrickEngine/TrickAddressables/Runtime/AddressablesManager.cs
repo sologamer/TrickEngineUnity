@@ -37,12 +37,12 @@ namespace TrickCore
                 {TrickAssetGroupId.ManualReleaseAssetGroupId, new HashSet<Object>()},
             };
     
-        private static Dictionary<string, AssetReferenceGameObject> CachedArGoes { get; } = new();
+        private static Dictionary<string, AssetReferenceGameObject> CachedArGoes { get; } = new Dictionary<string, AssetReferenceGameObject>();
     
-        private readonly List<Object> _dontDestroyAssets = new();
+        private readonly List<Object> _dontDestroyAssets = new List<Object>();
         private string _addressablesVersion;
-        private readonly List<Action<bool>> _localInvokeQueue = new();
-        private readonly List<Action<bool>> _remoteInvokeQueue = new();
+        private readonly List<Action<bool>> _localInvokeQueue = new List<Action<bool>>();
+        private readonly List<Action<bool>> _remoteInvokeQueue = new List<Action<bool>>();
 
         public Action<object> ConcurrentDownloadStartFunc { get; set; } = null;
         public Action<object, DownloadStatus> ConcurrentDownloadUpdateFunc { get; set; } = null;
