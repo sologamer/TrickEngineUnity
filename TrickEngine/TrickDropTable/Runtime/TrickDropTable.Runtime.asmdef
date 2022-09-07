@@ -1,0 +1,16 @@
+{
+    "name": "TrickDropTable.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2b38c5d07846a254e925d5cefb38f07d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
