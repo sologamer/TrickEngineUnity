@@ -222,6 +222,7 @@ public class TrickEngineUPM : EditorWindow
                 var key = removeList[0];
                 removeList.RemoveAt(0);
                 ActiveRequests["add_or_remove"] = Client.Remove(key);
+                if (removeList.Length > 0) EditorPrefs.SetString($"{upmKey}Remove", JsonConvert.SerializeObject(removeList));
                 if (removeList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Remove");
                 
                 if (ActiveRequests.Count == 1)
@@ -239,6 +240,7 @@ public class TrickEngineUPM : EditorWindow
                 var key = addList[0];
                 addList.RemoveAt(0);
                 ActiveRequests["add_or_remove"] = Client.Add(key);
+                if (addList.Length > 0) EditorPrefs.SetString($"{upmKey}Add", JsonConvert.SerializeObject(addList));
                 if (addList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Add");
                 
                 if (ActiveRequests.Count == 1)
