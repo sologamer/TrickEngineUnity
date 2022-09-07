@@ -70,6 +70,26 @@ SeedRandom.Default.RandomItems(dropTable, 2, true);
 SeedRandom.Default.RandomItems(dropTable, 2, false);
 ````
 
+#### Using Unity Package Manager
+Open the Package Manager->"Add package from git URL..." and add this url:
+
+https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM
+
+
+#### Using Git (for Unity 2018.3 or later)
+
+Find the manifest.json file in the Packages folder of your project and edit it to look like this:
+```js
+{
+ "dependencies": {
+ "com.sologamer.trickengineunity.upm": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM",
+ ...
+ },
+}
+```
+
+
+
 ## TrickGame
 
 TODO readme: UIManager
