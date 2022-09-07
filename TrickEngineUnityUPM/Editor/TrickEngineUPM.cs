@@ -14,7 +14,7 @@ public class TrickEngineUPM : EditorWindow
 {
     public static TrickEngineUPM Instance { get; set; }
 
-    private Dictionary<string, Request> ActiveRequests = new Dictionary<string, Request>();
+    private static Dictionary<string, Request> ActiveRequests = new Dictionary<string, Request>();
 
     private Dictionary<string, TrickEnginePackage> _packageData =
         new Dictionary<string, TrickEnginePackage>();
@@ -44,8 +44,7 @@ public class TrickEngineUPM : EditorWindow
     [UnityEditor.Callbacks.DidReloadScripts]
     private static void OnScriptsReloaded()
     {
-        if (Instance != null)
-            Instance.FetchPackages();
+        if (Instance != null) Instance.FetchPackages();
     }
 
     private void OnEnable()
@@ -201,13 +200,17 @@ public class TrickEngineUPM : EditorWindow
 
             ProcessPackageKey();
 #endif
-            
-            if (ActiveRequests.Count == 1)
-                EditorApplication.update += Progress;
         }
         
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
+        
+        if (ActiveRequests.Count > 0 && ActiveRequests.All(request => request.Value.Status != StatusCode.InProgress))
+        {
+            Instance.FetchPackages();
+            ActiveRequests.Clear();
+            Instance.ProcessPackageKey();
+        }
     }
 
     private void ProcessPackageKey()
@@ -224,10 +227,6 @@ public class TrickEngineUPM : EditorWindow
                 ActiveRequests["add_or_remove"] = Client.Remove(key);
                 if (removeList.Count > 0) EditorPrefs.SetString($"{upmKey}Remove", JsonConvert.SerializeObject(removeList));
                 if (removeList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Remove");
-                
-                if (ActiveRequests.Count == 1)
-                    EditorApplication.update += Progress;
-                
                 return;
             }
         }
@@ -242,9 +241,6 @@ public class TrickEngineUPM : EditorWindow
                 ActiveRequests["add_or_remove"] = Client.Add(key);
                 if (addList.Count > 0) EditorPrefs.SetString($"{upmKey}Add", JsonConvert.SerializeObject(addList));
                 if (addList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Add");
-                
-                if (ActiveRequests.Count == 1)
-                    EditorApplication.update += Progress;
             }
         }
         
@@ -266,8 +262,6 @@ public class TrickEngineUPM : EditorWindow
         send.completed += _ =>
         {
             SetPackageList(JsonConvert.DeserializeObject<Dictionary<string, object>>(packageList.downloadHandler.text));
-            
-            ProcessPackageKey();
         };
     }
 
@@ -304,27 +298,6 @@ public class TrickEngineUPM : EditorWindow
             .Replace("github.com", "raw.githubusercontent.com")
             .Replace(".git?path=", "/main/")
             ;
-    }
-
-
-    private static void Progress()
-    {
-        if (Instance == null)
-        {
-            EditorApplication.update -= Progress;
-            return;
-        }
-        if (Instance.ActiveRequests.Count > 0)
-        {
-            if (Instance.ActiveRequests.All(request => request.Value.Status != StatusCode.InProgress))
-            {
-                Instance.FetchPackages();
-                Instance.ActiveRequests.Clear();
-                Instance.ProcessPackageKey();
-            }
-            if (Instance.ActiveRequests.Count == 0)
-                EditorApplication.update -= Progress;
-        }
     }
 }
 
