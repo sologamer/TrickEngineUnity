@@ -1,8 +1,8 @@
 {
-   "name":"com.sologamer.trickengineunity.time",
+   "name":"com.sologamer.trickengineunity.firebase",
    "version":"0.0.1",
-   "displayName":"Trick Engine Unity - Time",
-   "description":"TrickEngineUnity Time Module",
+   "displayName":"Trick Engine Unity - FireBase",
+   "description":"TrickEngineUnity FireBase Module",
    "unity":"2020.1",
    "unityRelease":"0f1",
    "documentationUrl":"https://github.com/sologamer/TrickEngineUnity",

@@ -1,8 +1,8 @@
 {
-   "name":"com.sologamer.trickengineunity.core",
+   "name":"com.sologamer.trickengineunity.rest",
    "version":"0.0.1",
-   "displayName":"Trick Engine Unity - Core",
-   "description":"TrickEngineUnity Core Module",
+   "displayName":"Trick Engine Unity - REST",
+   "description":"TrickEngineUnity REST Module",
    "unity":"2020.1",
    "unityRelease":"0f1",
    "documentationUrl":"https://github.com/sologamer/TrickEngineUnity",

@@ -3,5 +3,13 @@
 	"Randomizer" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickRandomizer",
 	"DropTable" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickDropTable",
 	"REST" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickREST",
-	"Time" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickTime"
+	"Time" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickTime",
+	"TrickGame" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickGame",
+	"TrickAddressables" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickAddressables",
+	"TrickBuilder" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickBuilder",
+	"TrickDatabase" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickDatabase",
+	"TrickFirebase" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickFirebase",
+	"TrickLogin" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickLogin",
+	"TrickSocketIO" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickSocketIO",
+	"TrickWebGL" : "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickWebGL"
 }
