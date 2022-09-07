@@ -17,7 +17,10 @@ namespace TrickCore
         /// <param name="payload"></param>
         void SendMessageSecure(string eventName, object payload)
         {
-            var message = (eventName, payload);
+            var message = new
+            {
+                eventName, payload
+            };
             // Encrypt the message
             KeyExchange.EncryptMessage(KeyExchange.GetMySharedKey(), Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)), out var encrypt);
             // Convert the encrypted message to base64, since it's a binary buffer.
