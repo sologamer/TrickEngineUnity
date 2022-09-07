@@ -22,8 +22,5 @@
       "name":"Tuan",
       "email":"tuan1992_10@hotmail.com",
       "url":"https://github.com/sologamer"
-   },
-   "dependencies":{
-    "com.sologamer.trickengineunity.randomizer": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngine/TrickRandomizer#latest"
    }
 }

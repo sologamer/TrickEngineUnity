@@ -1,0 +1,26 @@
+{
+   "name":"com.sologamer.trickengineunity.socketio",
+   "version":"0.0.1",
+   "displayName":"Trick Engine Unity - Socket IO",
+   "description":"TrickEngineUnity Socket IO Module",
+   "unity":"2020.1",
+   "unityRelease":"0f1",
+   "documentationUrl":"https://github.com/sologamer/TrickEngineUnity",
+   "changelogUrl":"https://github.com/sologamer/TrickEngineUnity",
+   "licensesUrl":"https://github.com/sologamer/TrickEngineUnity/blob/main/LICENSE",
+   "repository": {
+	  "type": "git",
+	  "url": "git+https://github.com/sologamer/TrickEngineUnity.git"
+	},
+   "keywords":[
+      "TrickEngine",
+      "TrickEngineUnity",
+      "Unity",
+      "Unity 3D"
+   ],
+   "author":{
+      "name":"Tuan",
+      "email":"tuan1992_10@hotmail.com",
+      "url":"https://github.com/sologamer"
+   }
+}

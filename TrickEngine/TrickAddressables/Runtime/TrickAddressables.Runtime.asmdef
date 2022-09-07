@@ -1,0 +1,25 @@
+{
+    "name": "TrickAddressables.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0efe1f0175bcd1b4b9b98e062a2cbadc",
+        "GUID:8cc0a9924e5856d4982b19af0e96ee02",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:84651a3751eca9349aac36a66bba901b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "1.0.0",
+            "define": "UNITY_ADDRESSABLES"
+        }
+    ],
+    "noEngineReferences": false
+}
