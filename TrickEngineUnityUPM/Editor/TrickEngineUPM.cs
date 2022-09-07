@@ -318,7 +318,7 @@ public class TrickEngineUPM : EditorWindow
             {
                 Instance.FetchPackages();
                 Instance.ActiveRequests.Clear();
-                ProcessPackageKey();
+                Instance.ProcessPackageKey();
             }
             if (Instance.ActiveRequests.Count == 0)
                 EditorApplication.update -= Progress;
