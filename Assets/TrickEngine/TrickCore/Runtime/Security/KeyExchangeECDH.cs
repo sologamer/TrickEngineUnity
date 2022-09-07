@@ -54,6 +54,7 @@ namespace TrickCore
             get
             {
                 if (_cachedIsExchanged) return true;
+                if (_targetSharedKey == null) return false;
                 bool isSame = _mySharedKey.SequenceEqual(_targetSharedKey);
                 if (isSame) _cachedIsExchanged = true;
                 return _cachedIsExchanged;

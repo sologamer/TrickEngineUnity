@@ -32,22 +32,25 @@ namespace TrickCore
         /// Gets the encrypted message as a byte array, null if message is failed or no key exchange failed.
         /// </summary>
         /// <param name="base64">The buffer encoded in base64</param>
+        /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>The json string of the payload</returns>
-        byte[] GetMessageFromBase64AsBuffer(string base64) => KeyExchange.IsExchanged ? KeyExchange.DecryptMessage(KeyExchange.GetMySharedKey(), Convert.FromBase64String(base64)) : null;
-        
+        byte[] GetMessageFromBase64AsBuffer(string base64, bool testKeyExchange = true) => !testKeyExchange || KeyExchange.KeyShareFinished ? KeyExchange.DecryptMessage(KeyExchange.GetMySharedKey(), Convert.FromBase64String(base64)) : null;
+
         /// <summary>
         /// Gets the encrypted message as a string, null if message is failed or no key exchange failed.
         /// </summary>
         /// <param name="base64">The buffer encoded in base64</param>
+        /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>The json string of the payload</returns>
-        string GetMessageFromBase64AsString(string base64) => GetMessageFromBase64AsBuffer(base64) is {} buffer ? Encoding.UTF8.GetString(buffer) : null;
-        
+        string GetMessageFromBase64AsString(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsBuffer(base64, testKeyExchange) is {} buffer ? Encoding.UTF8.GetString(buffer) : null;
+
         /// <summary>
         /// Gets the encrypted message, null if message is failed or no key exchange failed.
         /// </summary>
         /// <param name="base64">The buffer encoded in base64</param>
+        /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>A friendly object containing the event + the payload</returns>
-        TrickSocketData GetMessageFromBase64(string base64) => GetMessageFromBase64AsString(base64)?.DeserializeJsonTryCatch<TrickSocketData>();
+        TrickSocketData GetMessageFromBase64(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsString(base64, testKeyExchange)?.DeserializeJsonTryCatch<TrickSocketData>();
         
         void Register();
         void OnConnect(ConnectResponse connectResponse);

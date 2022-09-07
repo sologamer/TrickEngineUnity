@@ -86,7 +86,7 @@ namespace TrickCore
             {
                 try
                 {
-                    var message = instance.GetMessageFromBase64(base64);
+                    var message = instance.GetMessageFromBase64(base64, false);
                     if (message is { EventName: nameof(TrickInternalSocketEventType.exchange_finish) })
                     {
                         var payloadData = message.GetPayloadAs<Dictionary<string, object>>();
@@ -101,6 +101,8 @@ namespace TrickCore
                                 instance.KeyExchange.GetMySharedKey().SequenceEqual(targetSharedKey))
                             {
                                 instance.KeyExchange.SetTargetSharedKey(targetSharedKey);
+                                
+                                // from now on we can read the encrypted messages quickly
                                 instance.KeyExchange.SetKeyShareFinished();
                                 Debug.Log($"[SocketIO] Key exchange succeed (state={instance.KeyExchange.IsExchanged})");
                             }
@@ -128,8 +130,7 @@ namespace TrickCore
                 {
                     // The message is the stringified data
                     var message = instance.GetMessageFromBase64(base64);
-                    Debug.Log("[SocketIO] Encrypted message: " + message);
-
+                    if (message == null) return;
                     if (autoRegister.Count > 0)
                     {
                         var validEvent = autoRegister.Find(tuple => tuple.Item2.EventName == message.EventName);
