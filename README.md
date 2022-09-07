@@ -9,7 +9,7 @@ The modules are flexible and some can be completely removed if you ain't using i
 #### Install Using Unity Package Manager
 Open the Package Manager->"Add package from git URL..." and add this url:
 
-https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM
+https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngineUnityUPM
 
 
 #### Install Using Git (for Unity 2018.3 or later)
@@ -18,7 +18,7 @@ Find the manifest.json file in the Packages folder of your project and edit it t
 ```js
 {
  "dependencies": {
- "com.sologamer.trickengineunity.upm": "https://github.com/sologamer/TrickEngineUnity.git?path=TrickEngineUnityUPM",
+ "com.sologamer.trickengineunity.upm": "https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngineUnityUPM",
  ...
  },
 }
