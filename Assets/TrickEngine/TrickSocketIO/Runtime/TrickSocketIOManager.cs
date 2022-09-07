@@ -6,6 +6,7 @@ using System.Text;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
 using BestHTTP.SocketIO3.Parsers;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace TrickCore
@@ -37,69 +38,130 @@ namespace TrickCore
             socket.On<ConnectResponse>(SocketIOEventTypes.Connect, instance.OnConnect);
             socket.On(SocketIOEventTypes.Disconnect, instance.OnDisconnect);
         
+            var autoRegister = instance.GetType()
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Select(info => (info, info.GetAttribute<SocketIOEventAttribute>()))
+                .Where(tuple => tuple.Item2 != null)
+                .ToList();
+
             // exchange message, received from the SERVER
-            socket.On<Dictionary<string,object>>("exchange", dict =>
+            socket.On<Dictionary<string,object>>(nameof(TrickInternalSocketEventType.exchange_start), dict =>
             {
-                if (dict.TryGetValue("pub", out var keyObj) && keyObj is string serverPub)
+                try
                 {
+                    if (!dict.TryGetValue("pub", out var keyObj) || keyObj is not string serverPub) return;
                     // Create a new key exchange instance, this is invoked whenever we connect to the server.
                     instance.KeyExchange = new KeyExchangeECDH();
                     instance.KeyExchange.Initialize();
-                    Debug.Log($"CLIENT PUB ({instance.KeyExchange.GetMyPublicKey().Length}): " + instance.KeyExchange.GetMyPublicKey().ByteArrayToHexViaLookup32());
+
                     var serverPubKey = Convert.FromBase64String(serverPub);
                     var myPublicKey = Convert.ToBase64String(instance.KeyExchange.GetMyPublicKey());
-                    Debug.Log($"SERVER PUB ({serverPubKey.Length}): " + serverPubKey.ByteArrayToHexViaLookup32());
                     // We send our public key to the server, so they can create their shared secret too.
-                    socket.Emit("exchange", myPublicKey);
+                    socket.Emit(nameof(TrickInternalSocketEventType.exchange_start), myPublicKey);
                     // Mark the key exchange finished, we now have a shared key
                     instance.KeyExchange.Finish(serverPubKey);
-                    Debug.Log($"SHARED ({instance.KeyExchange.GetMySharedKey().Length}): {instance.KeyExchange.GetMySharedKey().ByteArrayToHexViaLookup32()}");
-                    
-                    // Test send encrypted message to the server, they can decrypt it now if they have generated their shared key
-                    // The idea is that the message contains an eventName + the event's payload, so we can basically invoke 'functions' to the server securely.
-                    var test = new
-                    {
-                        eventName = "random_event",
-                        payload = new
-                        {
-                            a = 1,
-                            b = "yo",
-                        },
-                    };
-                    // Encrypt the message
-                    instance.KeyExchange.EncryptMessage(instance.KeyExchange.GetMySharedKey(),
-                        Encoding.UTF8.GetBytes(test.SerializeToJson(false, true)), out var encrypt);
-                    // Convert the encrypted message to base64, since it's a binary buffer.
-                    socket.Emit("enc", System.Convert.ToBase64String(encrypt));
-                }
-            });
-            // We have received something ENCRYPTED from the server, lets decrypt it here!
-            socket.On<string>("enc", base64 =>
-            {
-                var decrypted = instance.KeyExchange.DecryptMessage(instance.KeyExchange.GetMySharedKey(), Convert.FromBase64String(base64));
-                Debug.Log(Encoding.UTF8.GetString(decrypted));
-            });
-            
-            socket.On<Dictionary<string,object>>("req", dict =>
-            {
-                if (dict.TryGetValue("payload", out var payloadObj) && payloadObj is string payload)
-                {
-                    Debug.Log("REQ PAYLOAD: " + payload);
-                    //Debug.Log("DECRYPT: " + TrickAES.Decrypt(payload, instance.AesKey));
-                }
-            });
-            
-            var autoRegister = instance.GetType()
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(info => info.GetAttribute<SocketIOEventAttribute>() != null)
-                .ToList();
 
+                    // For debugging purposes
+                    //Debug.Log($"CLIENT PUB ({instance.KeyExchange.GetMyPublicKey().Length}): " + instance.KeyExchange.GetMyPublicKey().ByteArrayToHexViaLookup32());
+                    //Debug.Log($"SERVER PUB ({serverPubKey.Length}): " + serverPubKey.ByteArrayToHexViaLookup32());
+                    //Debug.Log($"SHARED ({instance.KeyExchange.GetMySharedKey().Length}): {instance.KeyExchange.GetMySharedKey().ByteArrayToHexViaLookup32()}");
+
+                    // Encrypt the message, sending the socket id to the target + the shared secret.
+                    // The opposite client will DECRYPT the message, compare their using their shared key, and equal test if these properties are equal.
+                    // If yes, they continue communicating, otherwise abort connection. 
+                    instance.SendMessageSecure(nameof(TrickInternalSocketEventType.exchange_finish), new
+                    {
+                        socketId = socket.Id,
+                        sharedSecret = Convert.ToBase64String(instance.KeyExchange.GetMySharedKey()),
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
+            });
+            
+            // We have received something ENCRYPTED from the server, lets decrypt it here!
+            socket.On<string>(nameof(TrickInternalSocketEventType.exchange_finish), base64 =>
+            {
+                try
+                {
+                    var message = instance.GetMessageFromBase64(base64);
+                    if (message is { EventName: nameof(TrickInternalSocketEventType.exchange_finish) })
+                    {
+                        var payloadData = message.GetPayloadAs<Dictionary<string, object>>();
+                        if (payloadData != null &&
+                            payloadData.TryGetValue("socketId", out var socketId) &&
+                            payloadData.TryGetValue("sharedSecret", out var sharedSecret))
+                        {
+                            var targetSharedKey = Convert.FromBase64String($"{sharedSecret}");
+                        
+                            // check if key exchange succeeded
+                            if (Equals(socket.Id, socketId) &&
+                                instance.KeyExchange.GetMySharedKey().SequenceEqual(targetSharedKey))
+                            {
+                                instance.KeyExchange.SetTargetSharedKey(targetSharedKey);
+                                instance.KeyExchange.SetKeyShareFinished();
+                                Debug.Log($"[SocketIO] Key exchange succeed (state={instance.KeyExchange.IsExchanged})");
+                            }
+                            else
+                            {
+                                Debug.Log("[SocketIO] Key exchange failed");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (message != null) Debug.Log("[SocketIO] unhandled message: " + message.EventName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
+            });
+            
+            // We have received something ENCRYPTED from the server, lets decrypt it here!
+            socket.On<string>(nameof(TrickInternalSocketEventType.enc), base64 =>
+            {
+                try
+                {
+                    // The message is the stringified data
+                    var message = instance.GetMessageFromBase64(base64);
+                    Debug.Log("[SocketIO] Encrypted message: " + message);
+
+                    if (autoRegister.Count > 0)
+                    {
+                        var validEvent = autoRegister.Find(tuple => tuple.Item2.EventName == message.EventName);
+                        if (validEvent.info != null)
+                        {
+                            // Let's invoke it here
+                            var parameters = validEvent.info.GetParameters();
+                            if (parameters.Length == 0)
+                                validEvent.info.Invoke(instance, null);
+                            else if (parameters.Length == 1)
+                                validEvent.info.Invoke(instance, new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                            else
+                                Debug.LogError($"Event of name {message.EventName} not registered!");
+                        }
+                        else
+                        {
+                            Debug.LogError($"Event of name {message.EventName} not registered!");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
+            });
+            
             if (autoRegister.Count > 0)
             {
                 if (typeof(Socket).GetField(nameof(TypedEventTable), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)?.GetValue(socket) is TypedEventTable eventTable)
                 {
                     // support auto register methods, for cleanliness, possible to optimize this
-                    foreach (MethodInfo info in autoRegister)
+                    foreach (var (info, socketIOEventAttribute) in autoRegister)
                     {
                         Debug.Log("Auto register method: " + info.Name);
                         var attribute = info.GetAttribute<SocketIOEventAttribute>();
@@ -119,24 +181,5 @@ namespace TrickCore
         
             return instance;
         }
-    }
-
-    public class SocketIOEventAttribute : Attribute
-    {
-        public string EventName { get; }
-
-        public SocketIOEventAttribute(string eventName)
-        {
-            EventName = eventName;
-        }
-    }
-
-    public interface ITrickSocketInstance
-    {
-        public Socket CurrentSocket { get; set; }
-        public IKeyExchange KeyExchange { get; set; }
-        void Register();
-        void OnConnect(ConnectResponse connectResponse);
-        void OnDisconnect();
     }
 }
