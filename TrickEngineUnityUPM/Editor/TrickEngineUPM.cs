@@ -87,7 +87,7 @@ public class TrickEngineUPM : EditorWindow
                     if (GUILayout.Button("Remove", GUILayout.Width(120)))
                     {
                         RemoveList.Add(packageData);
-                        Debug.Log("Remove: " + pair.Value);
+                        Debug.Log($"Remove: {pair.Value}");
                     }
                 }
                 else
@@ -95,7 +95,7 @@ public class TrickEngineUPM : EditorWindow
                     if (GUILayout.Button("Add", GUILayout.Width(120)))
                     {
                         AddList.Add(packageData);
-                        Debug.Log("Add: " + pair.Value);
+                        Debug.Log($"Add: {pair.Value}");
                     }
                 }
             }
@@ -184,9 +184,23 @@ public class TrickEngineUPM : EditorWindow
 
         if ((AddList.Count > 0 || RemoveList.Count > 0) && GUILayout.Button("Execute"))
         {
+#if UNITY_2021_1_OR_NEWER
             ActiveRequests["add_or_remove"] = Client.AddAndRemove(
                 AddList.Select(package => package.downloadPath).ToArray(),
                 RemoveList.Select(package => package.name).ToArray());
+#else
+            var upmKey = $"{Application.dataPath}UPM";
+            
+            // Remove first
+            var removeArr = RemoveList.Select(package => package.downloadPath).ToArray();
+            if (removeArr.Length > 0) EditorPrefs.SetString($"{upmKey}Remove", JsonConvert.SerializeObject(removeArr));
+            
+            // Add after
+            var addArr = AddList.Select(package => package.downloadPath).ToArray();
+            if (addArr.Length > 0) EditorPrefs.SetString($"{upmKey}Add", JsonConvert.SerializeObject(addArr));
+
+            ProcessPackageKey();
+#endif
             
             if (ActiveRequests.Count == 1)
                 EditorApplication.update += Progress;
@@ -194,6 +208,37 @@ public class TrickEngineUPM : EditorWindow
         
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
+    }
+
+    private void ProcessPackageKey()
+    {
+        var upmKey = $"{Application.dataPath}UPM";
+        
+        if (EditorPrefs.HasKey($"{upmKey}Remove"))
+        {
+            var removeList = JsonConvert.DeserializeObject<List<string>>(EditorPrefs.GetString($"{upmKey}Remove"));
+            if (removeList != null && removeList.Count > 0)
+            {
+                var key = removeList[0];
+                removeList.RemoveAt(0);
+                ActiveRequests["add_or_remove"] = Client.Remove(key);
+                if (removeList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Remove");
+                return;
+            }
+        }
+        
+        if (EditorPrefs.HasKey($"{upmKey}Add"))
+        {
+            var addList = JsonConvert.DeserializeObject<List<string>>(EditorPrefs.GetString($"{upmKey}Add"));
+            if (addList != null && addList.Count > 0)
+            {
+                var key = addList[0];
+                addList.RemoveAt(0);
+                ActiveRequests["add_or_remove"] = Client.Add(key);
+                if (addList.Count == 0) EditorPrefs.DeleteKey($"{upmKey}Add");
+            }
+        }
+        
     }
 
     private void InitializeWindow()
@@ -209,7 +254,12 @@ public class TrickEngineUPM : EditorWindow
         // https://raw.githubusercontent.com/sologamer/TrickEngineUnity/main/TrickEngine/TrickCore/package.json
         var packageList = UnityWebRequest.Get(packageListUrl);
         var send = packageList.SendWebRequest();
-        send.completed += _ => SetPackageList(Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(packageList.downloadHandler.text));
+        send.completed += _ =>
+        {
+            SetPackageList(JsonConvert.DeserializeObject<Dictionary<string, object>>(packageList.downloadHandler.text));
+            
+            ProcessPackageKey();
+        };
     }
 
     
