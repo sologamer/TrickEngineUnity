@@ -46,7 +46,7 @@ public class AnimatedLayoutGroup : MonoBehaviour
         if (_parent != null)
         {
             var parentTransform = _parent.transform;
-            List<(Transform child, AnimatedLayoutLink link)> parentChilds = new(parentTransform.childCount);
+            List<(Transform child, AnimatedLayoutLink link)> parentChilds = new List<(Transform child, AnimatedLayoutLink link)>(parentTransform.childCount);
             for (int i = 0; i < parentTransform.childCount; i++)
             {
                 var child = parentTransform.GetChild(i);
@@ -55,7 +55,7 @@ public class AnimatedLayoutGroup : MonoBehaviour
 
             var clonedTransform = transform;
             var clonedChildCount = clonedTransform.childCount;
-            List<(Transform child, AnimatedLayoutLink link)> clonedChilds = new(clonedChildCount);
+            List<(Transform child, AnimatedLayoutLink link)> clonedChilds = new List<(Transform child, AnimatedLayoutLink link)>(clonedChildCount);
             for (int i = 0; i < clonedChildCount; i++)
             {
                 var child = clonedTransform.GetChild(i);
@@ -84,8 +84,7 @@ public class AnimatedLayoutGroup : MonoBehaviour
                         var clonedChild = Instantiate(child.gameObject, _tr);
                         clonedChild.GetComponentsInChildren<MonoBehaviour>(true)
                             .Where(component =>
-                                component is not (LayoutGroup or LayoutElement or ContentSizeFitter
-                                    or AnimatedLayoutGroup)).ToList().ForEach(Destroy);
+                               !(component is LayoutGroup || component is LayoutElement || component is ContentSizeFitter || component is AnimatedLayoutGroup)).ToList().ForEach(Destroy);
                         
                         // link it
                         link = child.gameObject.AddComponent<AnimatedLayoutLink>();
@@ -114,7 +113,7 @@ public class AnimatedLayoutGroup : MonoBehaviour
         _cloned._parent = this;
         _cloned.Settings = Settings;
         _cloned.GetComponentsInChildren<MonoBehaviour>(true)
-            .Where(component => component is not (LayoutGroup or LayoutElement or ContentSizeFitter or AnimatedLayoutGroup)).ToList().ForEach(Destroy);
+            .Where(component => !(component is LayoutGroup || component is LayoutElement || component is ContentSizeFitter || component is AnimatedLayoutGroup)).ToList().ForEach(Destroy);
         gameObject.SetActive(true);
         _cloned.Sync();
         enabled = true;
