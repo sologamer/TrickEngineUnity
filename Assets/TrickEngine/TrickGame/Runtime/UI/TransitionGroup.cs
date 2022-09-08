@@ -7,10 +7,24 @@ namespace TrickCore
     [Serializable]
     public class TransitionGroup
     {
+        /// <summary>
+        /// The panel transform of the menu, used for smooth menu transitions
+        /// </summary>
+        public RectTransform TransitionPanelTransform;
+
+        /// <summary>
+        /// Delay for the fade
+        /// </summary>
+        public float Delay;
+        
+        /// <summary>
+        /// Tween settings for transition IN
+        /// </summary>
+        [Header("Transition")]
         public TweenSettings TransitionInSettings;
     
         /// <summary>
-        /// Tween settings for fading in when hiding the menu
+        /// Tween settings for transition OUT
         /// </summary>
         public TweenSettings TransitionOutSettings;
             
@@ -24,15 +38,12 @@ namespace TrickCore
         /// </summary>
         public TrickTransitionDirection TransitionDirectionOut;
     
-        /// <summary>
-        /// The panel transform of the menu, used for smooth menu transitions
-        /// </summary>
-        public RectTransform TransitionPanelTransform;
-
+        
         /// <summary>
         /// If enabled, we fade the transition panel. 
         /// </summary>
-        public FadeEnableType TransitionPanelFading = FadeEnableType.Off;
+        [Header("Fading")]
+        public FadeEnableType PanelFading = FadeEnableType.Off;
 
         /// <summary>
         /// Transition fade in
@@ -43,10 +54,5 @@ namespace TrickCore
         /// Transition fade out
         /// </summary>
         public TweenSettings FadeOutSettings;
-
-        /// <summary>
-        /// Delay for the fade
-        /// </summary>
-        public float Delay;
     }
 }

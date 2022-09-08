@@ -445,7 +445,7 @@ namespace TrickCore
         }
 
         public static void TransitionIn(this RectTransform registerRoot, TweenSettings tweenSettings,
-            TrickTransitionDirection direction, Action completeCallback = null)
+            TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
             if (registerRoot == null) return;
             var visualHelper = registerRoot.GetComponent<TrickVisualHelper>();
@@ -464,25 +464,25 @@ namespace TrickCore
                     rt.anchoredPosition = new Vector2(-siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y);
                     visualHelper.TransitionRoutine = rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Top:
                     rt.anchoredPosition = new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2);
                     visualHelper.TransitionRoutine = rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Right:
                     rt.anchoredPosition = new Vector2(siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y);
                     visualHelper.TransitionRoutine = rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Bottom:
                     rt.anchoredPosition = new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2);
                     visualHelper.TransitionRoutine = rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
@@ -490,13 +490,13 @@ namespace TrickCore
         }
 
         public static void TransitionIn(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
-            TrickTransitionDirection direction, Action completeCallback = null)
+            TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            TransitionIn((RectTransform)registerRoot.transform, tweenSettings, direction, completeCallback);
+            TransitionIn((RectTransform)registerRoot.transform, tweenSettings, direction, delay, completeCallback);
         }
 
         public static void TransitionOut(this RectTransform registerRoot, TweenSettings tweenSettings,
-            TrickTransitionDirection direction, Action completeCallback = null)
+            TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
             if (registerRoot == null) return;
 
@@ -515,22 +515,22 @@ namespace TrickCore
                 case TrickTransitionDirection.Left:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
                     visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(-siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Top:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
                     visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2), tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Right:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
                     visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Bottom:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
                     visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2), tweenSettings)
-                        .OnComplete(completeCallback).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
@@ -538,9 +538,9 @@ namespace TrickCore
         }
 
         public static void TransitionOut(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
-            TrickTransitionDirection direction, Action completeCallback = null)
+            TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            TransitionOut((RectTransform)registerRoot.transform, tweenSettings, direction, completeCallback);
+            TransitionOut((RectTransform)registerRoot.transform, tweenSettings, direction, delay, completeCallback);
         }
     }
 
