@@ -514,22 +514,22 @@ namespace TrickCore
                     break;
                 case TrickTransitionDirection.Left:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(-siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
                         .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Top:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2), tweenSettings)
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y), tweenSettings)
                         .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Right:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(siz.x * 2, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
                         .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 case TrickTransitionDirection.Bottom:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2), tweenSettings)
+                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y), tweenSettings)
                         .OnComplete(completeCallback).DelayBy(delay).Play();
                     break;
                 default:
