@@ -43,7 +43,12 @@ namespace TrickCore
         /// The panel transform of the menu, used for smooth menu transitions
         /// </summary>
         public RectTransform TransitionPanelTransform;
-    
+
+        /// <summary>
+        /// If enabled, we fade the transition panel instead, otherwise we fade the whole menu (root)
+        /// </summary>
+        public bool TransitionPanelFading = true;
+        
         /// <summary>
         /// Handle screen size scaling
         /// </summary>
@@ -266,12 +271,17 @@ namespace TrickCore
                     TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
                     InternalShow();
                 });
+                
+                if (TransitionPanelFading)
+                    TransitionPanelTransform.FadeIn(ShowFadeInSettings);
+                else
+                    FadeIn(ShowFadeInSettings);
             }
             else
             {
                 InternalShow();
+                FadeIn(ShowFadeInSettings);
             }
-            FadeIn(ShowFadeInSettings);
 
             void InternalShow()
             {
@@ -314,7 +324,7 @@ namespace TrickCore
                 TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
                 TransitionPanelTransform.TransitionOut(TransitionTweenSettings, TransitionDirectionOut, () =>
                 {
-                    FadeOut(HideFadeOutSettings, null, InternalHide);
+                    TransitionPanelTransform.FadeOut(HideFadeOutSettings, completeAction: InternalHide);
                     TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
                 });
             }
