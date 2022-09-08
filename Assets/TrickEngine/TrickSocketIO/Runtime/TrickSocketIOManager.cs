@@ -27,7 +27,14 @@ namespace TrickCore
             if (ActiveConnection.State == SocketManager.States.Initial) ActiveConnection.Open();
         }
 
-        public T RegisterSocketInstance<T>(string nsp) where T : ITrickSocketInstance, new()
+        /// <summary>
+        /// Registers a socket instance
+        /// </summary>
+        /// <param name="nsp"></param>
+        /// <param name="handshakeCompleteAction">A callback of the current created instance and a result of the handshake completion</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T RegisterSocketInstance<T>(string nsp, Action<T, bool> handshakeCompleteAction) where T : TrickSocketInstance, new()
         {
             var instance = new T();
             var socket = ActiveConnection.GetSocket(nsp);
@@ -84,6 +91,12 @@ namespace TrickCore
             // We have received something ENCRYPTED from the server, lets decrypt it here!
             socket.On<string>(nameof(TrickInternalSocketEventType.exchange_finish), base64 =>
             {
+                // Ignore any further key exchange calls.
+                if (instance.KeyExchange.KeyShareFinished)
+                {
+                    Debug.LogError($"[SocketIO] Key exchange already done!");
+                    return;
+                }
                 try
                 {
                     var message = instance.GetMessageFromBase64(base64, false);
@@ -105,21 +118,25 @@ namespace TrickCore
                                 // from now on we can read the encrypted messages quickly
                                 instance.KeyExchange.SetKeyShareFinished();
                                 Debug.Log($"[SocketIO] Key exchange succeed (state={instance.KeyExchange.IsExchanged})");
+                                handshakeCompleteAction?.Invoke(instance, true);
                             }
                             else
                             {
                                 Debug.Log("[SocketIO] Key exchange failed");
+                                handshakeCompleteAction?.Invoke(instance, false);
                             }
                         }
                     }
                     else
                     {
                         if (message != null) Debug.Log("[SocketIO] unhandled message: " + message.EventName);
+                        handshakeCompleteAction?.Invoke(instance, false);
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.LogException(ex);
+                    handshakeCompleteAction?.Invoke(instance, false);
                 }
             });
             

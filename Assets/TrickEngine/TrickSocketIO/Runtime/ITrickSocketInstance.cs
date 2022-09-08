@@ -2,10 +2,14 @@ using System;
 using System.Text;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
+using UnityEngine;
 
 namespace TrickCore
 {
-    public interface ITrickSocketInstance
+    /// <summary>
+    /// The socket instance connected to a certain namespace on a socket.io host
+    /// </summary>
+    public abstract class TrickSocketInstance
     {
         public Socket CurrentSocket { get; set; }
         public IKeyExchange KeyExchange { get; set; }
@@ -16,14 +20,20 @@ namespace TrickCore
         /// <param name="eventName">The wrapped event name</param>
         /// <param name="payload">The payload data</param>
         /// <param name="rootEventName">The root event name, this is the socket.On('rootEventName', () => {action})</param>
-        void SendMessageSecure(string eventName, object payload, string rootEventName = nameof(TrickInternalSocketEventType.enc))
+        public void SendMessageSecure(string eventName, object payload, string rootEventName = nameof(TrickInternalSocketEventType.enc))
         {
             var message = new
             {
                 eventName, payload
             };
             // Encrypt the message
-            KeyExchange.EncryptMessage(KeyExchange.GetMySharedKey(), Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)), out var encrypt);
+            var sharedKey = KeyExchange.GetMySharedKey();
+            if (sharedKey == null || sharedKey.Length == 0)
+            {
+                Debug.LogError("[SocketIO] Unable to send a secure message, no shared key generated yet!");
+                return;
+            }
+            KeyExchange.EncryptMessage(sharedKey, Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)), out var encrypt);
             // Convert the encrypted message to base64, since it's a binary buffer.
             CurrentSocket.Emit(rootEventName, Convert.ToBase64String(encrypt));
         }
@@ -34,7 +44,7 @@ namespace TrickCore
         /// <param name="base64">The buffer encoded in base64</param>
         /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>The json string of the payload</returns>
-        byte[] GetMessageFromBase64AsBuffer(string base64, bool testKeyExchange = true) => !testKeyExchange || KeyExchange.KeyShareFinished ? KeyExchange.DecryptMessage(KeyExchange.GetMySharedKey(), Convert.FromBase64String(base64)) : null;
+        public byte[] GetMessageFromBase64AsBuffer(string base64, bool testKeyExchange = true) => !testKeyExchange || KeyExchange.KeyShareFinished ? KeyExchange.DecryptMessage(KeyExchange.GetMySharedKey(), Convert.FromBase64String(base64)) : null;
 
         /// <summary>
         /// Gets the encrypted message as a string, null if message is failed or no key exchange failed.
@@ -42,7 +52,7 @@ namespace TrickCore
         /// <param name="base64">The buffer encoded in base64</param>
         /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>The json string of the payload</returns>
-        string GetMessageFromBase64AsString(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsBuffer(base64, testKeyExchange) is {} buffer ? Encoding.UTF8.GetString(buffer) : null;
+        public string GetMessageFromBase64AsString(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsBuffer(base64, testKeyExchange) is {} buffer ? Encoding.UTF8.GetString(buffer) : null;
 
         /// <summary>
         /// Gets the encrypted message, null if message is failed or no key exchange failed.
@@ -50,10 +60,10 @@ namespace TrickCore
         /// <param name="base64">The buffer encoded in base64</param>
         /// <param name="testKeyExchange">Test key exchange is required to decrypt the message</param>
         /// <returns>A friendly object containing the event + the payload</returns>
-        TrickSocketData GetMessageFromBase64(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsString(base64, testKeyExchange)?.DeserializeJsonTryCatch<TrickSocketData>();
+        public TrickSocketData GetMessageFromBase64(string base64, bool testKeyExchange = true) => GetMessageFromBase64AsString(base64, testKeyExchange)?.DeserializeJsonTryCatch<TrickSocketData>();
         
-        void Register();
-        void OnConnect(ConnectResponse connectResponse);
-        void OnDisconnect();
+        public abstract void Register();
+        public abstract void OnConnect(ConnectResponse connectResponse);
+        public abstract void OnDisconnect();
     }
 }
