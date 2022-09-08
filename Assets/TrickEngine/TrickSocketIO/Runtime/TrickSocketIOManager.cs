@@ -89,7 +89,7 @@ namespace TrickCore
             var autoRegister = socketEventInjectInstanceList.SelectMany(o => instance.GetType()
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Select(info => (o, info, info.GetAttribute<SocketIOEventAttribute>()))
-                .Where(tuple => tuple.Item2 != null)).ToList();
+                .Where(tuple => tuple.Item3 != null)).ToList();
             
             /*var autoRegister = instance.GetType()
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
