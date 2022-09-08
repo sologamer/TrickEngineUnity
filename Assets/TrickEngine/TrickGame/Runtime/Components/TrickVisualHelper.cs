@@ -396,27 +396,56 @@ namespace TrickCore
             }
         }
 
+
+        /// <summary>
+        /// Shake the object by rotating it
+        /// </summary>
+        /// <param name="mono">The object to shake</param>
+        /// <param name="b">Enabled or not</param>
+        /// <param name="shake">The amount of shakiness</param>
+        /// <param name="pauseDuration">The pause duration between a shake</param>
+        /// <param name="longPauseDuration">The long pause duration for a shake</param>
+        /// <param name="tweenDuration">The shake tweenSettings</param>
+        /// <param name="tweenCurve">The shake tweenSettings</param>
+        /// <param name="loops">Amount of loops before we complete. -1 is for continuous</param>
         public static void Shake(this MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f,
             float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut, int loops = -1)
+        {
+            Shake(mono, b, shake, pauseDuration, longPauseDuration, new TweenSettings(tweenDuration, tweenCurve), loops);
+        }
+        
+        /// <summary>
+        /// Shake the object by rotating it
+        /// </summary>
+        /// <param name="mono">The object to shake</param>
+        /// <param name="b">Enabled or not</param>
+        /// <param name="shake">The amount of shakiness</param>
+        /// <param name="pauseDuration">The pause duration between a shake</param>
+        /// <param name="longPauseDuration">The long pause duration for a shake</param>
+        /// <param name="tweenSettings">The shake tweenSettings</param>
+        /// <param name="loops">Amount of loops before we complete. -1 is for continuous</param>
+        public static void Shake(this MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f,
+            float longPauseDuration = 0.85f, TweenSettings tweenSettings = default, int loops = -1)
         {
             IEnumerator HandleShake()
             {
                 var tr = mono.transform;
                 var go = mono.gameObject;
                 int i = 0;
+                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
                 while (go != null)
                 {
                     yield return Routine.WaitCondition(() => tr == null || go.activeSelf, 0.1f);
                     if (tr == null) yield break;
-                    yield return tr.RotateTo(Vector3.one * shake, new TweenSettings(tweenDuration, tweenCurve), Axis.Z);
+                    yield return tr.RotateTo(Vector3.one * shake, tweenSettings, Axis.Z);
                     yield return Routine.WaitSeconds(pauseDuration);
                     if (tr == null) yield break;
-                    yield return tr.RotateTo(Vector3.one * -shake, new TweenSettings(tweenDuration, tweenCurve),
+                    yield return tr.RotateTo(Vector3.one * -shake, tweenSettings,
                         Axis.Z);
 
                     if (i % 3 == 0)
                     {
-                        yield return tr.RotateTo(Vector3.zero, new TweenSettings(tweenDuration, tweenCurve), Axis.Z);
+                        yield return tr.RotateTo(Vector3.zero, tweenSettings, Axis.Z);
                         if (loops != -1)
                         {
                             loops--;
