@@ -45,9 +45,14 @@ namespace TrickCore
         public RectTransform TransitionPanelTransform;
 
         /// <summary>
-        /// If enabled, we fade the transition panel instead, otherwise we fade the whole menu (root)
+        /// If enabled, we fade the transition panel
         /// </summary>
         public bool TransitionPanelFading = true;
+        
+        /// <summary>
+        /// If enabled, we fade the actual UIMenu object
+        /// </summary>
+        public bool MenuFading = true;
         
         /// <summary>
         /// Handle screen size scaling
@@ -274,13 +279,14 @@ namespace TrickCore
                 
                 if (TransitionPanelFading)
                     TransitionPanelTransform.FadeIn(ShowFadeInSettings);
-                else
+                if (MenuFading)
                     FadeIn(ShowFadeInSettings);
             }
             else
             {
                 InternalShow();
-                FadeIn(ShowFadeInSettings);
+                if (MenuFading)
+                    FadeIn(ShowFadeInSettings);
             }
 
             void InternalShow()
