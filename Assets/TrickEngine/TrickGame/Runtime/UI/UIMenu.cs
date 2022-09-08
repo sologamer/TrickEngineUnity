@@ -259,7 +259,7 @@ namespace TrickCore
                     
                     transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
                     
-                    transition.TransitionPanelTransform.TransitionIn(transition.TransitionTweenSettings, transition.TransitionDirectionIn, () =>
+                    transition.TransitionPanelTransform.TransitionIn(transition.TransitionInSettings, transition.TransitionDirectionIn, () =>
                     {
                         transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
                         
@@ -269,7 +269,7 @@ namespace TrickCore
                     });
                     
                     if (transition.TransitionPanelFading.HasFlag(FadeEnableType.In))
-                        transition.TransitionPanelTransform.FadeIn(ShowFadeInSettings);
+                        transition.TransitionPanelTransform.FadeIn(transition.FadeInSettings);
                 }
                 
                 if (MenuFading.HasFlag(FadeEnableType.In))
@@ -331,12 +331,12 @@ namespace TrickCore
                     }
 
                     transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
-                    transition.TransitionPanelTransform.TransitionOut(transition.TransitionTweenSettings, transition.TransitionDirectionOut, () =>
+                    transition.TransitionPanelTransform.TransitionOut(transition.TransitionOutSettings, transition.TransitionDirectionOut, () =>
                     {
                         if (transition.TransitionPanelFading.HasFlag(FadeEnableType.Out))
                         {
                             // wait for the panel to fade out and count as a complete
-                            transition.TransitionPanelTransform.FadeOut(HideFadeOutSettings, completeAction: () =>
+                            transition.TransitionPanelTransform.FadeOut(transition.FadeOutSettings, completeAction: () =>
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 if (++completed == Transitions.Count) InternalHide();

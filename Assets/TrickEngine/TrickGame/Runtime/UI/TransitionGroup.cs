@@ -25,11 +25,6 @@ namespace TrickCore
         public TrickTransitionDirection TransitionDirectionOut;
     
         /// <summary>
-        /// The time/curve of the transition
-        /// </summary>
-        public TweenSettings TransitionTweenSettings;
-    
-        /// <summary>
         /// The panel transform of the menu, used for smooth menu transitions
         /// </summary>
         public RectTransform TransitionPanelTransform;
