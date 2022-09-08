@@ -3,13 +3,16 @@ using System.Linq;
 using System.Reflection;
 using TrickCore;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using ReorderableList = TrickCore.ReorderableList;
 
 namespace TrickCore
 {
-	[CanEditMultipleObjects]
+	/*
+	 * Currently disabled, due to breaking bugs on old Unity version where List<T> objects won't be shown inside the editor
+	 */
+	/*[CanEditMultipleObjects]
 	[CustomEditor(typeof(Object), true)]
 	public class DropTableEditor : Editor
 	{
@@ -264,5 +267,5 @@ namespace TrickCore
 
 			return enm.Current;
 		}
-	}
+	}*/
 }

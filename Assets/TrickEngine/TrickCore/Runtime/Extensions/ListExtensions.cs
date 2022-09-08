@@ -87,6 +87,7 @@ namespace TrickCore
         
         public static void PoolGetOrInstantiate<T2>(this int numEntries, ref List<T2> currentList, Action<T2, int> onGetCallback, Func<int, T2> instantiateFunc, bool callGetCallbackOnInstantiate = true, bool destroyIfExceedingSourceList = true) where T2 : MonoBehaviour
         {
+            if (currentList == null) currentList = new List<T2>();
             currentList.RemoveAll(behaviour => behaviour == null);
             
             for (int i = 0; i < numEntries; i++)

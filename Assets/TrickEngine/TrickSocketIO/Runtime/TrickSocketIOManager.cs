@@ -27,6 +27,11 @@ namespace TrickCore
         public UnityEvent<SocketManager.States> StateChangeEvent { get; } = new UnityEvent<SocketManager.States>();
         public SocketManager ActiveConnection { get; set; }
 
+        /// <summary>
+        /// Event invoked whenever we receive a message. A way to listen to messages
+        /// </summary>
+        public UnityEvent<TrickSocketData> OnMessageReceived { get; } = new UnityEvent<TrickSocketData>();
+        
         protected override void Initialize()
         {
             base.Initialize();
@@ -62,11 +67,12 @@ namespace TrickCore
         /// <summary>
         /// Registers a socket instance
         /// </summary>
-        /// <param name="nsp"></param>
+        /// <param name="nsp">The socket namespace</param>
         /// <param name="handshakeCompleteAction">A callback of the current created instance and a result of the handshake completion</param>
+        /// <param name="socketEventInjectInstanceList">Additional instances of classes where we want to inject/scan the socket events for</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T RegisterSocketInstance<T>(string nsp, Action<T, bool> handshakeCompleteAction) where T : TrickSocketInstance, new()
+        public T RegisterSocketInstance<T>(string nsp, Action<T, bool> handshakeCompleteAction, List<object> socketEventInjectInstanceList = null) where T : TrickSocketInstance, new()
         {
             var instance = new T();
             var socket = ActiveConnection.GetSocket(nsp);
@@ -76,12 +82,20 @@ namespace TrickCore
         
             socket.On<ConnectResponse>(SocketIOEventTypes.Connect, instance.OnConnect);
             socket.On(SocketIOEventTypes.Disconnect, instance.OnDisconnect);
-        
-            var autoRegister = instance.GetType()
+
+            socketEventInjectInstanceList ??= new List<object>();
+            socketEventInjectInstanceList.Add(instance);
+
+            var autoRegister = socketEventInjectInstanceList.SelectMany(o => instance.GetType()
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Select(info => (o, info, info.GetAttribute<SocketIOEventAttribute>()))
+                .Where(tuple => tuple.Item2 != null)).ToList();
+            
+            /*var autoRegister = instance.GetType()
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Select(info => (info, info.GetAttribute<SocketIOEventAttribute>()))
                 .Where(tuple => tuple.Item2 != null)
-                .ToList();
+                .ToList();*/
 
             // exchange message, received from the SERVER
             socket.On<Dictionary<string,object>>(nameof(TrickInternalSocketEventType.exchange_start), dict =>
@@ -180,17 +194,18 @@ namespace TrickCore
                     // The message is the stringified data
                     var message = instance.GetMessageFromBase64(base64);
                     if (message == null) return;
+                    OnMessageReceived?.Invoke(message);
                     if (autoRegister.Count > 0)
                     {
-                        var validEvent = autoRegister.Find(tuple => tuple.Item2.EventName == message.EventName);
+                        var validEvent = autoRegister.Find(tuple => tuple.Item3.EventName == message.EventName);
                         if (validEvent.info != null)
                         {
                             // Let's invoke it here
                             var parameters = validEvent.info.GetParameters();
                             if (parameters.Length == 0)
-                                validEvent.info.Invoke(instance, null);
+                                validEvent.info.Invoke(validEvent.o, null);
                             else if (parameters.Length == 1)
-                                validEvent.info.Invoke(instance, new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                                validEvent.info.Invoke(validEvent.o, new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
                             else
                                 Debug.LogError($"Event of name {message.EventName} not registered!");
                         }
@@ -206,29 +221,6 @@ namespace TrickCore
                 }
             });
             
-            if (autoRegister.Count > 0)
-            {
-                if (typeof(Socket).GetField(nameof(TypedEventTable), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)?.GetValue(socket) is TypedEventTable eventTable)
-                {
-                    // support auto register methods, for cleanliness, possible to optimize this
-                    foreach (var (info, socketIOEventAttribute) in autoRegister)
-                    {
-                        Debug.Log("Auto register method: " + info.Name);
-                        var attribute = info.GetAttribute<SocketIOEventAttribute>();
-                        var parameters = info.GetParameters();
-                        eventTable.Register(attribute.EventName, parameters.Select(parameterInfo => parameterInfo.ParameterType).ToArray(),
-                            objects =>
-                            {
-                                info.Invoke(instance, objects);
-                            });
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Unable to find the TypedEventTable. Is it being stripped away?");
-                }
-            }
-        
             return instance;
         }
     }
