@@ -56,7 +56,7 @@ namespace TrickCore
 
         public void Close()
         {
-            ActiveConnection.Close();
+            ActiveConnection?.Close();
         }
 
         /// <summary>
