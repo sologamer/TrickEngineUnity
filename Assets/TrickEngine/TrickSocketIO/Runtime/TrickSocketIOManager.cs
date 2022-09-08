@@ -3,17 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using BeauRoutine;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
 using BestHTTP.SocketIO3.Parsers;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TrickCore
 {
     public class TrickSocketIOManager : MonoSingleton<TrickSocketIOManager>
     {
+        /// <summary>
+        /// The amount of times we poll per second locally for state changes.
+        /// </summary>
+        public float ConnectionStatePollRate = 10.0f;
+
         private readonly IParser _defaultParser = new DefaultJsonParser();
+        private Routine _connectionUpdater;
+        private SocketManager.States? _lastState = null;
+
+        public UnityEvent<SocketManager.States> StateChangeEvent { get; } = new UnityEvent<SocketManager.States>();
         public SocketManager ActiveConnection { get; set; }
 
         protected override void Initialize()
@@ -25,6 +36,27 @@ namespace TrickCore
         {
             ActiveConnection = new SocketManager(uri, _defaultParser, options);
             if (ActiveConnection.State == SocketManager.States.Initial) ActiveConnection.Open();
+
+            _connectionUpdater.Replace(Routine.PerSecond(() =>
+            {
+                if (ActiveConnection != null)
+                {
+                    if (_lastState != ActiveConnection.State)
+                    {
+                        StateChangeEvent?.Invoke(ActiveConnection.State);
+                        _lastState = ActiveConnection.State;
+                    }
+                }
+                else
+                {
+                    _connectionUpdater.Stop();
+                }
+            }, ConnectionStatePollRate));
+        }
+
+        public void Close()
+        {
+            ActiveConnection.Close();
         }
 
         /// <summary>
