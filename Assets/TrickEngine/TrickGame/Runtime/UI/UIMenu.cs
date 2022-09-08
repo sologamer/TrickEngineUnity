@@ -16,6 +16,7 @@ namespace TrickCore
         /// <summary>
         /// Tween settings for fading in when showing the menu
         /// </summary>
+        [Header("Animation & Transition")]
         public TweenSettings ShowFadeInSettings;
     
         /// <summary>
@@ -24,36 +25,12 @@ namespace TrickCore
         public TweenSettings HideFadeOutSettings;
 
         /// <summary>
-        /// The way the menu is transitioned in
-        /// </summary>
-        [Header("Transition")]
-        public TrickTransitionDirection TransitionDirectionIn;
-    
-        /// <summary>
-        /// The way the menu is transitioned out
-        /// </summary>
-        public TrickTransitionDirection TransitionDirectionOut;
-    
-        /// <summary>
-        /// The time/curve of the transition
-        /// </summary>
-        public TweenSettings TransitionTweenSettings;
-    
-        /// <summary>
-        /// The panel transform of the menu, used for smooth menu transitions
-        /// </summary>
-        public RectTransform TransitionPanelTransform;
-
-        /// <summary>
-        /// If enabled, we fade the transition panel
-        /// </summary>
-        public bool TransitionPanelFading = true;
-        
-        /// <summary>
         /// If enabled, we fade the actual UIMenu object
         /// </summary>
-        public bool MenuFading = true;
+        public FadeEnableType MenuFading = FadeEnableType.Off;
         
+        public List<TransitionGroup> Transitions = new List<TransitionGroup>();
+
         /// <summary>
         /// Handle screen size scaling
         /// </summary>
@@ -268,24 +245,40 @@ namespace TrickCore
         
             _manager.PreMenuShowEvent?.Invoke(this);
         
-            if (TransitionPanelTransform != null)
+            if (Transitions != null && Transitions.Count > 0)
             {
-                TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
-                TransitionPanelTransform.TransitionIn(TransitionTweenSettings, TransitionDirectionIn, () =>
+                int completed = 0;
+                foreach (var transition in Transitions)
                 {
-                    TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
-                    InternalShow();
-                });
+                    if (transition.TransitionPanelTransform == null)
+                    {
+                        if (++completed == Transitions.Count)
+                            InternalShow();
+                        continue;
+                    }
+                    
+                    transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
+                    
+                    transition.TransitionPanelTransform.TransitionIn(transition.TransitionTweenSettings, transition.TransitionDirectionIn, () =>
+                    {
+                        transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+                        
+                        // ReSharper disable once AccessToModifiedClosure
+                        if (++completed == Transitions.Count)
+                            InternalShow();
+                    });
+                    
+                    if (transition.TransitionPanelFading.HasFlag(FadeEnableType.In))
+                        transition.TransitionPanelTransform.FadeIn(ShowFadeInSettings);
+                }
                 
-                if (TransitionPanelFading)
-                    TransitionPanelTransform.FadeIn(ShowFadeInSettings);
-                if (MenuFading)
+                if (MenuFading.HasFlag(FadeEnableType.In))
                     FadeIn(ShowFadeInSettings);
             }
             else
             {
                 InternalShow();
-                if (MenuFading)
+                if (MenuFading.HasFlag(FadeEnableType.In))
                     FadeIn(ShowFadeInSettings);
             }
 
@@ -325,18 +318,47 @@ namespace TrickCore
         
             _manager.PreMenuHideEvent?.Invoke(this);
         
-            if (TransitionPanelTransform != null)
+            if (Transitions != null && Transitions.Count > 0)
             {
-                TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
-                TransitionPanelTransform.TransitionOut(TransitionTweenSettings, TransitionDirectionOut, () =>
+                int completed = 0;
+                foreach (var transition in Transitions)
                 {
-                    TransitionPanelTransform.FadeOut(HideFadeOutSettings, completeAction: InternalHide);
-                    TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
-                });
+                    if (transition.TransitionPanelTransform == null)
+                    {
+                        if (++completed == Transitions.Count)
+                            InternalHide();
+                        continue;
+                    }
+
+                    transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
+                    transition.TransitionPanelTransform.TransitionOut(transition.TransitionTweenSettings, transition.TransitionDirectionOut, () =>
+                    {
+                        if (transition.TransitionPanelFading.HasFlag(FadeEnableType.Out))
+                        {
+                            // wait for the panel to fade out and count as a complete
+                            transition.TransitionPanelTransform.FadeOut(HideFadeOutSettings, completeAction: () =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                if (++completed == Transitions.Count) InternalHide();
+                            });
+                        }
+                        else
+                        {
+                            if (++completed == Transitions.Count) InternalHide();
+                        }
+                        transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+                    });
+                }
+
+                if (MenuFading.HasFlag(FadeEnableType.Out))
+                    FadeOut(HideFadeOutSettings);
             }
             else
             {
-                FadeOut(HideFadeOutSettings, null, InternalHide);
+                if (MenuFading.HasFlag(FadeEnableType.Out))
+                    FadeOut(HideFadeOutSettings, null, InternalHide);
+                else
+                    InternalHide();
             }
 
             void InternalHide()
