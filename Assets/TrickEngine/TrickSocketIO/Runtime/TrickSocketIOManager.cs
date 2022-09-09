@@ -86,17 +86,8 @@ namespace TrickCore
             socketEventInjectInstanceList ??= new List<object>();
             socketEventInjectInstanceList.Add(instance);
 
-            var autoRegister = socketEventInjectInstanceList.SelectMany(o => instance.GetType()
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Select(info => (o, info, info.GetAttribute<SocketIOEventAttribute>()))
-                .Where(tuple => tuple.Item3 != null)).ToList();
+            instance.RegisterSocketEventInstances(socketEventInjectInstanceList);
             
-            /*var autoRegister = instance.GetType()
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Select(info => (info, info.GetAttribute<SocketIOEventAttribute>()))
-                .Where(tuple => tuple.Item2 != null)
-                .ToList();*/
-
             // exchange message, received from the SERVER
             socket.On<Dictionary<string,object>>(nameof(TrickInternalSocketEventType.exchange_start), dict =>
             {
@@ -195,19 +186,23 @@ namespace TrickCore
                     var message = instance.GetMessageFromBase64(base64);
                     if (message == null) return;
                     OnMessageReceived?.Invoke(message);
-                    if (autoRegister.Count > 0)
+                    if (instance.RegisteredSocketEventInstances.Count > 0)
                     {
-                        var validEvent = autoRegister.Find(tuple => tuple.Item3.EventName == message.EventName);
-                        if (validEvent.info != null)
+                        if (instance.RegisteredSocketEventInstances.TryGetValue(message.EventName, out var list))
                         {
-                            // Let's invoke it here
-                            var parameters = validEvent.info.GetParameters();
-                            if (parameters.Length == 0)
-                                validEvent.info.Invoke(validEvent.o, null);
-                            else if (parameters.Length == 1)
-                                validEvent.info.Invoke(validEvent.o, new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
-                            else
-                                Debug.LogError($"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
+                            list.ForEach(tuple =>
+                            {
+                                // Let's invoke it here
+                                var parameters = tuple.info.GetParameters();
+                                if (parameters.Length == 0)
+                                    tuple.info.Invoke(tuple.inst, null);
+                                else if (parameters.Length == 1)
+                                    tuple.info.Invoke(tuple.inst,
+                                        new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                                else
+                                    Debug.LogError(
+                                        $"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
+                            });
                         }
                         else
                         {

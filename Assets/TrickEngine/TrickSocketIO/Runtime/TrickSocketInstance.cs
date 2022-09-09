@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
@@ -11,9 +14,36 @@ namespace TrickCore
     /// </summary>
     public abstract class TrickSocketInstance
     {
+        public Dictionary<string, List<(object inst, MethodInfo info)>> RegisteredSocketEventInstances { get; set; } = new Dictionary<string, List<(object inst, MethodInfo info)>>();
+        private HashSet<object> _registeredSocketEventVisitHashSet = new HashSet<object>();
         public Socket CurrentSocket { get; set; }
         public IKeyExchange KeyExchange { get; set; }
 
+        /// <summary>
+        /// Inject instances method (requires reflection to do so), it will be cached and will speed up the the event calls
+        /// </summary>
+        /// <param name="instances"></param>
+        public void RegisterSocketEventInstances(params object[] instances)
+        {
+            foreach (object instance in instances)
+            {
+                if (_registeredSocketEventVisitHashSet.Contains(instance)) continue;
+                _registeredSocketEventVisitHashSet.Add(instance);
+
+                foreach (var pTuple in instance.GetType()
+                             .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                             .Select(info => (instance, info, info.GetAttribute<SocketIOEventAttribute>()))
+                             .Where(tuple => tuple.Item3 != null))
+                {
+                    if (!RegisteredSocketEventInstances.TryGetValue(pTuple.Item3.EventName, out var list))
+                        RegisteredSocketEventInstances.Add(pTuple.Item3.EventName,
+                            list = new List<(object inst, MethodInfo info)>());
+                    list.Add((pTuple.info, pTuple.info));
+                }
+                
+            }
+        }
+        
         /// <summary>
         /// Sends a message securely to the client
         /// </summary>
