@@ -216,7 +216,7 @@ namespace TrickCore
                     }
                     else
                     {
-                        if (OnMessageReceived == null) Debug.LogError($"[SocketIO] Event of name '{message.EventName}' not registered!");
+                        if (OnMessageReceived == null || OnMessageReceived.GetPersistentEventCount() == 0) Debug.LogError($"[SocketIO] Event of name '{message.EventName}' not registered!");
                     }
                 }
                 catch (Exception ex)
