@@ -206,7 +206,7 @@ namespace TrickCore
                         }
                         else
                         {
-                            Debug.LogError($"[SocketIO] Event of name '{message.EventName}' invocation failed due to the a null MethodInfo. Is it being stripped away?");
+                            if (OnMessageReceived == null || OnMessageReceived.GetPersistentEventCount() == 0) Debug.LogError($"[SocketIO] Event of name '{message.EventName}' not registered!");
                         }
                     }
                     else

@@ -38,7 +38,7 @@ namespace TrickCore
                     if (!RegisteredSocketEventInstances.TryGetValue(pTuple.Item3.EventName, out var list))
                         RegisteredSocketEventInstances.Add(pTuple.Item3.EventName,
                             list = new List<(object inst, MethodInfo info)>());
-                    list.Add((pTuple.info, pTuple.info));
+                    list.Add((pTuple.instance, pTuple.info));
                 }
                 
             }
