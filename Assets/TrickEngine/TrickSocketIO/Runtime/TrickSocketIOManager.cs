@@ -207,12 +207,16 @@ namespace TrickCore
                             else if (parameters.Length == 1)
                                 validEvent.info.Invoke(validEvent.o, new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
                             else
-                                Debug.LogError($"Event of name {message.EventName} not registered!");
+                                Debug.LogError($"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
                         }
                         else
                         {
-                            Debug.LogError($"Event of name {message.EventName} not registered!");
+                            Debug.LogError($"[SocketIO] Event of name '{message.EventName}' invocation failed due to the a null MethodInfo. Is it being stripped away?");
                         }
+                    }
+                    else
+                    {
+                        if (OnMessageReceived == null) Debug.LogError($"[SocketIO] Event of name '{message.EventName}' not registered!");
                     }
                 }
                 catch (Exception ex)
