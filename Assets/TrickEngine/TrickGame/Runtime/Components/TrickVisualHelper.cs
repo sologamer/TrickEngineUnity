@@ -53,6 +53,8 @@ namespace TrickCore
 
     public static class TrickVisualHelperExtensions
     {
+        public static float DefaultFadeTime { get; set; } = 0.25f;
+        
         public static void SetAlpha(this MonoBehaviour mono, float alpha)
         {
             var rt = mono.transform as RectTransform;
@@ -107,7 +109,7 @@ namespace TrickCore
             if (blockRaycast != null) tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast.Value;
         }
         
-        public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float fadeTime = 0.25f, Curve curve = Curve.Linear,
+        public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float? fadeTime = null, Curve curve = Curve.Linear,
             float delay = 0.0f,
             float? setAlpha = null, bool interactable = false, bool withoutHost = false, Action completeAction = null)
         {
@@ -117,11 +119,11 @@ namespace TrickCore
             return default;
         }
 
-        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, float fadeTime = 0.25f, Curve curve = Curve.Linear,
+        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, float? fadeTime = null, Curve curve = Curve.Linear,
             float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false,
             Action completeAction = null)
         {
-            return Fade(mono, fadeTarget, new TweenSettings(fadeTime, curve), delay, setAlpha, interactable, withoutHost, completeAction);
+            return Fade(mono, fadeTarget, new TweenSettings(fadeTime.GetValueOrDefault(DefaultFadeTime), curve), delay, setAlpha, interactable, withoutHost, completeAction);
         }
 
         public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, TweenSettings tweenSettings = default,
@@ -138,25 +140,25 @@ namespace TrickCore
             return tb.FadeRoutine;
         }
 
-        public static Routine FadeIn(this MonoBehaviour mono, float fadeTime = 0.25f, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeIn(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, curve, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(this MonoBehaviour mono, float fadeTime = 0.25f, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeOut(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, curve, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        public static Routine FadeIn(this RectTransform mono, float fadeTime = 0.25f, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeIn(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, curve, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(this RectTransform mono, float fadeTime = 0.25f, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeOut(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, curve, delay, setAlpha, false, withoutHost, completeAction);
