@@ -57,6 +57,7 @@ public class TrickAudioSource
         AudioManager.Instance.AudioClipResolver(audioId, clip =>
         {
             Source.clip = clip;
+            Source.outputAudioMixerGroup = audioId.Mixer;
             Source.loop = false;
             Source.volume = audioId.VolumeFromTo.x;
             if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
