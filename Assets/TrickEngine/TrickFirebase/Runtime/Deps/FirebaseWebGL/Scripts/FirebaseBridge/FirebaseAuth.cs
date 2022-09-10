@@ -37,6 +37,17 @@ namespace TrickCore
         [DllImport("__Internal")]
         public static extern void SignInWithEmailAndPassword(string email, string password, string objectName, string callback,
             string fallback);
+
+        /// <summary>
+        /// Sends a password reset email to the given email address.
+        /// </summary>
+        /// <param name="email"> User email </param>
+        /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+        /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+        /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+        [DllImport("__Internal")]
+        public static extern void ForgetPassword(string email, string objectName, string callback,
+            string fallback);
         
         /// <summary>
         /// Change password

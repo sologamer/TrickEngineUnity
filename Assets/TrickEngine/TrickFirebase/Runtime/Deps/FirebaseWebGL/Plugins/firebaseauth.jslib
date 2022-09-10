@@ -4,16 +4,17 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = UTF8ToString(objectName);
         var parsedCallback = UTF8ToString(callback);
         var parsedFallback = UTF8ToString(fallback);
+		var persistentId = "|*$|" + "anon";
 
         try {
             firebase.auth().signInAnonymously().then(function (result) {
-                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(result.user));
+                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(result.user)+persistentId);
             }).catch(function (error) {
-                unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+                unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
             });
 
         } catch (error) {
-            unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+            unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
         }
     },
     
@@ -23,7 +24,7 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = UTF8ToString(objectName);
         var parsedCallback = UTF8ToString(callback);
         var parsedFallback = UTF8ToString(fallback);
-		var persistentId = parsedEmail+parsedPassword;
+		var persistentId = "|*$|" + parsedEmail+parsedPassword;
 
         try {
 
@@ -44,10 +45,29 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = UTF8ToString(objectName);
         var parsedCallback = UTF8ToString(callback);
         var parsedFallback = UTF8ToString(fallback);
-		var persistentId = parsedEmail+parsedPassword;
+		var persistentId = "|*$|" + parsedEmail+parsedPassword;
         try {
 
             firebase.auth().signInWithEmailAndPassword(parsedEmail, parsedPassword).then(function (unused) {
+                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(unused.user)+persistentId);
+            }).catch(function (error) {
+                unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+            });
+
+        } catch (error) {
+            unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
+        }
+    },
+
+    ForgetPassword: function (email, objectName, callback, fallback) {
+        var parsedEmail = UTF8ToString(email);
+        var parsedObjectName = UTF8ToString(objectName);
+        var parsedCallback = UTF8ToString(callback);
+        var parsedFallback = UTF8ToString(fallback);
+		var persistentId = "|*$|" + parsedEmail;
+        try {
+
+            firebase.auth().sendPasswordResetEmail(parsedEmail).then(function (unused) {
                 unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(unused.user)+persistentId);
             }).catch(function (error) {
                 unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);

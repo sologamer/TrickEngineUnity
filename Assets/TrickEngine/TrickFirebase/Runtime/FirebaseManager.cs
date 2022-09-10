@@ -130,6 +130,19 @@ namespace TrickCore
             }
         }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+        #region SERVICE WORKER
+        [Preserve] public void ServiceWorker(string s)
+        {
+            Debug.Log("Unity->ServiceWorker: " + s);
+
+            if (s == "onupdatefound_installing_activated")
+                ModalPopupMenu.ShowOkModal("Update", "{new_game_update}", "{generic_ok}",
+                    TrickWebGLFunctions.ReloadPage);
+        }
+        #endregion
+#endif
+
         #region AUTH
         [Preserve] public void CreateUserWithEmailAndPasswordCallback(string s) => Exec(true, false, nameof(CreateUserWithEmailAndPasswordCallback).Replace("Callback", string.Empty), s);
         [Preserve] public void CreateUserWithEmailAndPasswordFallback(string s) => Exec(false, false, nameof(CreateUserWithEmailAndPasswordFallback).Replace("Fallback", string.Empty), s);

@@ -52,6 +52,7 @@ public class AudioManager : MonoSingleton<AudioManager>
     private TrickAudioSource CreateNew()
     {
         var source = new GameObject($"AudioSource {_sources.Count}", typeof(AudioSource)).GetComponent<AudioSource>();
+        source.transform.SetParent(transform);
         TrickAudioSource newSource = new TrickAudioSource(source);
         _sources.Add(newSource);
         return newSource;
