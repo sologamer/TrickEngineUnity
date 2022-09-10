@@ -69,6 +69,8 @@ public class AudioManager : MonoSingleton<AudioManager>
         ActiveMainTrack = PlayLoop(audioId);
         return ActiveMainTrack;
     }
+
+    public TrickAudioSource PlayLoop(List<TrickAudioId> audioIds) => PlayLoop(audioIds.Random(TrickIRandomizer.Default));
     public TrickAudioSource PlayLoop(TrickAudioId audioId)
     {
         if (audioId == null || !audioId.IsValid()) return null;
@@ -85,6 +87,7 @@ public class AudioManager : MonoSingleton<AudioManager>
         return source;
     }
 
+    public TrickAudioSource PlayOneShot(List<TrickAudioId> audioIds) => PlayOneShot(audioIds.Random(TrickIRandomizer.Default));
     public TrickAudioSource PlayOneShot(TrickAudioId audioId)
     {
         if (audioId == null || !audioId.IsValid()) return null;
