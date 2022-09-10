@@ -64,12 +64,15 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public TrickAudioSource PlayMainTrack(TrickAudioId audioId)
     {
-        ActiveMainTrack?.Source.Stop();
+        if (audioId == null || !audioId.IsValid()) return null;
+        ActiveMainTrack?.Stop();
         ActiveMainTrack = PlayLoop(audioId);
         return ActiveMainTrack;
     }
     public TrickAudioSource PlayLoop(TrickAudioId audioId)
     {
+        if (audioId == null || !audioId.IsValid()) return null;
+        
         var source = GetAvailableAudioSource();
         if (source == null)
         {
@@ -84,6 +87,8 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public TrickAudioSource PlayOneShot(TrickAudioId audioId)
     {
+        if (audioId == null || !audioId.IsValid()) return null;
+        
         var source = GetAvailableAudioSource();
         if (source == null)
         {
@@ -98,12 +103,12 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public void Stop(TrickAudioSource source)
     {
-        source?.Source.Stop();
+        source?.Stop();
     }
 
     public void StopAll()
     {
-        _sources.ForEach(source => source.Source.Stop());
+        _sources.ForEach(source => source.Stop());
     }
 
     /// <summary>

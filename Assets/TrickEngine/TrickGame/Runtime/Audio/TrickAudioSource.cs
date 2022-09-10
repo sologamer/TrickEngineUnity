@@ -6,15 +6,22 @@ public class TrickAudioSource
 {
     private Routine _volumeRoutine;
     private Routine _pitchRoutine;
-    public AudioSource Source { get; }
-
+    private AudioSource Source { get; }
     public TrickAudioSource(AudioSource source)
     {
         Source = source;
     }
+    
+    /// <summary>
+    /// Is the source is not playing, we can use it
+    /// </summary>
+    /// <returns></returns>
+    public bool IsAvailable() => !Source.isPlaying;
 
-    public bool IsAvailable() => Source.isPlaying;
-
+    /// <summary>
+    /// Plays the audio in a loop
+    /// </summary>
+    /// <param name="audioId"></param>
     public void PlayLoop(TrickAudioId audioId)
     {
         AudioManager.Instance.AudioClipResolver(audioId, clip =>
@@ -41,6 +48,10 @@ public class TrickAudioSource
         });
     }
 
+    /// <summary>
+    /// Plays the audio one time
+    /// </summary>
+    /// <param name="audioId"></param>
     public void PlayOneShot(TrickAudioId audioId)
     {
         AudioManager.Instance.AudioClipResolver(audioId, clip =>
@@ -64,5 +75,13 @@ public class TrickAudioSource
             else
                 Source.Play();
         });
+    }
+    
+    /// <summary>
+    /// Stops the audio source
+    /// </summary>
+    public void Stop()
+    {
+        Source.Stop();
     }
 }

@@ -28,4 +28,9 @@ public class TrickAudioId
 
     public void PlayLoop() => AudioManager.Instance.PlayLoop(this);
     public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);
+
+    public bool IsValid()
+    {
+        return Clip != null;
+    }
 }

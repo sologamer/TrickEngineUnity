@@ -13,6 +13,10 @@ namespace TrickCore
     /// </summary>
     public abstract class UIMenu : MonoBehaviour
     {
+        [Header("Audio")] 
+        public TrickAudioId MenuShowAudio;
+        public bool StopMainTrack;
+        
         /// <summary>
         /// Tween settings for fading in when showing the menu
         /// </summary>
@@ -301,6 +305,15 @@ namespace TrickCore
                         asset.renderScale = 1.0f;
                 }
 
+                if (StopMainTrack)
+                {
+                    AudioManager.Instance.ActiveMainTrack?.Stop();
+                }
+                if (MenuShowAudio != null)
+                {
+                    AudioManager.Instance.PlayMainTrack(MenuShowAudio);
+                }
+                
 #if UNITY_EDITOR
                 if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] SHOW {this}");
 #endif
