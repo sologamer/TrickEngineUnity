@@ -20,6 +20,8 @@ namespace TrickCore
     {
         public List<UIMenu> MenuAssets = new List<UIMenu>();
 
+        public bool AutoShowFirstMenuAsset;
+        
         [Tooltip("The resolution we try to match the screen size with for the CanvasScaler")]
         public float MatchScreenValue = 1.34f;
     
@@ -57,6 +59,12 @@ namespace TrickCore
             base.Initialize();
 
             _uiMenus = MenuAssets.Where(menu => menu != null).ToList();
+
+            if (AutoShowFirstMenuAsset)
+            {
+                var firstMenu = GetMenuByType(_uiMenus.FirstOrDefault()?.GetType());
+                if (firstMenu != null && !firstMenu.IsOpen) firstMenu.Show();
+            }
         }
     
         /// <summary>

@@ -1,5 +1,9 @@
+using System;
+using BeauRoutine;
 using UnityEngine;
+using UnityEngine.Audio;
 
+[Serializable]
 public class TrickAudioId
 {
     //public ClipLoadType LoadType;
@@ -12,8 +16,15 @@ public class TrickAudioId
     // Later for the addressables resolver
     //public AssetReferenceT<AudioClip> ClipAsset;
 
-    public float Volume;
     public float Delay;
+    
+    public Vector2 VolumeFromTo = new Vector2(1.0f, 1.0f);
+    public TweenSettings VolumeTweenSettings;
+    
+    public Vector2 PitchFromTo = new Vector2(1.0f, 1.0f);
+    public TweenSettings PitchTweenSettings;
+    
+    public AudioMixerGroup Mixer;
 
     public void PlayLoop() => AudioManager.Instance.PlayLoop(this);
     public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);

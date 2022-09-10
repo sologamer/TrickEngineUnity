@@ -20,8 +20,18 @@ public class AudioManager : MonoSingleton<AudioManager>
     /// The maximum number of pooled audio sources 
     /// </summary>
     public int MaxAudioSourcePool = 20;
+
+    /// <summary>
+    /// The default main track to play
+    /// </summary>
+    public TrickAudioId DefaultMainTrack;
     
     private readonly List<TrickAudioSource> _sources = new List<TrickAudioSource>();
+
+    /// <summary>
+    /// The active playing maintrack
+    /// </summary>
+    public TrickAudioSource ActiveMainTrack { get; set; }
 
     protected override void Initialize()
     {
@@ -31,7 +41,13 @@ public class AudioManager : MonoSingleton<AudioManager>
         {
             CreateNew();
         }
+
+        if (DefaultMainTrack != null)
+        {
+            PlayMainTrack(DefaultMainTrack);
+        }
     }
+
 
     private TrickAudioSource CreateNew()
     {
@@ -45,7 +61,13 @@ public class AudioManager : MonoSingleton<AudioManager>
     {
         return _sources.Find(source => source.IsAvailable());
     }
-    
+
+    public TrickAudioSource PlayMainTrack(TrickAudioId audioId)
+    {
+        ActiveMainTrack?.Source.Stop();
+        ActiveMainTrack = PlayLoop(audioId);
+        return ActiveMainTrack;
+    }
     public TrickAudioSource PlayLoop(TrickAudioId audioId)
     {
         var source = GetAvailableAudioSource();
