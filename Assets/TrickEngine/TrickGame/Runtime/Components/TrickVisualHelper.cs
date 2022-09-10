@@ -490,6 +490,7 @@ namespace TrickCore
             switch (direction)
             {
                 case TrickTransitionDirection.None:
+                    completeCallback?.Invoke();
                     break;
                 case TrickTransitionDirection.Left:
                     rt.anchoredPosition = new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
@@ -542,6 +543,7 @@ namespace TrickCore
             switch (direction)
             {
                 case TrickTransitionDirection.None:
+                    completeCallback?.Invoke();
                     break;
                 case TrickTransitionDirection.Left:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
