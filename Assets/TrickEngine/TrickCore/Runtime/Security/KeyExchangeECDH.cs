@@ -163,9 +163,9 @@ namespace TrickCore
             return ECDHUtil.DecryptMessage(sharedKey, encryptedMessage);
         }
 
-        public void EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessage)
+        public bool EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessage)
         {
-            ECDHUtil.EncryptMessage(sharedKey, message, out encryptedMessage);
+            return ECDHUtil.EncryptMessage(sharedKey, message, out encryptedMessage);
         }
     }
 }

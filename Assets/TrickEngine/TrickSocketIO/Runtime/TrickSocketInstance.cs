@@ -63,9 +63,24 @@ namespace TrickCore
                 Debug.LogError("[SocketIO] Unable to send a secure message, no shared key generated yet!");
                 return;
             }
-            KeyExchange.EncryptMessage(sharedKey, Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)), out var encrypt);
-            // Convert the encrypted message to base64, since it's a binary buffer.
-            CurrentSocket.Emit(rootEventName, Convert.ToBase64String(encrypt));
+
+            const int maxTries = 3;
+            int currentTry = 0;
+            while (currentTry < maxTries)
+            {
+                if (KeyExchange.EncryptMessage(sharedKey, Encoding.UTF8.GetBytes(message.SerializeToJson(false, true)),
+                        out var encrypt))
+                {
+                    // Convert the encrypted message to base64, since it's a binary buffer.
+                    CurrentSocket.Emit(rootEventName, Convert.ToBase64String(encrypt));
+                    return;
+                }
+                else
+                {
+                    currentTry++;
+                    Debug.LogError($"[SocketIO] Error with sending encrypted message. Retrying ({currentTry}/{maxTries})...");
+                }
+            }
         }
 
         /// <summary>

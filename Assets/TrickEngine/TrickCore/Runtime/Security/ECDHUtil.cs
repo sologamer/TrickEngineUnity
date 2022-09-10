@@ -23,30 +23,40 @@ namespace TrickCore
         /// <param name="message"></param>
         /// <param name="encryptedMessageWithIv"></param>
         /// <param name="iv"></param>
-        public static void EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessageWithIv)
+        public static bool EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessageWithIv)
         {
-            //AesLightEngine engine = new AesLightEngine();
-            AesEngine engine = new AesEngine();
-            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CbcBlockCipher(engine), new Pkcs7Padding());
-            KeyParameter keyParam = new KeyParameter(sharedKey);
+            try
+            {
+                //AesLightEngine engine = new AesLightEngine();
+                AesEngine engine = new AesEngine();
+                PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CbcBlockCipher(engine), new Pkcs7Padding());
+                KeyParameter keyParam = new KeyParameter(sharedKey);
             
-            SecureRandom random = new SecureRandom();
-            byte[] iv = new byte[IvSize];
-            random.NextBytes(iv);
+                SecureRandom random = new SecureRandom();
+                byte[] iv = new byte[IvSize];
+                random.NextBytes(iv);
 
-            ParametersWithIV keyParamWithIv = new ParametersWithIV(keyParam, iv, 0, IvSize);
+                ParametersWithIV keyParamWithIv = new ParametersWithIV(keyParam, iv, 0, IvSize);
 
-            // Encrypt
-            cipher.Init(true, keyParamWithIv);
-            byte[] encryptedMessage = new byte[cipher.GetOutputSize(message.Length)];
-            int outputMessageSize = cipher.ProcessBytes(message, encryptedMessage, 0);
-            outputMessageSize += cipher.DoFinal(encryptedMessage, outputMessageSize); //Do the final block
+                // Encrypt
+                cipher.Init(true, keyParamWithIv);
+                byte[] encryptedMessage = new byte[cipher.GetOutputSize(message.Length)];
+                int outputMessageSize = cipher.ProcessBytes(message, encryptedMessage, 0);
+                outputMessageSize += cipher.DoFinal(encryptedMessage, outputMessageSize); //Do the final block
             
-            encryptedMessageWithIv = new byte[IvSize + outputMessageSize];
-            // Put IV in the byte array
-            Buffer.BlockCopy(iv, 0, encryptedMessageWithIv, 0, IvSize);
-            // Put the encrypted data in byte array
-            Buffer.BlockCopy(encryptedMessage, 0, encryptedMessageWithIv, IvSize, outputMessageSize);
+                encryptedMessageWithIv = new byte[IvSize + outputMessageSize];
+                // Put IV in the byte array
+                Buffer.BlockCopy(iv, 0, encryptedMessageWithIv, 0, IvSize);
+                // Put the encrypted data in byte array
+                Buffer.BlockCopy(encryptedMessage, 0, encryptedMessageWithIv, IvSize, outputMessageSize);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                encryptedMessageWithIv = null;
+                return false;
+            }
         }
 
         public static byte[] DecryptMessage(byte[] sharedKey, byte[] encryptedMessageWithIv)

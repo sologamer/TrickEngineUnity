@@ -54,6 +54,6 @@ namespace TrickCore
 
         byte[] DecryptMessage(byte[] sharedKey, byte[] encryptedMessage);
 
-        void EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessage);
+        bool EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessage);
     }
 }
