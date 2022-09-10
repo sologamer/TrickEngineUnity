@@ -123,10 +123,10 @@ namespace TrickCore
             float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false,
             Action completeAction = null)
         {
-            return Fade(mono, fadeTarget, new TweenSettings(fadeTime.GetValueOrDefault(DefaultFadeTime), curve), delay, setAlpha, interactable, withoutHost, completeAction);
+            return Fade(mono, new TweenSettings(fadeTime.GetValueOrDefault(DefaultFadeTime), curve), fadeTarget, delay, setAlpha, interactable, withoutHost, completeAction);
         }
 
-        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, TweenSettings tweenSettings = default,
+        public static Routine Fade(this RectTransform mono, TweenSettings tweenSettings, float fadeTarget = 0.0f,
             float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false,
             Action completeAction = null)
         {
@@ -165,7 +165,7 @@ namespace TrickCore
         }
 
         
-        public static Routine FadeIn(this MonoBehaviour mono, TweenSettings tweenSettings = default, float delay = 0.0f,
+        public static Routine FadeIn(this MonoBehaviour mono, TweenSettings tweenSettings, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, tweenSettings, delay, setAlpha, true, withoutHost, completeAction);
@@ -175,26 +175,26 @@ namespace TrickCore
         {
             var rt = mono.transform as RectTransform;
             if (rt != null)
-                return Fade(rt, fadeTarget, tweenSettings, delay, setAlpha, interactable, withoutHost, completeAction);
+                return Fade(rt, tweenSettings, fadeTarget, delay, setAlpha, interactable, withoutHost, completeAction);
             return default;
         }
 
-        public static Routine FadeOut(this MonoBehaviour mono, TweenSettings tweenSettings = default, float delay = 0.0f,
+        public static Routine FadeOut(this MonoBehaviour mono, TweenSettings tweenSettings, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, tweenSettings, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        public static Routine FadeIn(this RectTransform mono, TweenSettings tweenSettings = default, float delay = 0.0f,
+        public static Routine FadeIn(this RectTransform mono, TweenSettings tweenSettings, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
-            return Fade(mono, 1.0f, tweenSettings, delay, setAlpha, true, withoutHost, completeAction);
+            return Fade(mono, tweenSettings, 1.0f, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(this RectTransform mono, TweenSettings tweenSettings = default, float delay = 0.0f,
+        public static Routine FadeOut(this RectTransform mono, TweenSettings tweenSettings, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
-            return Fade(mono, 0.0f, tweenSettings, delay, setAlpha, false, withoutHost, completeAction);
+            return Fade(mono, tweenSettings, 0.0f, delay, setAlpha, false, withoutHost, completeAction);
         }
         
         
