@@ -32,7 +32,6 @@ namespace TrickCore
     {
 #if !NO_UNITY
         private static T _instance;
-        private CancellationTokenSource _source;
         private static bool _didFindObjectOfType;
 
         /// <summary>
@@ -74,15 +73,6 @@ namespace TrickCore
 #endif
         }
 
-        /// <summary>
-        ///     This function is called when the instance is used the first time.
-        ///     Put all your initializations here, as you would do it in Awake
-        /// </summary>
-        protected virtual Task InitializeTask(CancellationToken token)
-        {
-            return Task.CompletedTask;
-        }
-    
         protected
 #if NO_UNITY
             override 
@@ -125,9 +115,6 @@ namespace TrickCore
             {
                 _instance = (T) instances[0];
                 _instance.Initialize();
-
-                _source = new CancellationTokenSource();
-                UnityTrickTask.StartNewTask(async () => await _instance.InitializeTask(_source.Token), _source.Token);
             }
             else
             {
@@ -144,7 +131,6 @@ namespace TrickCore
             if (_instance != this) return;
 
             _instance = null;
-            if (_source != null) _source.Cancel();
             ApplicationQuit();
         }
 
