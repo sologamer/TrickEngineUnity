@@ -297,21 +297,24 @@ namespace TrickCore
                     if (_mainCamera != null) _mainCamera.enabled = false;
                 }
 
+                // In some cases, we need to fix render scale, however doing this makes this plugin requires URP
                 if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
                 {
                     _renderScaleBefore = asset.renderScale;
-            
                     if (asset.renderScale < 1)
                         asset.renderScale = 1.0f;
                 }
 
+                // Stop main track if any is playing
                 if (StopMainTrack)
                 {
-                    AudioManager.Instance.ActiveMainTrack?.Stop();
+                    if (AudioManager.Instance != null) AudioManager.Instance.ActiveMainTrack?.Stop();
                 }
-                if (MenuShowAudio != null)
+                
+                // Play main track audio if any is assigned
+                if (MenuShowAudio != null && MenuShowAudio.IsValid())
                 {
-                    AudioManager.Instance.PlayMainTrack(MenuShowAudio);
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlayMainTrack(MenuShowAudio);
                 }
                 
 #if UNITY_EDITOR

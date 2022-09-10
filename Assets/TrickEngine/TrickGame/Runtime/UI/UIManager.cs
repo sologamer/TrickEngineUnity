@@ -29,7 +29,7 @@ namespace TrickCore
         public float PlayAudioButtonPreventDelay = 0.1f;
     
         [Tooltip("The audio source to play the button sound in")]
-        public AudioSource ButtonAudioSource;
+        public TrickAudioId ButtonAudioId;
     
         [Tooltip("Enable for debugging menu's")]
         public bool DisableMenuDebugging;
@@ -295,7 +295,7 @@ namespace TrickCore
             var time = Time.time;
             if (Mathf.Abs(time - LastTimeButtonClickAudioPlayed) < PlayAudioButtonPreventDelay) return;
             LastTimeButtonClickAudioPlayed = time;
-            if (ButtonAudioSource != null) ButtonAudioSource.Play();
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayOneShot(ButtonAudioId);
         }
 
         public void Update()
