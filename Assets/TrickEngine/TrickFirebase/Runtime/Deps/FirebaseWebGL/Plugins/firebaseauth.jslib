@@ -85,7 +85,7 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = UTF8ToString(objectName);
         var parsedCallback = UTF8ToString(callback);
         var parsedFallback = UTF8ToString(fallback);
-		var persistentId = parsedEmail;
+		var persistentId = "|*$|" + parsedEmail;
         try {
 			var user = firebase.auth().currentUser;
 			var credential = firebase.auth.EmailAuthProvider.credential(
