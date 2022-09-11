@@ -233,7 +233,25 @@ namespace TrickCore
         {
             if (tuple.error != null)
             {
-                ModalPopupMenu.ShowError(tuple.error.ToString());
+                var error = tuple.error.ToString();
+                if (error.StartsWith("Firebase:"))
+                {
+                    // Firebase: The email address is badly formatted. (auth/invalid-email).
+                    var newError = error.Replace("Firebase: ", string.Empty);
+                    if(newError.LastIndexOf('(') is {} i1 && newError.LastIndexOf(')') is {} i2 && i1 != -1 && i2 != -1)
+                    {
+                        newError = newError.Substring(0, i1).Trim();
+                        ModalPopupMenu.ShowError(newError);
+                    }
+                    else
+                    {
+                        ModalPopupMenu.ShowError(error);
+                    }
+                }
+                else
+                {
+                    ModalPopupMenu.ShowError(error);
+                }
             }
             else
             {
