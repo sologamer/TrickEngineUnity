@@ -14,7 +14,7 @@ namespace TrickCore
     /// <summary>
     /// Key exchange class using an Elliptic Curve Diffie Hellman (ECDH) CNG.
     /// </summary>
-    public class KeyExchangeECDH : IKeyExchange
+    public sealed class KeyExchangeECDH : IKeyExchange
     {
         const string KeyPairAlgorithm = "ECDH"; 
         const string Algorithm = "ECDH";

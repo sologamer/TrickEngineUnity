@@ -3,7 +3,7 @@
 namespace TrickCore
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class ExcludeEditorMemberAttribute : Attribute
+    public sealed class ExcludeEditorMemberAttribute : Attribute
     {
 
     }

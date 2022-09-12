@@ -9,7 +9,7 @@ namespace TrickCore
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="T2"></typeparam>
     [Preserve, Serializable]
-    public class TrickPair<T, T2> : ITrickPair
+    public sealed class TrickPair<T, T2> : ITrickPair
     {
         public T Key;
         public T2 Value;

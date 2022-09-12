@@ -10,7 +10,7 @@ namespace TrickCore
     /// <summary>
     /// Support animation on a HorizontalLayoutGroup / VerticalLayoutGroup
     /// </summary>
-    public class AnimatedLayoutGroup : MonoBehaviour
+    public sealed class AnimatedLayoutGroup : MonoBehaviour
     {
         public AnimatedLayoutGroupSettings Settings;
 

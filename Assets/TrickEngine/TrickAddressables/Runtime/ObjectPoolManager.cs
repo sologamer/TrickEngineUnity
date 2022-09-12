@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 
 namespace TrickCore
 {
-    public class ObjectPoolManager : MonoSingleton<ObjectPoolManager>
+    public sealed class ObjectPoolManager : MonoSingleton<ObjectPoolManager>
     {
         public Action<ITrickPool> PoolObjectCustomCreateAction { get; set; } = null;
         public Dictionary<TrickAssetGroupId, Dictionary<string, TrickObjectPoolAsync<ITrickPool>>> AssetReferencePoolDict { get; } = new Dictionary<TrickAssetGroupId, Dictionary<string, TrickObjectPoolAsync<ITrickPool>>>();

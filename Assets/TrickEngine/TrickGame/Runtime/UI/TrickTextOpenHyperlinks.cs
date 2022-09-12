@@ -12,7 +12,7 @@ namespace TrickCore
     /// Helper script for handling hyperlinks in text
     /// </summary>
     [RequireComponent(typeof(TextMeshProUGUI))]
-    public class TrickTextOpenHyperlinks : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    public sealed class TrickTextOpenHyperlinks : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
         public bool DoesColorChangeOnHover = true;
         public Color HoverColor = new Color(60f / 255f, 120f / 255f, 1f);
@@ -31,7 +31,7 @@ namespace TrickCore
         /// </summary>
         public static UnityEvent<string> OnLinkClicked { get; } = new UnityEvent<string>();
 
-        protected virtual void Awake()
+        private void Awake()
         {
             _textMeshPro = GetComponent<TextMeshProUGUI>();
             _canvas = GetComponentInParent<Canvas>();

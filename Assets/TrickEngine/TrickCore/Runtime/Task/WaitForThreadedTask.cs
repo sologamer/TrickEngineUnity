@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TrickCore
 {
-    public class WaitForThreadedTask : WaitForThreadedTask<int>
+    public sealed class WaitForThreadedTask : WaitForThreadedTask<int>
     {
         public WaitForThreadedTask(Action subTask, TimeSpan timeout) : base(subTask, timeout)
         {

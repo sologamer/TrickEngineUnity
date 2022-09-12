@@ -12,7 +12,7 @@ namespace TrickCore
     /// https://www.codeproject.com/Articles/164087/Random-Number-Generation
     /// </summary>
     [Serializable]
-    public class MersenneTwisterRandom : IRandomizer
+    public sealed class MersenneTwisterRandom : IRandomizer
     {
         // Class MersenneTwister generates random numbers
         // from a uniform distribution using the Mersenne

@@ -6,7 +6,7 @@ namespace TrickCore
     /// <summary>
     /// An unpredictable randomizer used for gambling applications.
     /// </summary>
-    public class StrongRandom : IRandomizer
+    public sealed class StrongRandom : IRandomizer
     {
         /// <summary>
         /// A default instance of the randomizer

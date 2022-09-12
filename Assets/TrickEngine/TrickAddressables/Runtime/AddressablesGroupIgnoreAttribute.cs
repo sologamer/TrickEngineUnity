@@ -2,7 +2,7 @@
 
 namespace TrickCore
 {
-    public class AddressablesGroupIgnoreAttribute : Attribute
+    public sealed class AddressablesGroupIgnoreAttribute : Attribute
     {
     
     }

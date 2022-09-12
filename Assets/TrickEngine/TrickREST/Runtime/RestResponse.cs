@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TrickCore
 {
     [Serializable]
-    public class RestResponse
+    public sealed class RestResponse
     {
         [JsonProperty(PropertyName = "code")] public int Code;
         [JsonProperty(PropertyName = "message")] public string Message;

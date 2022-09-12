@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace TrickCore
 {
     [Serializable, JsonObject]
-    public class TrickSocketData
+    public sealed class TrickSocketData
     {
         [JsonProperty("eventName")] public string EventName { get; set; }
         [JsonProperty("payload")] public string Payload { get; set; }

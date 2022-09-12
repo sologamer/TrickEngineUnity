@@ -23,7 +23,7 @@ namespace TrickCore
     /// <summary>
     /// TODO: Refactor the AddressablesManager, support usage of Tasks
     /// </summary>
-    public class AddressablesManager : MonoSingleton<AddressablesManager>
+    public sealed class AddressablesManager : MonoSingleton<AddressablesManager>
     {
         private readonly Dictionary<TrickAssetGroupId, HashSet<GameObject>> _assets =
             new()

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace TrickCore
 {
-    public class TrickObjectPoolAsync<T>
+    public sealed class TrickObjectPoolAsync<T>
     {
         private readonly Dictionary<int, T> _queue = new Dictionary<int, T>();
         private readonly Stack<T> _stack = new Stack<T>();

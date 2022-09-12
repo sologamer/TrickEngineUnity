@@ -3,23 +3,23 @@ using Newtonsoft.Json;
 
 namespace TrickCore
 {
-    public class FirebaseRecords
+    public sealed class FirebaseRecords
     {
 
     }
 
-    public class AdditionalUserInfo
+    public sealed class AdditionalUserInfo
     {
         [JsonProperty("providerId")] public string ProviderId;
         [JsonProperty("isNewUser")] public bool IsNewUser;
     }
 
-    public class MultiFactor
+    public sealed class MultiFactor
     {
         [JsonProperty("enrolledFactors")] public List<string> EnrolledFactors;
     }
 
-    public class ProviderDatum
+    public sealed class ProviderDatum
     {
         [JsonProperty("uid")] public string Uid;
         [JsonProperty("displayName")] public string DisplayName;
@@ -29,7 +29,7 @@ namespace TrickCore
         [JsonProperty("providerId")] public string ProviderId;
     }
 
-    public class FirebaseUserCredential
+    public sealed class FirebaseUserCredential
     {
         [JsonProperty("user")] public FirebaseUser User;
         [JsonProperty("credential")] public string Credential;
@@ -37,7 +37,7 @@ namespace TrickCore
         [JsonProperty("operationType")] public string OperationType;
     }
 
-    public class StsTokenManager
+    public sealed class StsTokenManager
     {
         [JsonProperty("apiKey")] public string ApiKey;
         [JsonProperty("refreshToken")] public string RefreshToken;
@@ -45,7 +45,7 @@ namespace TrickCore
         [JsonProperty("expirationTime")] public long ExpirationTime;
     }
 
-    public class FirebaseUser
+    public sealed class FirebaseUser
     {
         [JsonProperty("uid")] public string Uid;
         [JsonProperty("displayName")] public string DisplayName;

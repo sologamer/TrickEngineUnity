@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 
 namespace TrickCore
 {
-    public class AddressableAssetHelper : MonoBehaviour
+    public sealed class AddressableAssetHelper : MonoBehaviour
     {
         private UnityEngine.Object Data { get; set; }
         public bool IsUsingManager { get; set; }

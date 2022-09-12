@@ -6,7 +6,7 @@ namespace TrickCore
     /// Used for finding a member field by tagging using ReflectionHelperExtension.GetMemberByTag(...)
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false)]
-    public class TagAttribute : Attribute
+    public sealed class TagAttribute : Attribute
     {
         public string Tag { get; }
 

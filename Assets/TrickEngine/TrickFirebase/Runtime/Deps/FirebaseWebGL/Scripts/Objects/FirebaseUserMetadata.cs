@@ -3,7 +3,7 @@
 namespace TrickCore
 {
     [Serializable]
-    public class FirebaseUserMetadata
+    public sealed class FirebaseUserMetadata
     {
         public ulong lastSignInTimestamp;
 

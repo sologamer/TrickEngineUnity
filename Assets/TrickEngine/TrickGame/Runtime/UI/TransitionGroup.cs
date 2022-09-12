@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TrickCore
 {
     [Serializable]
-    public class TransitionGroup
+    public sealed class TransitionGroup
     {
         /// <summary>
         /// The panel transform of the menu, used for smooth menu transitions

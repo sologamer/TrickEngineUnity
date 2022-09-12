@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 
 namespace TrickCore
 {
-    public class RESTGet : RESTGet<object>
+    public sealed class RESTGet : RESTGet<object>
     {
         public RESTGet(string uri, KeyValuePair<string, string>[] param = null) : base(uri, param)
         {

@@ -13,7 +13,7 @@ using UnityEngine.Events;
 
 namespace TrickCore
 {
-    public class TrickSocketIOManager : MonoSingleton<TrickSocketIOManager>
+    public sealed class TrickSocketIOManager : MonoSingleton<TrickSocketIOManager>
     {
         /// <summary>
         /// The amount of times we poll per second locally for state changes.

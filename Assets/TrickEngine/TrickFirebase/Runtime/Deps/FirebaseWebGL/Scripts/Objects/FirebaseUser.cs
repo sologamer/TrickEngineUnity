@@ -3,7 +3,7 @@
 namespace TrickCore
 {
     [Serializable]
-    public class FirebaseUserOld
+    public sealed class FirebaseUserOld
     {
         
     }

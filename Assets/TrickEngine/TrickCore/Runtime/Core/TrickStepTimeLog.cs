@@ -9,7 +9,7 @@ using Debug = UnityEngine.Debug;
 ///     // actions to stopwatch
 /// }
 /// </summary>
-public class TrickStepTimeLog : IDisposable
+public sealed class TrickStepTimeLog : IDisposable
 {
     private Stopwatch _sw;
     private string _type;

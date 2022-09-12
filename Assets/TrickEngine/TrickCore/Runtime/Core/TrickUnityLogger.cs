@@ -1,6 +1,6 @@
 ﻿namespace TrickCore
 {
-    public class TrickUnityLogger : LogTarget
+    public sealed class TrickUnityLogger : LogTarget
     {
         public TrickUnityLogger()
         {

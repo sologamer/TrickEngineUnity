@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TrickCore
 {
-    public class TrickObjectPool<T>
+    public sealed class TrickObjectPool<T>
     {
         private readonly Stack<T> _stack = new Stack<T>();
         private readonly Func<T> _onCreate;

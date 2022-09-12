@@ -8,7 +8,7 @@ using UnityEngine;
 namespace TrickCore
 {
     [Preserve]
-    public class FirebaseTimestampJsonConverter : IsoDateTimeConverter
+    public sealed class FirebaseTimestampJsonConverter : IsoDateTimeConverter
     {
         public override bool CanConvert(Type objectType)
         {

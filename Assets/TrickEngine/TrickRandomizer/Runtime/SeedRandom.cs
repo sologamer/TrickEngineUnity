@@ -5,7 +5,7 @@ namespace TrickCore
     /// <summary>
     /// A predictable (deterministic) randomizer using seed (System.Random).
     /// </summary>
-    public class SeedRandom : IRandomizer
+    public sealed class SeedRandom : IRandomizer
     {
         /// <summary>
         /// A default instance of the randomizer

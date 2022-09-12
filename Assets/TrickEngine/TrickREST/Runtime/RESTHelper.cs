@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace TrickCore
 {
-    public class RESTSettings
+    public sealed class RESTSettings
     {
         public string Protocol = "https://";
         public Func<string> BaseUrl = () => "example.com";

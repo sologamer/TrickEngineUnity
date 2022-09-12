@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace TrickCore
 {
-    public class ConsoleLogger : LogTarget
+    public sealed class ConsoleLogger : LogTarget
     {
         private readonly ConcurrentQueue<string> _logQueue = new ConcurrentQueue<string>();
 

@@ -8,7 +8,7 @@ namespace TrickCore
     /// <summary>
     /// A simple task class.
     /// </summary>
-    public class TrickSimpleTask
+    public sealed class TrickSimpleTask
     {
         public delegate bool Condition();
 

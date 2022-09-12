@@ -8,7 +8,7 @@ namespace TrickCore
     /// Another option is the GridLayoutMaximiser component
     /// </summary>
     [ExecuteAlways]
-    public class TrickFlexibleGridLayoutGroup : LayoutGroup
+    public sealed class TrickFlexibleGridLayoutGroup : LayoutGroup
     {
         /// <summary>
         /// The grid axis we are looking at.
@@ -486,7 +486,7 @@ namespace TrickCore
         private int __capacity = 8;
         private Vector2[] __sizes = new Vector2[8];
 
-        protected virtual void Update()
+        private void Update()
         {
             if (Application.isPlaying)
                 return;

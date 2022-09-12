@@ -2,7 +2,7 @@
 
 namespace TrickCore
 {
-    public class TrickTimeInternalConsole : TrickTimeInternal
+    public sealed class TrickTimeInternalConsole : TrickTimeInternal
     {
         public override void CalculateTimeDifference(DateTime fetchedServerTime)
         {

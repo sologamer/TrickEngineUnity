@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 namespace TrickCore
 {
-    public class RESTDelete : RESTDelete<int>
+    public sealed class RESTDelete : RESTDelete<int>
     {
         public RESTDelete(string uri, KeyValuePair<string, string>[] param = null) : base(uri, param)
         {

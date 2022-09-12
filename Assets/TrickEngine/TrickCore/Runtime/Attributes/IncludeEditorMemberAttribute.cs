@@ -3,7 +3,7 @@
 namespace TrickCore
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class IncludeEditorMemberAttribute : Attribute
+    public sealed class IncludeEditorMemberAttribute : Attribute
     {
         public SortType SortingType = SortType.Insert;
         public IncludeObjectType IncludeType = IncludeObjectType.MemberSelf;

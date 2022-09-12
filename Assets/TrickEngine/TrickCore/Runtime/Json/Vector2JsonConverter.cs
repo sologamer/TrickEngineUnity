@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TrickCore
 {
     [Preserve]
-    public class Vector2JsonConverter : JsonConverter
+    public sealed class Vector2JsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

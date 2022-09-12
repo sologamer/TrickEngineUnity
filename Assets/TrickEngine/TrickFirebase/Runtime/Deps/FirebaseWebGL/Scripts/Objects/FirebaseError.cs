@@ -5,7 +5,7 @@ using TrickCore;
 namespace TrickCore
 {
     [Serializable, JsonObject]
-    public class FirebaseError
+    public sealed class FirebaseError
     {
         public string code;
         public string message;

@@ -11,7 +11,7 @@ namespace TrickCore
     /// <summary>
     /// A modal popup UI menu
     /// </summary>
-    public partial class ModalPopupMenu : UIMenu
+    public sealed partial class ModalPopupMenu : UIMenu
     {
         /// <summary>
         /// Automatically hide whenever we click a response, otherwise you need to handle the hiding yourself

@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace TrickCore
 {
-    public class RESTPost : RESTPost<object>
+    public sealed class RESTPost : RESTPost<object>
     {
         public RESTPost(string uri, KeyValuePair<string, string>[] param) : base(uri, param)
         {

@@ -8,7 +8,7 @@ namespace TrickCore
     /// <summary>
     /// The TrickEngineManager automatically initializes the TrickEngine.Init, updates TrickEngine.Update, and TrickEngine.Exit upon exit
     /// </summary>
-    public class TrickEngineManager : MonoSingleton<TrickEngineManager>
+    public sealed class TrickEngineManager : MonoSingleton<TrickEngineManager>
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void RuntimeInitializeOnLoad()

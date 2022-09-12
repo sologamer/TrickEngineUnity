@@ -1,6 +1,6 @@
 ﻿namespace TrickCore
 {
-    public class AsyncResultData
+    public sealed class AsyncResultData
     {
         public bool? Result;
         public object Data;

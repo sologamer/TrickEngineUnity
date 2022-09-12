@@ -7,7 +7,7 @@ namespace TrickCore
     /// <summary>
     /// A stub object to support dynamic instantiating of an object
     /// </summary>
-    public class DynamicMonoTrickPool : MonoBehaviour, ITrickPool
+    public sealed class DynamicMonoTrickPool : MonoBehaviour, ITrickPool
     {
         public bool IsClaimed
         {

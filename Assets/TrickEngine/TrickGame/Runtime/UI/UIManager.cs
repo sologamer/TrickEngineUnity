@@ -16,7 +16,7 @@ namespace TrickCore
     /// - UIManager.Instance.TryShow
     /// - UIManager.Instance.TryHide
     /// </summary>
-    public class UIManager : MonoSingleton<UIManager>
+    public sealed class UIManager : MonoSingleton<UIManager>
     {
         public List<UIMenu> MenuAssets = new List<UIMenu>();
 

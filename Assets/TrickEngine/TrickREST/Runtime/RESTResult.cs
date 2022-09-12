@@ -30,7 +30,7 @@ namespace TrickCore
         }
     }
 
-    public class RESTResult<T> : IRESTResult
+    public sealed class RESTResult<T> : IRESTResult
     {
         public T Value { get; }
         public string Error;

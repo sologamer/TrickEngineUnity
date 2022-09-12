@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace TrickCore
 {
-    public class TrickTimeInternalUnity<T> : TrickTimeInternal where T : ITrickTimeServerTime
+    public sealed class TrickTimeInternalUnity<T> : TrickTimeInternal where T : ITrickTimeServerTime
     {
         public Func<IEnumerator> FetchServerTimeFunc { get; set; }
 

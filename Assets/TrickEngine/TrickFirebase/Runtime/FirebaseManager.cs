@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace TrickCore
 {
-    public class FirebaseManager : MonoSingleton<FirebaseManager>
+    public sealed class FirebaseManager : MonoSingleton<FirebaseManager>
     {
         public static DefaultContractResolver FirebaseContractResolver { get; } = new DefaultContractResolver()
         {
