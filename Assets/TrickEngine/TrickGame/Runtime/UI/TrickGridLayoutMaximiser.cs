@@ -10,7 +10,7 @@ namespace TrickCore
     /// </summary>
     [RequireComponent(typeof(GridLayoutGroup))]
     [ExecuteAlways]
-    public sealed class GridLayoutMaximiser : MonoBehaviour
+    public sealed class TrickGridLayoutMaximiser : MonoBehaviour
     {
 
         [Tooltip("Override the number of columns to aim for (or zero for default/disabled).\n" +

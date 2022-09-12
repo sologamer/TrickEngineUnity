@@ -224,6 +224,26 @@ namespace TrickCore
         {
             return SerializeToJson(obj, indented, true, contractResolver);
         }
+        
+        /// <summary>
+        /// Serialize an object to json string and catch any exceptions
+        /// </summary>
+        /// <param name="obj">The object</param>
+        /// <param name="indented">Pretty print</param>
+        /// <param name="contractResolver">Custom contract resolver</param>
+        /// <returns></returns>
+        public static string SerializeToJsonTryCatch(this object obj, bool indented, IContractResolver contractResolver = null)
+        {
+            try
+            {
+                return SerializeToJson(obj, indented, true, contractResolver);
+            }
+            catch (Exception ex)
+            {
+                Logger.Game.LogException(ex);
+                return default;
+            }
+        }
 
         /// <summary>
         /// Serialize an object to json string
@@ -267,6 +287,27 @@ namespace TrickCore
         {
             return DeserializeJson<T>(Encoding.UTF8.GetString(Convert.FromBase64String(base64Str)), contractResolver);
         }
+        
+
+        /// <summary>
+        /// Deserialize a base64 string to a json object and catch any exceptions
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="base64Str">The base64 string</param>
+        /// <param name="contractResolver">Custom contract resolver</param>
+        /// <returns></returns>
+        public static T DeserializeJsonBase64TryCatch<T>(this string base64Str, IContractResolver contractResolver = null)
+        {
+            try
+            {
+                return DeserializeJson<T>(Encoding.UTF8.GetString(Convert.FromBase64String(base64Str)), contractResolver);
+            }
+            catch (Exception ex)
+            {
+                Logger.Game.LogException(ex);
+                return default;
+            }
+        }
 
         /// <summary>
         /// Deserialize a base64 string to a json object
@@ -279,7 +320,26 @@ namespace TrickCore
         {
             return DeserializeJson(Encoding.UTF8.GetString(Convert.FromBase64String(base64Str)), type, contractResolver);
         }
-
+        
+        /// <summary>
+        /// Deserialize a base64 string to a json object and catch any exceptions
+        /// </summary>
+        /// <param name="base64Str">The base64 string</param>
+        /// <param name="type">The type</param>
+        /// <param name="contractResolver">Custom contract resolver</param>
+        /// <returns></returns>
+        public static object DeserializeJsonBase64TryCatch(this string base64Str, Type type, IContractResolver contractResolver = null)
+        {
+            try
+            {
+                return DeserializeJson(Encoding.UTF8.GetString(Convert.FromBase64String(base64Str)), type, contractResolver);
+            }
+            catch (Exception ex)
+            {
+                Logger.Game.LogException(ex);
+                return default;
+            }
+        }
 
         public static string JsonPrettify(this string json)
         {
