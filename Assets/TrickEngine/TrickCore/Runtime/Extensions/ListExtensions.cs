@@ -23,6 +23,28 @@ namespace TrickCore
                 Object.Destroy(behaviour.gameObject);
             }
         }
+        
+        /// <summary>
+        /// Offset a list by a number, but loops it (circular buffer)
+        /// </summary>
+        /// <param name="enumerable"></param>
+        /// <param name="offset"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> OffsetList<T>(this IEnumerable<T> enumerable, int offset)
+        {
+            var tempList = enumerable.ToList();
+            List<T> offsetList = new List<T>();
+            for (int i = offset; i < tempList.Count; i++)
+            {
+                offsetList.Add(tempList[i]);
+            }
+            for (int j = 0; j < offset; j++)
+            {
+                offsetList.Add(tempList[j]);
+            }
+            return offsetList;
+        }	
 
         /// <summary>
         /// A function to smartly instantiate an object or get from a current list, this saves unnecessary instantiations (GC's)
