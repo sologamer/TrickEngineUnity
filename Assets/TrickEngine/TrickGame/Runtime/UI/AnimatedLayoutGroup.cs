@@ -87,6 +87,8 @@ namespace TrickCore
 
                             // clone the child and clear it's inner component
                             var clonedChild = Instantiate(child.gameObject, _tr);
+                            var targetTransform = Settings.SpawnTransformFunc != null ? Settings.SpawnTransformFunc() : Settings.SpawnTransform;
+                            if (targetTransform != null) child.transform.position = targetTransform.position;
                             clonedChild.GetComponentsInChildren<MonoBehaviour>(true)
                                 .Where(component =>
                                     !(component is LayoutGroup || component is LayoutElement || component is ContentSizeFitter || component is AnimatedLayoutGroup)).ToList().ForEach(Destroy);
@@ -181,6 +183,16 @@ namespace TrickCore
     public class AnimatedLayoutGroupSettings
     {
         /// <summary>
+        /// A function to indicate where a new card is spawned from
+        /// </summary>
+        public Func<RectTransform> SpawnTransformFunc;
+        
+        /// <summary>
+        /// The initial spawn transform, if null if will just use the default
+        /// </summary>
+        public RectTransform SpawnTransform;
+        
+        /// <summary>
         /// The amount of updates to watch our childs
         /// </summary>
         public int ChildWatchUpdatePerSecond = 10;
@@ -268,7 +280,7 @@ namespace TrickCore
                     if (!_sizeDeltaRoutine.Exists())
                     {
                         _sizeDeltaRoutine = MyRectTransform
-                            .SizeDeltaTo(LinkRectTransform.sizeDelta, Root.Settings.AnimationTweenSettings).Play();
+                            .SizeDeltaTo(LinkRectTransform.sizeDelta, Root.Settings.AnimationTweenSettings).Play(this);
                     }
                 }
                 else
@@ -283,7 +295,7 @@ namespace TrickCore
                 {
                     if (!_anchorPositionRoutine.Exists())
                         _anchorPositionRoutine = MyRectTransform
-                            .AnchorPosTo(LinkRectTransform.anchoredPosition, Root.Settings.AnimationTweenSettings).Play();
+                            .AnchorPosTo(LinkRectTransform.anchoredPosition, Root.Settings.AnimationTweenSettings).Play(this);
                 }
                 else
                 {
