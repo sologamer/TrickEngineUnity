@@ -16,6 +16,10 @@ namespace TrickCore
         /// </summary>
         private const int IvSize =  16;
 
+        private static readonly AesLightEngine LightEngine = new AesLightEngine();
+        private static readonly AesEngine Engine = new AesEngine();
+        private static readonly SecureRandom Random = new SecureRandom();
+        
         /// <summary>
         /// Encrypt a message. The message includes the unique IV and the encrypted message
         /// </summary>
@@ -25,25 +29,21 @@ namespace TrickCore
         /// <param name="iv"></param>
         public static bool EncryptMessage(byte[] sharedKey, byte[] message, out byte[] encryptedMessageWithIv)
         {
+            bool fallback = false;
             try
             {
-                //AesLightEngine engine = new AesLightEngine();
-                AesEngine engine = new AesEngine();
-                PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CbcBlockCipher(engine), new Pkcs7Padding());
-                KeyParameter keyParam = new KeyParameter(sharedKey);
+                PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(GetBlockCipher(false), new Pkcs7Padding());
             
-                SecureRandom random = new SecureRandom();
                 byte[] iv = new byte[IvSize];
-                random.NextBytes(iv);
-
-                ParametersWithIV keyParamWithIv = new ParametersWithIV(keyParam, iv, 0, IvSize);
+                Random.NextBytes(iv);
+                
+                ParametersWithIV keyParamWithIv = new ParametersWithIV(new KeyParameter(sharedKey), iv, 0, IvSize);
 
                 // Encrypt
                 cipher.Init(true, keyParamWithIv);
                 byte[] encryptedMessage = new byte[cipher.GetOutputSize(message.Length)];
                 int outputMessageSize = cipher.ProcessBytes(message, encryptedMessage, 0);
                 outputMessageSize += cipher.DoFinal(encryptedMessage, outputMessageSize); //Do the final block
-            
                 encryptedMessageWithIv = new byte[IvSize + outputMessageSize];
                 // Put IV in the byte array
                 Buffer.BlockCopy(iv, 0, encryptedMessageWithIv, 0, IvSize);
@@ -55,8 +55,40 @@ namespace TrickCore
             {
                 Debug.LogException(e);
                 encryptedMessageWithIv = null;
-                return false;
+
+                try
+                {
+                    PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(GetBlockCipher(true), new Pkcs7Padding());
+            
+                    byte[] iv = new byte[IvSize];
+                    Random.NextBytes(iv);
+                
+                    ParametersWithIV keyParamWithIv = new ParametersWithIV(new KeyParameter(sharedKey), iv, 0, IvSize);
+
+                    // Encrypt
+                    cipher.Init(true, keyParamWithIv);
+                    byte[] encryptedMessage = new byte[cipher.GetOutputSize(message.Length)];
+                    int outputMessageSize = cipher.ProcessBytes(message, encryptedMessage, 0);
+                    outputMessageSize += cipher.DoFinal(encryptedMessage, outputMessageSize); //Do the final block
+                    encryptedMessageWithIv = new byte[IvSize + outputMessageSize];
+                    // Put IV in the byte array
+                    Buffer.BlockCopy(iv, 0, encryptedMessageWithIv, 0, IvSize);
+                    // Put the encrypted data in byte array
+                    Buffer.BlockCopy(encryptedMessage, 0, encryptedMessageWithIv, IvSize, outputMessageSize);
+                    return true;
+                }
+                catch (Exception ex2)
+                {
+                    Debug.LogException(ex2);
+                    encryptedMessageWithIv = null;
+                    return false;
+                }
             }
+        }
+
+        public static CbcBlockCipher GetBlockCipher(bool light)
+        {
+            return light ? new CbcBlockCipher(LightEngine) : new CbcBlockCipher(Engine);
         }
 
         public static byte[] DecryptMessage(byte[] sharedKey, byte[] encryptedMessageWithIv)
