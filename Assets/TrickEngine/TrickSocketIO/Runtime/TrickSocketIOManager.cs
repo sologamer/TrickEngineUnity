@@ -24,7 +24,7 @@ namespace TrickCore
         private Routine _connectionUpdater;
         private SocketManager.States? _lastState = null;
 
-        public UnityEvent<SocketManager.States> StateChangeEvent { get; } = new UnityEvent<SocketManager.States>();
+        public UnityEvent<(SocketManager.States previousState, SocketManager.States newState)> StateChangeEvent { get; } = new UnityEvent<(SocketManager.States previousState, SocketManager.States newState)>();
         public SocketManager ActiveConnection { get; set; }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TrickCore
                 {
                     if (_lastState != ActiveConnection.State)
                     {
-                        StateChangeEvent?.Invoke(ActiveConnection.State);
+                        StateChangeEvent?.Invoke((_lastState.GetValueOrDefault(SocketManager.States.Initial), ActiveConnection.State));
                         _lastState = ActiveConnection.State;
                     }
                 }
