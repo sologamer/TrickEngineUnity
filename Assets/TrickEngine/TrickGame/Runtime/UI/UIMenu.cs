@@ -5,6 +5,7 @@ using TrickCore;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 namespace TrickCore
 {
@@ -76,6 +77,7 @@ namespace TrickCore
         private bool _isOpen;
         private int _startingSortingOrder;
         private RectTransform _rt;
+        private bool _transitionForceRebuild;
 
         public float LastShowTime { get; set; }
         public bool IsOpen => _isOpen;
@@ -261,6 +263,11 @@ namespace TrickCore
                         continue;
                     }
                     
+                    if (!_transitionForceRebuild)
+                    {
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(transition.TransitionPanelTransform);
+                    }
+                    
                     transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
                     
                     transition.TransitionPanelTransform.TransitionIn(transition.TransitionInSettings, transition.TransitionDirectionIn, transition.Delay, () =>
@@ -275,6 +282,8 @@ namespace TrickCore
                     if (transition.PanelFading.HasFlag(FadeEnableType.In))
                         transition.TransitionPanelTransform.FadeIn(transition.FadeInSettings, delay: transition.Delay);
                 }
+
+                _transitionForceRebuild = true;
                 
                 if (MenuFading.HasFlag(FadeEnableType.In))
                     FadeIn(ShowFadeInSettings);
