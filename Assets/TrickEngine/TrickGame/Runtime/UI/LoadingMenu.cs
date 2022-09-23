@@ -16,14 +16,14 @@ namespace TrickCore
 
         public virtual void UpdateProgress(float progress)
         {
-            FillProgress.fillAmount = progress;
-            ProgressText.text = $"{progress * 100.0f:F0}%";
+            if (FillProgress != null) FillProgress.fillAmount = progress;
+            if (ProgressText != null) ProgressText.text = $"{progress * 100.0f:F0}%";
         }
         
         public LoadingMenu WaitFor(string waitText, Action onLoadAction, Func<float> waitCondition, float waitCompleteDelay = 0.25f, float waitConditionInterval = 0.1f)
         {
-            WaitText.text = string.IsNullOrEmpty(waitText) ? DefaultWaitText : waitText;
-        
+            if (WaitText != null) WaitText.text = string.IsNullOrEmpty(waitText) ? DefaultWaitText : waitText;
+
             IEnumerator CustomWaiter()
             {
                 yield return Routine.WaitCondition(() =>
