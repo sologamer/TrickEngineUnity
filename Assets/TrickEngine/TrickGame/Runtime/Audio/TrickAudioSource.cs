@@ -85,4 +85,14 @@ public class TrickAudioSource
     {
         Source.Stop();
     }
+
+    public AudioClip GetActiveClip()
+    {
+        return Source != null ? Source.clip : null;
+    }
+    
+    public bool IsPlaying()
+    {
+        return Source != null && Source.isPlaying;
+    }
 }

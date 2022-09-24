@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace TrickCore
 {
-    public sealed class FirebaseManager : MonoSingleton<FirebaseManager>
+    public class FirebaseManager : MonoSingleton<FirebaseManager>
     {
         public static DefaultContractResolver FirebaseContractResolver { get; } = new DefaultContractResolver()
         {
@@ -115,7 +115,6 @@ namespace TrickCore
             int length = split.Length;
             string persistentId = length == 2 ? split[1] : string.Empty;
             string content = length == 1 ? s : split[0];
-            if (!string.IsNullOrEmpty(persistentId)) Debug.Log($"Exec: {method}{persistentId}");
             if (persistent)
             {
                 if (!_callbackPersistentDict.TryGetValue(method + persistentId, out var p)) return;
@@ -274,8 +273,18 @@ namespace TrickCore
 
         public static void LogConsole(this (string content, FirebaseError error) tuple, string appendWith = "")
         {
-            if (tuple.error != null) Debug.LogError($"{(string.IsNullOrEmpty(appendWith) ? string.Empty : $"[{appendWith}]: ")}{tuple.error}");
-            else Debug.Log($"{(string.IsNullOrEmpty(appendWith) ? string.Empty : $"[{appendWith}]: ")}{tuple.content}");
+            if (DebugMode)
+            {
+                if (tuple.error != null) Debug.LogError($"{(string.IsNullOrEmpty(appendWith) ? string.Empty : $"[{appendWith}]: ")}{tuple.error}");
+                else Debug.Log($"{(string.IsNullOrEmpty(appendWith) ? string.Empty : $"[{appendWith}]: ")}{tuple.content}");                
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(appendWith))
+                    Debug.Log($"[{appendWith}]");
+            }
         }
+
+        public static bool DebugMode { get; set; } = false;
     }
 }
