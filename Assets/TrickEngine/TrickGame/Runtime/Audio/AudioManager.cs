@@ -66,7 +66,7 @@ public class AudioManager : MonoSingleton<AudioManager>
     public TrickAudioSource PlayMainTrack(TrickAudioId audioId)
     {
         if (audioId == null || !audioId.IsValid()) return null;
-        if (ActiveMainTrack.IsPlaying())
+        if (ActiveMainTrack != null && ActiveMainTrack.IsPlaying())
         {
             // if same clip don't do anything
             if (audioId.Clip == ActiveMainTrack.GetActiveClip()) return ActiveMainTrack;
