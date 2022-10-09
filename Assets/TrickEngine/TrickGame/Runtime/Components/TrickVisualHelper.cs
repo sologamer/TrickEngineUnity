@@ -19,13 +19,13 @@ namespace TrickCore
         public bool particleSystemInjectColorBySpeed = true;
 
         internal CanvasGroup CurrentCanvasGroup;
-    
+
         // ps
         private bool _initializeForPS;
         internal ParticleSystem.MinMaxGradient? InitMainModuleStartColor;
         internal ParticleSystem.MinMaxGradient? InitColorOverTimeColor;
         internal ParticleSystem.MinMaxGradient? InitColorBySpeed;
-    
+
         // ui
         internal bool InitializeForUI;
         internal Routine FadeRoutine;
@@ -38,7 +38,7 @@ namespace TrickCore
         internal void TryInitializePS()
         {
             if (_initializeForPS) return;
-        
+
             _initializeForPS = true;
         }
 
@@ -54,7 +54,7 @@ namespace TrickCore
     public static class TrickVisualHelperExtensions
     {
         public static float DefaultFadeTime { get; set; } = 0.25f;
-        
+
         public static void SetAlpha(this MonoBehaviour mono, float alpha)
         {
             var rt = mono.transform as RectTransform;
@@ -69,14 +69,16 @@ namespace TrickCore
             tb.CurrentCanvasGroup.alpha = alpha;
         }
 
-        public static void SetHighlighted(this RectTransform mono, Image highlightBorderImage, HighlightState highlightState)
+        public static void SetHighlighted(this RectTransform mono, Image highlightBorderImage,
+            HighlightState highlightState)
         {
             var trickButton = mono.GetComponent<TrickVisualMono>();
             if (trickButton == null) trickButton = mono.gameObject.AddComponent<TrickVisualMono>();
             trickButton.SetHighlighted(highlightBorderImage, highlightState);
         }
 
-        public static void SetHighlighted(this MonoBehaviour mono, Image highlightBorderImage, HighlightState highlightState)
+        public static void SetHighlighted(this MonoBehaviour mono, Image highlightBorderImage,
+            HighlightState highlightState)
         {
             var trickButton = mono.GetComponent<TrickVisualMono>();
             if (trickButton == null) trickButton = mono.gameObject.AddComponent<TrickVisualMono>();
@@ -99,7 +101,7 @@ namespace TrickCore
             tb.CurrentCanvasGroup.interactable = interactable;
             tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast;
         }
-        
+
         public static void SetCanvasGroupInteractable(this RectTransform mono, bool? interactable, bool? blockRaycast)
         {
             var tb = mono.GetComponent<TrickVisualHelper>();
@@ -108,22 +110,26 @@ namespace TrickCore
             if (interactable != null) tb.CurrentCanvasGroup.interactable = interactable.Value;
             if (blockRaycast != null) tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast.Value;
         }
-        
-        public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float? fadeTime = null, Curve curve = Curve.Linear,
+
+        public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float? fadeTime = null,
+            Curve curve = Curve.Linear,
             float delay = 0.0f,
             float? setAlpha = null, bool interactable = false, bool withoutHost = false, Action completeAction = null)
         {
             var rt = mono.transform as RectTransform;
             if (rt != null)
-                return Fade(rt, fadeTarget, fadeTime, curve, delay, setAlpha, interactable, withoutHost, completeAction);
+                return Fade(rt, fadeTarget, fadeTime, curve, delay, setAlpha, interactable, withoutHost,
+                    completeAction);
             return default;
         }
 
-        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, float? fadeTime = null, Curve curve = Curve.Linear,
+        public static Routine Fade(this RectTransform mono, float fadeTarget = 0.0f, float? fadeTime = null,
+            Curve curve = Curve.Linear,
             float delay = 0.0f, float? setAlpha = null, bool interactable = false, bool withoutHost = false,
             Action completeAction = null)
         {
-            return Fade(mono, new TweenSettings(fadeTime.GetValueOrDefault(DefaultFadeTime), curve), fadeTarget, delay, setAlpha, interactable, withoutHost, completeAction);
+            return Fade(mono, new TweenSettings(fadeTime.GetValueOrDefault(DefaultFadeTime), curve), fadeTarget, delay,
+                setAlpha, interactable, withoutHost, completeAction);
         }
 
         public static Routine Fade(this RectTransform mono, TweenSettings tweenSettings, float fadeTarget = 0.0f,
@@ -134,44 +140,50 @@ namespace TrickCore
             if (tb == null) tb = mono.gameObject.AddComponent<TrickVisualHelper>();
             tb.TryInitializeUI();
             if (setAlpha != null) tb.CurrentCanvasGroup.alpha = setAlpha.GetValueOrDefault();
-            var tween = tb.CurrentCanvasGroup.FadeTo(fadeTarget, tweenSettings).DelayBy(delay).OnComplete(completeAction);
+            var tween = tb.CurrentCanvasGroup.FadeTo(fadeTarget, tweenSettings).DelayBy(delay)
+                .OnComplete(completeAction);
             tb.FadeRoutine.Replace(withoutHost ? tween.Play() : tween.Play(tb));
             tb.SetCanvasGroupInteractable(interactable, interactable);
             return tb.FadeRoutine;
         }
 
-        public static Routine FadeIn(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeIn(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear,
+            float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, curve, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeOut(this MonoBehaviour mono, float? fadeTime = null, Curve curve = Curve.Linear,
+            float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, curve, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        public static Routine FadeIn(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeIn(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear,
+            float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, fadeTime, curve, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        public static Routine FadeOut(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear, float delay = 0.0f,
+        public static Routine FadeOut(this RectTransform mono, float? fadeTime = null, Curve curve = Curve.Linear,
+            float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 0.0f, fadeTime, curve, delay, setAlpha, false, withoutHost, completeAction);
         }
 
-        
+
         public static Routine FadeIn(this MonoBehaviour mono, TweenSettings tweenSettings, float delay = 0.0f,
             float? setAlpha = null, bool withoutHost = false, Action completeAction = null)
         {
             return Fade(mono, 1.0f, tweenSettings, delay, setAlpha, true, withoutHost, completeAction);
         }
 
-        private static Routine Fade(MonoBehaviour mono, float fadeTarget, TweenSettings tweenSettings, float delay, float? setAlpha, bool interactable, bool withoutHost, Action completeAction)
+        private static Routine Fade(MonoBehaviour mono, float fadeTarget, TweenSettings tweenSettings, float delay,
+            float? setAlpha, bool interactable, bool withoutHost, Action completeAction)
         {
             var rt = mono.transform as RectTransform;
             if (rt != null)
@@ -196,13 +208,15 @@ namespace TrickCore
         {
             return Fade(mono, tweenSettings, 0.0f, delay, setAlpha, false, withoutHost, completeAction);
         }
-        
-        
-        public static Routine ScaleTransformPingPong(this MonoBehaviour mono, float scaleTarget, float scaleDuration = 0.35f,
+
+
+        public static Routine ScaleTransformPingPong(this MonoBehaviour mono, float scaleTarget,
+            float scaleDuration = 0.35f,
             float delay = 0.0f, Action startCallback = null) => ScaleTransformPingPong(mono.transform as RectTransform,
             scaleTarget, scaleDuration, delay, startCallback);
 
-        public static Routine ScaleTransformPingPong(this RectTransform mono, float scaleTarget, float scaleDuration = 0.35f,
+        public static Routine ScaleTransformPingPong(this RectTransform mono, float scaleTarget,
+            float scaleDuration = 0.35f,
             float delay = 0.0f, Action startCallback = null)
         {
             var tb = mono.GetComponent<TrickVisualHelper>();
@@ -219,7 +233,8 @@ namespace TrickCore
                 .OnComplete(() => { mono.localScale = tb.LocalScale.Value; }).Play(tb));
         }
 
-        public static void ResetParticleSystemColor(this ParticleSystem particleSystem, Color color, bool injectChildSystems)
+        public static void ResetParticleSystemColor(this ParticleSystem particleSystem, Color color,
+            bool injectChildSystems)
         {
             if (particleSystem == null) return;
             var visualHelper = particleSystem.GetComponent<TrickVisualHelper>();
@@ -263,7 +278,8 @@ namespace TrickCore
             }
         }
 
-        public static void SetParticleSystemColor(this ParticleSystem particleSystem, Color color, bool injectChildSystems)
+        public static void SetParticleSystemColor(this ParticleSystem particleSystem, Color color,
+            bool injectChildSystems)
         {
             if (particleSystem == null) return;
             var visualHelper = particleSystem.GetComponent<TrickVisualHelper>();
@@ -411,11 +427,13 @@ namespace TrickCore
         /// <param name="tweenCurve">The shake tweenSettings</param>
         /// <param name="loops">Amount of loops before we complete. -1 is for continuous</param>
         public static void Shake(this MonoBehaviour mono, bool b, float shake = 20.0f, float pauseDuration = 0.05f,
-            float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut, int loops = -1)
+            float longPauseDuration = 0.85f, float tweenDuration = 0.35f, Curve tweenCurve = Curve.BounceInOut,
+            int loops = -1)
         {
-            Shake(mono, b, shake, pauseDuration, longPauseDuration, new TweenSettings(tweenDuration, tweenCurve), loops);
+            Shake(mono, b, shake, pauseDuration, longPauseDuration, new TweenSettings(tweenDuration, tweenCurve),
+                loops);
         }
-        
+
         /// <summary>
         /// Shake the object by rotating it
         /// </summary>
@@ -453,6 +471,7 @@ namespace TrickCore
                             loops--;
                             if (loops == 0) yield break;
                         }
+
                         yield return Routine.WaitSeconds(longPauseDuration);
                     }
 
@@ -466,7 +485,8 @@ namespace TrickCore
 
             if (b)
             {
-                visualHelper.ShakeRoutine = visualHelper.ShakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
+                visualHelper.ShakeRoutine =
+                    visualHelper.ShakeRoutine.Replace(HandleShake()).SetPhase(RoutinePhase.Update);
             }
             else
             {
@@ -475,10 +495,10 @@ namespace TrickCore
             }
         }
 
-        public static void TransitionIn(this RectTransform registerRoot, TweenSettings tweenSettings,
+        public static Routine TransitionIn(this RectTransform registerRoot, TweenSettings tweenSettings,
             TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            if (registerRoot == null) return;
+            if (registerRoot == null) return Routine.Null;
             var visualHelper = registerRoot.GetComponent<TrickVisualHelper>();
             if (visualHelper == null) visualHelper = registerRoot.gameObject.AddComponent<TrickVisualHelper>();
             visualHelper.TryInitializeUI();
@@ -493,49 +513,56 @@ namespace TrickCore
                     completeCallback?.Invoke();
                     break;
                 case TrickTransitionDirection.Left:
-                    rt.anchoredPosition = new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
-                    visualHelper.TransitionRoutine = rt
+                    rt.anchoredPosition =
+                        new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
+                    visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Top:
-                    rt.anchoredPosition = new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y);
-                    visualHelper.TransitionRoutine = rt
+                    rt.anchoredPosition =
+                        new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y);
+                    visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Right:
-                    rt.anchoredPosition = new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
-                    visualHelper.TransitionRoutine = rt
+                    rt.anchoredPosition =
+                        new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
+                    visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Bottom:
-                    rt.anchoredPosition = new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y);
-                    visualHelper.TransitionRoutine = rt
+                    rt.anchoredPosition =
+                        new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y);
+                    visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+
+            return visualHelper.TransitionRoutine;
         }
 
-        public static void TransitionIn(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
+        public static Routine TransitionIn(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
             TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            TransitionIn((RectTransform)registerRoot.transform, tweenSettings, direction, delay, completeCallback);
+            return TransitionIn((RectTransform)registerRoot.transform, tweenSettings, direction, delay,
+                completeCallback);
         }
 
-        public static void TransitionOut(this RectTransform registerRoot, TweenSettings tweenSettings,
+        public static Routine TransitionOut(this RectTransform registerRoot, TweenSettings tweenSettings,
             TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            if (registerRoot == null) return;
+            if (registerRoot == null) return Routine.Null;
 
             var visualHelper = registerRoot.GetComponent<TrickVisualHelper>();
             if (visualHelper == null) visualHelper = registerRoot.gameObject.AddComponent<TrickVisualHelper>();
             visualHelper.TryInitializeUI();
-            
+
             var rt = registerRoot;
             var siz = rt.rect.size;
             var anchor = rt.anchoredPosition;
@@ -547,33 +574,44 @@ namespace TrickCore
                     break;
                 case TrickTransitionDirection.Left:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                    visualHelper.TransitionRoutine.Replace(rt
+                        .AnchorPosTo(new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y),
+                            tweenSettings)
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Top:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y), tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                    visualHelper.TransitionRoutine.Replace(rt
+                        .AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y),
+                            tweenSettings)
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Right:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y), tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                    visualHelper.TransitionRoutine.Replace(rt
+                        .AnchorPosTo(new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y),
+                            tweenSettings)
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 case TrickTransitionDirection.Bottom:
                     rt.anchoredPosition = visualHelper.OriginalAnchorPosition.GetValueOrDefault();
-                    visualHelper.TransitionRoutine = rt.AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y), tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play();
+                    visualHelper.TransitionRoutine.Replace(rt
+                        .AnchorPosTo(new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y),
+                            tweenSettings)
+                        .OnComplete(completeCallback).DelayBy(delay).Play());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+
+            return visualHelper.TransitionRoutine;
         }
 
-        public static void TransitionOut(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
+        public static Routine TransitionOut(this MonoBehaviour registerRoot, TweenSettings tweenSettings,
             TrickTransitionDirection direction, float delay, Action completeCallback = null)
         {
-            TransitionOut((RectTransform)registerRoot.transform, tweenSettings, direction, delay, completeCallback);
+            return TransitionOut((RectTransform)registerRoot.transform, tweenSettings, direction, delay,
+                completeCallback);
         }
     }
 
@@ -593,13 +631,13 @@ namespace TrickCore
         public Image HighlightBorderImage { get; set; }
 
         private Routine _highlightRoutine;
-    
+
         public void SetHighlighted(Image highlightImage, HighlightState state, Color? highlightColor = null)
         {
             if (highlightImage != null) HighlightBorderImage = highlightImage;
 
             if (HighlightBorderImage == null) return;
-        
+
             IEnumerator Blink()
             {
                 var go = gameObject;
@@ -646,7 +684,7 @@ namespace TrickCore
             CurrentHighlightState = state;
         }
     }
-    
+
     public enum HighlightState
     {
         Off,
