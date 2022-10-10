@@ -109,6 +109,8 @@ namespace TrickCore
             tb.TryInitializeUI();
             if (interactable != null) tb.CurrentCanvasGroup.interactable = interactable.Value;
             if (blockRaycast != null) tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast.Value;
+            
+            Debug.Log(mono + " -> " + blockRaycast);
         }
 
         public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float? fadeTime = null,
@@ -517,28 +519,28 @@ namespace TrickCore
                         new Vector2(-siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
                     visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play());
+                        .OnComplete(completeCallback).DelayBy(delay).Play().OnStop(completeCallback).OnException(Debug.LogException));
                     break;
                 case TrickTransitionDirection.Top:
                     rt.anchoredPosition =
                         new Vector2(visualHelper.OriginalAnchorPosition.Value.x, siz.y * 2 * rt.pivot.y);
                     visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play());
+                        .OnComplete(completeCallback).DelayBy(delay).Play().OnStop(completeCallback).OnException(Debug.LogException));
                     break;
                 case TrickTransitionDirection.Right:
                     rt.anchoredPosition =
                         new Vector2(siz.x * 2 * rt.pivot.x, visualHelper.OriginalAnchorPosition.Value.y);
                     visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play());
+                        .OnComplete(completeCallback).DelayBy(delay).Play().OnStop(completeCallback).OnException(Debug.LogException));
                     break;
                 case TrickTransitionDirection.Bottom:
                     rt.anchoredPosition =
                         new Vector2(visualHelper.OriginalAnchorPosition.Value.x, -siz.y * 2 * rt.pivot.y);
                     visualHelper.TransitionRoutine.Replace(rt
                         .AnchorPosTo(visualHelper.OriginalAnchorPosition.Value, tweenSettings)
-                        .OnComplete(completeCallback).DelayBy(delay).Play());
+                        .OnComplete(completeCallback).DelayBy(delay).Play().OnStop(completeCallback).OnException(Debug.LogException));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
