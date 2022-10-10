@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace TrickCore
 {
@@ -127,6 +130,45 @@ namespace TrickCore
             int quarterNumber = (date.Month-1)/3+1;
             firstDayOfQuarter = new DateTime(date.Year, (quarterNumber-1)*3+1,1);
             lastDayOfQuarter = firstDayOfQuarter.AddMonths(3).AddDays(-1);
+        }
+        
+        
+        
+        /// https://stackoverflow.com/questions/11/calculate-relative-time-in-c-sharp
+        private static readonly SortedList<double, Func<TimeSpan, string>> Offsets = 
+            new SortedList<double, Func<TimeSpan, string>>
+            {
+                { 45, x => $"{x.TotalMinutes:F0} minutes"},
+                { 1440, x => $"{x.TotalHours:F0} hours"},
+                { 43200, x => $"{x.TotalDays:F0} days"},
+                { 525600, x => $"{x.TotalDays / 30:F0} months"},
+                { double.MaxValue, x => $"{x.TotalDays / 365:F0} years"}
+            };
+
+        /// <summary>
+        /// Prettify string to a relative date string (x minutes ago, x hours ago)
+        /// </summary>
+        /// <param name="currentDateTime"></param>
+        /// <param name="compareTime"></param>
+        /// <returns></returns>
+        public static string ToRelativeDate(this DateTime currentDateTime, DateTime compareTime)
+        {
+            TimeSpan x = currentDateTime - compareTime;
+            string suffix = x.TotalMinutes > 0 ? " ago" : " from now";
+            x = new TimeSpan(Math.Abs(x.Ticks));
+            return Offsets.First(n => x.TotalMinutes < n.Key).Value(x) + suffix;
+        }
+
+        /// <summary>
+        /// Prettify string to a relative date string (x minutes ago, x hours ago)
+        /// </summary>
+        /// <param name="timeSpan"></param>
+        /// <returns></returns>
+        public static string ToRelativeDate(this TimeSpan timeSpan)
+        {
+            string suffix = timeSpan.TotalMinutes > 0 ? " ago" : " from now";
+            timeSpan = new TimeSpan(Math.Abs(timeSpan.Ticks));
+            return Offsets.First(n => timeSpan.TotalMinutes < n.Key).Value(timeSpan) + suffix;
         }
     }
 }
