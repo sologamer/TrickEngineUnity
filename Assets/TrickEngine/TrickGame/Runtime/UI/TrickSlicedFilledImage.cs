@@ -16,7 +16,7 @@ namespace TrickCore
     using UnityEditor;
 
     // Custom Editor to order the variables in the Inspector similar to Image component
-    [CustomEditor(typeof(SlicedFilledImage)), CanEditMultipleObjects]
+    [CustomEditor(typeof(TrickSlicedFilledImage)), CanEditMultipleObjects]
     public class SlicedFilledImageEditor : Editor
     {
         private SerializedProperty spriteProp, colorProp;
@@ -44,8 +44,8 @@ namespace TrickCore
 
 
     [RequireComponent(typeof(CanvasRenderer))]
-    [AddComponentMenu("UI/Sliced Filled Image", 11)]
-    public class SlicedFilledImage : MaskableGraphic, ISerializationCallbackReceiver, ILayoutElement,
+    [AddComponentMenu("UI/Trick Sliced Filled Image", 11)]
+    public class TrickSlicedFilledImage : MaskableGraphic, ISerializationCallbackReceiver, ILayoutElement,
         ICanvasRaycastFilter
     {
         private static class SetPropertyUtility
@@ -231,7 +231,7 @@ namespace TrickCore
 #pragma warning restore IDE1006
 #pragma warning restore 1692
 
-        protected SlicedFilledImage()
+        protected TrickSlicedFilledImage()
         {
             useLegacyMeshGeneration = false;
         }
@@ -647,7 +647,7 @@ namespace TrickCore
         private bool m_Tracked = false;
 
 #if UNITY_2017_4 || UNITY_2018_2_OR_NEWER
-        private static List<SlicedFilledImage> m_TrackedTexturelessImages = new List<SlicedFilledImage>();
+        private static List<TrickSlicedFilledImage> m_TrackedTexturelessImages = new List<TrickSlicedFilledImage>();
         private static bool s_Initialized;
 #endif
 
@@ -681,7 +681,7 @@ namespace TrickCore
         {
             for (int i = m_TrackedTexturelessImages.Count - 1; i >= 0; i--)
             {
-                SlicedFilledImage image = m_TrackedTexturelessImages[i];
+                TrickSlicedFilledImage image = m_TrackedTexturelessImages[i];
                 if (spriteAtlas.CanBindTo(image.activeSprite))
                 {
                     image.SetAllDirty();
