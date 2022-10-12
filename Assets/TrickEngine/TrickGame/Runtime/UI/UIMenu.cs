@@ -7,12 +7,21 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+
 namespace TrickCore
 {
     /// <summary>
     /// The base class of a UI menu. Inherit all your UI menu's from this!
     /// </summary>
-    public abstract class UIMenu : MonoBehaviour
+    public abstract class UIMenu 
+#if ODIN_INSPECTOR    
+        : SerializedMonoBehaviour
+#else
+        : MonoBehaviour
+#endif
     {
         [Header("Audio")] 
         public TrickAudioId MenuShowAudio;
