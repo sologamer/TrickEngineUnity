@@ -98,7 +98,11 @@ public class AudioManager : MonoSingleton<AudioManager>
         return source;
     }
 
-    public TrickAudioSource PlayOneShot(List<TrickAudioId> audioIds) => PlayOneShot(audioIds.Random(TrickIRandomizer.Default));
+    public TrickAudioSource PlayOneShot(List<TrickAudioId> audioIds)
+    {
+        return audioIds != null && audioIds.Count > 0 ? PlayOneShot(audioIds.Random(TrickIRandomizer.Default)) : null;
+    }
+
     public TrickAudioSource PlayOneShot(TrickAudioId audioId)
     {
         if (audioId == null || !audioId.IsValid()) return null;
