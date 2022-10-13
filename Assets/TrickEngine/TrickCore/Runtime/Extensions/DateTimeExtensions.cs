@@ -138,6 +138,7 @@ namespace TrickCore
         private static readonly SortedList<double, Func<TimeSpan, string>> Offsets = 
             new SortedList<double, Func<TimeSpan, string>>
             {
+                { 0, x => $"{x.TotalSeconds:F0} seconds"},
                 { 45, x => $"{x.TotalMinutes:F0} minutes"},
                 { 1440, x => $"{x.TotalHours:F0} hours"},
                 { 43200, x => $"{x.TotalDays:F0} days"},
