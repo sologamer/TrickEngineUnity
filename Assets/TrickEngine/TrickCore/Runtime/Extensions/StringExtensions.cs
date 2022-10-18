@@ -301,5 +301,20 @@ namespace TrickCore
                 return len1 - len2;
             }
         }
+
+        private static readonly Dictionary<Regex, string> PasswordRules = new Dictionary<Regex, string>
+            {
+                {new Regex(".{8,}"), "Password length must be at least 8 characters in length."}   , // Password is eight or more characters long
+                {new Regex("\\d"), "Password needs to contain a number." }	,  // Password contains numbers
+                {new Regex("[a-z].*?[A-Z]|[A-Z].*?[a-z]"), "Password needs to contain a mixed case."}, // Password is mixed case
+                {new Regex("[!@#$%^&*?_~-£() ]"), "Password needs to contain a special character."}, // Password has special characters
+            };
+        
+        public static (int Score, int MaxScore, List<string> MatchFailures) TrickCheckPasswordScore(string password, Dictionary<Regex, string> customRules = null)
+        {
+            customRules ??= PasswordRules;
+            var matches = customRules.Select(rule => (rule.Key.Match(password), rule.Value)).ToList();
+            return (matches.Sum(m => m.Item1.Success ? 1 : 0), customRules.Count, matches.FindAll(x => !x.Item1.Success).Select((tuple, i) => tuple.Value).ToList());
+        }
     }
 }

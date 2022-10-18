@@ -109,8 +109,6 @@ namespace TrickCore
             tb.TryInitializeUI();
             if (interactable != null) tb.CurrentCanvasGroup.interactable = interactable.Value;
             if (blockRaycast != null) tb.CurrentCanvasGroup.blocksRaycasts = blockRaycast.Value;
-            
-            Debug.Log(mono + " -> " + blockRaycast);
         }
 
         public static Routine Fade(this MonoBehaviour mono, float fadeTarget = 0.0f, float? fadeTime = null,

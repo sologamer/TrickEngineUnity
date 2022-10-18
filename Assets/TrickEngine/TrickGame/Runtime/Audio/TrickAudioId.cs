@@ -1,5 +1,6 @@
 using System;
 using BeauRoutine;
+using TrickCore;
 using UnityEngine;
 using UnityEngine.Audio;
 
