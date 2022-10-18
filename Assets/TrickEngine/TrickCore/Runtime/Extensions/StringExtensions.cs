@@ -310,7 +310,7 @@ namespace TrickCore
                 {new Regex("[!@#$%^&*?_~-£() ]"), "Password needs to contain a special character."}, // Password has special characters
             };
         
-        public static (int Score, int MaxScore, List<string> MatchFailures) TrickCheckPasswordScore(string password, Dictionary<Regex, string> customRules = null)
+        public static (int Score, int MaxScore, List<string> MatchFailures) TrickCheckPasswordScore(this string password, Dictionary<Regex, string> customRules = null)
         {
             customRules ??= PasswordRules;
             var matches = customRules.Select(rule => (rule.Key.Match(password), rule.Value)).ToList();
