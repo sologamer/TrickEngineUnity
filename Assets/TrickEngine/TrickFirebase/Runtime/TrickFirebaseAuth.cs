@@ -165,5 +165,33 @@ namespace TrickCore
 #endif
 
         }
+        public static void ForgetPassword(string email, Action<(string content, FirebaseError error)> callbackOrFallback)
+        {
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            FirebaseManager.Instance.Register(nameof(ForgetPassword), callbackOrFallback, false, email);
+            FirebaseAuth.ForgetPassword(email, nameof(FirebaseManager), $"{nameof(ForgetPassword)}Callback", $"{nameof(ForgetPassword)}Fallback");
+#endif
+
+#if (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE || (!UNITY_EDITOR && !UNITY_WEBGL)) && USE_FIREBASE
+            if (Firebase.Auth.FirebaseAuth.DefaultInstance != null)
+            {
+                Firebase.Auth.FirebaseAuth.DefaultInstance
+                    .SendPasswordResetEmailAsync(email)
+                    .ContinueWith(
+                        task =>
+                        {
+                            if (task.IsCanceled || task.IsFaulted)
+                            {
+                                TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((null, FirebaseError.FromException(task.Exception))));
+                                return;
+                            }
+                                
+                            TrickEngine.SimpleDispatch(() => callbackOrFallback?.Invoke((new object().SerializeToJson(true, true, FirebaseManager.FirebaseContractResolver), null)));
+                        });
+            }
+#endif
+
+        }
     }
 }

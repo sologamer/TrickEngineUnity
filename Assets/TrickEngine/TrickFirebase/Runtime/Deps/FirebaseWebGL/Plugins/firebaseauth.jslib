@@ -67,8 +67,8 @@ mergeInto(LibraryManager.library, {
 		var persistentId = "|*$|" + parsedEmail;
         try {
 
-            firebase.auth().sendPasswordResetEmail(parsedEmail).then(function (unused) {
-                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(unused.user)+persistentId);
+            firebase.auth().sendPasswordResetEmail(parsedEmail).then(function () {
+                unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, "{}"+persistentId);
             }).catch(function (error) {
                 unityInstance.Module.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error))+persistentId);
             });
