@@ -149,6 +149,11 @@ namespace TrickCore
         [Preserve] public void SignInWithEmailAndPasswordFallback(string s) => Exec(false, false, nameof(SignInWithEmailAndPasswordFallback).Replace("Fallback", string.Empty), s);
         [Preserve] public void OnAuthStateChangedCallback(string s) => Exec(true, true, nameof(OnAuthStateChangedCallback).Replace("Callback", string.Empty), s);
         [Preserve] public void OnAuthStateChangedFallback(string s) => Exec(false, true, nameof(OnAuthStateChangedFallback).Replace("Fallback", string.Empty), s);
+        
+        [Preserve] public void ForgetPasswordCallback(string s) => Exec(true, true, nameof(ForgetPasswordCallback).Replace("Callback", string.Empty), s);
+        [Preserve] public void ForgetPasswordFallback(string s) => Exec(false, true, nameof(ForgetPasswordFallback).Replace("Fallback", string.Empty), s);
+        [Preserve] public void ChangePasswordCallback(string s) => Exec(true, true, nameof(ChangePasswordCallback).Replace("Callback", string.Empty), s);
+        [Preserve] public void ChangePasswordFallback(string s) => Exec(false, true, nameof(ChangePasswordFallback).Replace("Fallback", string.Empty), s);
     
         #endregion
     
