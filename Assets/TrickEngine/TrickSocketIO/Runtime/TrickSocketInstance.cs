@@ -6,6 +6,7 @@ using System.Text;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TrickCore
 {
@@ -18,6 +19,11 @@ namespace TrickCore
         private HashSet<object> _registeredSocketEventVisitHashSet = new HashSet<object>();
         public Socket CurrentSocket { get; set; }
         public IKeyExchange KeyExchange { get; set; }
+
+        /// <summary>
+        /// Action invoked when a secure message fails to send
+        /// </summary>
+        public UnityEvent SecureMessageSendFailure { get; } = new();
 
         /// <summary>
         /// Inject instances method (requires reflection to do so), it will be cached and will speed up the the event calls
@@ -40,7 +46,6 @@ namespace TrickCore
                             list = new List<(object inst, MethodInfo info)>());
                     list.Add((pTuple.instance, pTuple.info));
                 }
-                
             }
         }
         
@@ -81,6 +86,8 @@ namespace TrickCore
                     Debug.LogError($"[SocketIO] Error with sending encrypted message. Retrying ({currentTry}/{maxTries})...");
                 }
             }
+            
+            SecureMessageSendFailure?.Invoke();
         }
 
         /// <summary>
