@@ -59,7 +59,8 @@ namespace TrickCore
             base.Initialize();
 
             _uiMenus = MenuAssets.Where(menu => menu != null).ToList();
-
+            _lastScreenSize = new Vector2Int(Screen.width,Screen.height);
+            
             if (AutoShowFirstMenuAsset)
             {
                 var firstMenu = GetMenuByType(_uiMenus.FirstOrDefault()?.GetType());
