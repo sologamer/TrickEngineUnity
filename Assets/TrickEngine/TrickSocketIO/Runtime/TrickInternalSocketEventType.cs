@@ -1,3 +1,4 @@
+#if TRICK_SOCKET_IO
 namespace TrickCore
 {
     /// <summary>
@@ -32,3 +33,4 @@ namespace TrickCore
         dec,
     }
 }
+#endif

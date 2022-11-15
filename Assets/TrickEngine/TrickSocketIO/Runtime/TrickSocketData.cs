@@ -1,3 +1,4 @@
+#if TRICK_SOCKET_IO
 using System;
 using Newtonsoft.Json;
 
@@ -17,3 +18,4 @@ namespace TrickCore
         public T GetPayloadAs<T>() => Payload != null ? Payload.DeserializeJsonTryCatch<T>() : default;
     }
 }
+#endif

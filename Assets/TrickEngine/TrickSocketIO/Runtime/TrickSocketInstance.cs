@@ -1,3 +1,4 @@
+#if TRICK_SOCKET_IO
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,3 +120,4 @@ namespace TrickCore
         public abstract void OnDisconnect();
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if TRICK_SOCKET_IO
 using System;
 using JetBrains.Annotations;
 
@@ -14,3 +15,4 @@ namespace TrickCore
         }
     }
 }
+#endif
