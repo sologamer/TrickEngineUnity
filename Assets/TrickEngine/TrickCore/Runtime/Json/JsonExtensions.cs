@@ -95,6 +95,7 @@ namespace TrickCore
         /// <returns></returns>
         public static T DeserializeJson<T>(this string json, bool includeNull, IContractResolver contractResolver = null)
         {
+            if (typeof(T) == typeof(string)) return json is T ? (T)(object)json : default;
             return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings()
             {
                 ContractResolver = contractResolver ?? TrickContractResolver,
@@ -128,7 +129,7 @@ namespace TrickCore
         public static T DeserializeJson<T>(this object obj, bool includeNull, IContractResolver contractResolver = null)
         {
             if (obj is string s) return DeserializeJson<T>(s, includeNull, contractResolver);
-            
+            if (typeof(T) == typeof(string)) return obj is T t ? t : obj?.ToString() is T str ? str : default;
             return JsonConvert.DeserializeObject<T>(SerializeToJson(obj, false, contractResolver), new JsonSerializerSettings()
             {
                 ContractResolver = contractResolver ?? TrickContractResolver,
@@ -160,6 +161,7 @@ namespace TrickCore
         /// <returns></returns>
         public static object DeserializeJson(this string json, Type type, bool includeNull, IContractResolver contractResolver = null)
         {
+            if (type == typeof(string)) return json;
             return JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings()
             {
                 ContractResolver = contractResolver ?? TrickContractResolver,
@@ -202,6 +204,7 @@ namespace TrickCore
                 json = SerializeToJson(obj, false);
             }
 
+            if (type == typeof(string)) return json;
             return JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings()
             {
                 ContractResolver = contractResolver ?? TrickContractResolver,

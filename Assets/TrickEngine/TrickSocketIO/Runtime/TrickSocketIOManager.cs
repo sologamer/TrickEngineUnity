@@ -8,7 +8,9 @@ using BeauRoutine;
 using BestHTTP.SocketIO3;
 using BestHTTP.SocketIO3.Events;
 using BestHTTP.SocketIO3.Parsers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -73,8 +75,10 @@ namespace TrickCore
         /// <param name="socketEventInjectInstanceList">Additional instances of classes where we want to inject/scan the socket events for</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T RegisterSocketInstance<T>(string nsp, Action<T, bool> handshakeCompleteAction, List<object> socketEventInjectInstanceList = null) where T : TrickSocketInstance, new()
+        public T RegisterSocketInstance<T>([NotNull] string nsp, Action<T, bool> handshakeCompleteAction, List<object> socketEventInjectInstanceList = null) where T : TrickSocketInstance, new()
         {
+            if (ActiveConnection == null) throw new ArgumentNullException(nameof(ActiveConnection));
+            
             var instance = new T();
             var socket = ActiveConnection.GetSocket(nsp);
             
@@ -198,8 +202,23 @@ namespace TrickCore
                                 if (parameters.Length == 0)
                                     tuple.info.Invoke(tuple.inst, null);
                                 else if (parameters.Length == 1)
-                                    tuple.info.Invoke(tuple.inst,
-                                        new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                                {
+                                    var type = parameters[0].ParameterType;
+                                    
+                                    if (type == typeof(string))
+                                    {
+                                        JToken.Parse(message.Payload);                                        
+                                    }
+                                    if (type == typeof(string))
+                                    {
+                                        if (!(message.Payload.StartsWith('{') && message.Payload.EndsWith('}')))
+                                            tuple.info.Invoke(tuple.inst,
+                                                new[] { message.Payload?.Trim('\"') as object });
+                                    }
+                                    else 
+                                        tuple.info.Invoke(tuple.inst,
+                                            new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                                }
                                 else
                                     Debug.LogError(
                                         $"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
