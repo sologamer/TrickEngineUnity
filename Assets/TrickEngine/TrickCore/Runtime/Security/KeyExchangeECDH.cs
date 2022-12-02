@@ -4,6 +4,7 @@ using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
@@ -16,10 +17,7 @@ namespace TrickCore
     /// </summary>
     public sealed class KeyExchangeECDH : IKeyExchange
     {
-        const string KeyPairAlgorithm = "ECDH"; 
         const string Algorithm = "ECDH";
-        const int KeyBitSize = 256;
-        const int DefaultPrimeProbability = 30;
 
         /// <summary>
         /// The public key will be sent to the target which can then generate their '<see cref="_targetSharedKey"/>'
@@ -71,19 +69,70 @@ namespace TrickCore
         /// </summary>
         public void Initialize()
         {
-            ECKeyPairGenerator gen = new ECKeyPairGenerator("ECDH");
-            SecureRandom secureRandom = new SecureRandom();
-            X9ECParameters ecp = NistNamedCurves.GetByName("P-256");
-            ECDomainParameters ecSpec = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-            ECKeyGenerationParameters ecgp = new ECKeyGenerationParameters(ecSpec, secureRandom);
-            gen.Init(ecgp);
-            AsymmetricCipherKeyPair eckp = gen.GenerateKeyPair();
-            ECPublicKeyParameters ecPub = (ECPublicKeyParameters)eckp.Public;
-            ECPrivateKeyParameters ecPri = (ECPrivateKeyParameters)eckp.Private;
-            _myPublicKey = ecPub.Q.GetEncoded(false);
-            IBasicAgreement keyAgreement = AgreementUtilities.GetBasicAgreement(Algorithm);
-            keyAgreement.Init(ecPri);
-            _myECDHCng = keyAgreement;
+            void InternalInitialize()
+            {
+                ECKeyPairGenerator gen = new ECKeyPairGenerator("ECDH");
+                SecureRandom secureRandom = new SecureRandom();
+                X9ECParameters ecp = NistNamedCurves.GetByName("P-256");
+                ECDomainParameters ecSpec = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
+                ECKeyGenerationParameters ecgp = new ECKeyGenerationParameters(ecSpec, secureRandom);
+                gen.Init(ecgp);
+                AsymmetricCipherKeyPair eckp = gen.GenerateKeyPair();
+                ECPublicKeyParameters ecPub = (ECPublicKeyParameters)eckp.Public;
+                ECPrivateKeyParameters ecPri = (ECPrivateKeyParameters)eckp.Private;
+                _myPublicKey = ecPub.Q.GetEncoded(false);
+                IBasicAgreement keyAgreement = AgreementUtilities.GetBasicAgreement(Algorithm);
+                keyAgreement.Init(ecPri);
+                _myECDHCng = keyAgreement;
+            }
+            
+            void InternalValidate()
+            {
+                InternalInitialize();
+            
+                X9ECParameters              curve                 = null;
+                ECDomainParameters          ecParam               = null;
+                ECPublicKeyParameters       pubKey                = null;
+                ECPoint                     point                 = null;
+
+                curve     = NistNamedCurves.GetByName( "P-256" );
+                ecParam   = new ECDomainParameters( curve.Curve, curve.G, curve.N, curve.H, curve.GetSeed() );
+                point     = ecParam.Curve.DecodePoint( _myPublicKey );
+                pubKey    = new ECPublicKeyParameters( point, ecParam );
+
+                BigInteger secret = _myECDHCng.CalculateAgreement( pubKey );
+
+                PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(ECDHUtil.GetBlockCipher(true), new Pkcs7Padding());
+                
+                var _iv = new byte[16];
+                SecureRandom secureRandom = new SecureRandom();
+                secureRandom.NextBytes(_iv);
+                ParametersWithIV keyParamWithIv = new ParametersWithIV(new KeyParameter(secret.ToByteArrayUnsigned()), _iv, 0, 16);
+                cipher.Init(true, keyParamWithIv);
+            }
+
+            int maxRetries = 100;
+            
+            Exception ex = null;
+            while (maxRetries > 0)
+            {
+                try
+                {
+                    InternalValidate();
+                    maxRetries--;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    // ignore
+                    ex = e;
+                }
+            }
+
+            if (maxRetries == 0 && ex != null)
+            {
+                Logger.Core.LogException(ex);
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,13 +16,14 @@ namespace TrickCore
             return enumerable.Skip(Math.Max(0, enumerable.Count() - N));
         }
         
-        public static void DestroyObjects<T>(this IEnumerable<T> source) where T : MonoBehaviour
+        public static void DestroyObjects<T>(this IEnumerable<T> source, bool clear = true) where T : MonoBehaviour
         {
             if (source == null) return;
             foreach (T behaviour in source)
             {
                 Object.Destroy(behaviour.gameObject);
             }
+            if (clear && source is IList list) list.Clear();
         }
         
         /// <summary>
