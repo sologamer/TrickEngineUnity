@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BeauRoutine;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace TrickCore
@@ -21,18 +22,28 @@ namespace TrickCore
         [Header("Texts")]
         public TextMeshProUGUI TitleText;
         public TextMeshProUGUI DescriptionText;
+
+        [Header("Buttons")] private int _stub;
+        
+        [FormerlySerializedAs("CancelButton")] public Button Modal1Button;
+        [FormerlySerializedAs("CancelButtonText")] public TextMeshProUGUI Modal1ButtonText;
+
+        [FormerlySerializedAs("ConfirmButton")] public Button Modal2Button;
+        [FormerlySerializedAs("ConfirmButtonText")] public TextMeshProUGUI Modal2ButtonText;
+        
+        [FormerlySerializedAs("Confirm2Button")] public Button Modal3Button;
+        [FormerlySerializedAs("Confirm2ButtonText")] public TextMeshProUGUI Modal3ButtonText;
+        
+        // #d4442a
+        public Color DefaultColor1 = new Color(212, 68, 42) / 255f;
+        // #34911a
+        public Color DefaultColor2 = new Color(52, 145, 26) / 255f;
+        // #9c6b10
+        public Color DefaultColor3 = new Color(156, 107, 16) / 255f;
     
-        [Header("Buttons")]
-        public Button ConfirmButton;
-        public TextMeshProUGUI ConfirmButtonText;
-        public Button Confirm2Button;
-        public TextMeshProUGUI Confirm2ButtonText;
-        public Button CancelButton;
-        public TextMeshProUGUI CancelButtonText;
-    
-        private Action _confirmAction;
-        private Action _confirm2Action;
-        private Action _cancelAction;
+        private ModalPopupData _modalData1;
+        private ModalPopupData _modalData2;
+        private ModalPopupData _modalData3;
 
         private int MaxTextLength = 2500;
 
@@ -41,22 +52,22 @@ namespace TrickCore
     
         protected override void AddressablesAwake()
         {
-            ConfirmButton.onClick.AddListener(() =>
+            Modal1Button.onClick.AddListener(() =>
             {
                 if (HideOnResponseClicked) Hide();
-                _confirmAction?.Invoke();
+                _modalData1.Action?.Invoke();
                 ExecutePopupQueue();
             });
-            Confirm2Button.onClick.AddListener(() =>
+            Modal2Button.onClick.AddListener(() =>
             {
                 if (HideOnResponseClicked) Hide();
-                _confirm2Action?.Invoke();
+                _modalData2.Action?.Invoke();
                 ExecutePopupQueue();
             });
-            CancelButton.onClick.AddListener(() =>
+            Modal3Button.onClick.AddListener(() =>
             {
                 if (HideOnResponseClicked) Hide();
-                _cancelAction?.Invoke();
+                _modalData3.Action?.Invoke();
                 ExecutePopupQueue();
             });
         }
@@ -78,12 +89,6 @@ namespace TrickCore
         {
             public string Title { get; set; }
             public string Description { get; set; }
-            public string OkText { get; set; }
-            public Action OkAction { get; set; }
-            public string YesText { get; set; }
-            public string NoText { get; set; }
-            public Action YesAction { get; set; }
-            public Action NoAction { get; set; }
             public PopupType Popup { get; set; }
             public ModalPopupData Button1 { get; set; }
             public ModalPopupData Button2 { get; set; }
@@ -124,10 +129,10 @@ namespace TrickCore
                 switch (data.Popup)
                 {
                     case PopupQueueData.PopupType.Ok:
-                        ShowOkModal(data.Title, data.Description, data.OkText, data.OkAction, data.DescriptionUpdater);
+                        ShowOkModal(data.Title, data.Description, data.Button1, data.DescriptionUpdater);
                         break;
                     case PopupQueueData.PopupType.YesNo:
-                        ShowYesNoModal(data.Title, data.Description, data.YesText, data.NoText, data.YesAction, data.NoAction, data.DescriptionUpdater);
+                        ShowYesNoModal(data.Title, data.Description, data.Button2, data.Button1, data.DescriptionUpdater);
                         break;
                     case PopupQueueData.PopupType.ButtonModal:
                         ShowButtonsModal(data.Title, data.Description, data.Button1, data.Button2, data.Button3, data.DescriptionUpdater);
@@ -136,7 +141,7 @@ namespace TrickCore
             }
         }
 
-        public static void ShowOkModal(string title, string description, string okText, Action okAction, Func<string, IEnumerator> descriptionUpdater = null)
+        public static void ShowOkModal(string title, string description, ModalPopupData okData, Func<string, IEnumerator> descriptionUpdater = null, string buttonColor = null)
         {
             var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
 
@@ -146,34 +151,30 @@ namespace TrickCore
                 {
                     Title = title,
                     Description = description,
-                    OkText = okText,
-                    OkAction = okAction,
+                    Button1 = okData,
                     Popup = PopupQueueData.PopupType.Ok,
                     DescriptionUpdater = descriptionUpdater,
                 });
                 return;
             }
         
-            instance.SetConfirmButtonText(okText);
-            instance.SetCancelButtonText(default);
-            instance.SetConfirm2ButtonText(default);
-            instance._confirmAction = okAction;
-            instance._confirm2Action = null;
-            instance._cancelAction = null;
+            instance.SetModal1Data(default);
+            instance.SetModal2Data(okData);
+            instance.SetModal3Data(default);
             instance.SetTitleText(title);
             instance.SetDescriptionText(description);
 
             instance.Show();
         
-            instance.CancelButton.interactable = true;
-            instance.ConfirmButton.interactable = true;
-            instance.Confirm2Button.interactable = true;
+            instance.Modal1Button.interactable = true;
+            instance.Modal2Button.interactable = true;
+            instance.Modal3Button.interactable = true;
 
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
         }
 
-        public static void ShowYesNoModal(string title, string description, string yesText, string noText, Action yesAction, Action noAction, Func<string, IEnumerator> descriptionUpdater = null)
+        public static void ShowYesNoModal(string title, string description, ModalPopupData yesData, ModalPopupData noData, Func<string, IEnumerator> descriptionUpdater = null)
         {
             var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
         
@@ -183,41 +184,30 @@ namespace TrickCore
                 {
                     Title = title,
                     Description = description,
-                    YesText = yesText,
-                    NoText = noText,
-                    YesAction = yesAction,
-                    NoAction = noAction,
+                    Button1 = noData,
+                    Button2 = yesData,
                     Popup = PopupQueueData.PopupType.YesNo,
                     DescriptionUpdater = descriptionUpdater,
                 });
                 return;
             }
 
-            instance.SetConfirmButtonText(yesText);
-            instance.SetCancelButtonText(noText);
-            instance.SetConfirm2ButtonText(default);
-            instance._confirmAction = yesAction;
-            instance._confirm2Action = null;
-            instance._cancelAction = noAction;
+            instance.SetModal1Data(noData);
+            instance.SetModal2Data(yesData);
+            instance.SetModal3Data(default);
             instance.SetTitleText(title);
             instance.SetDescriptionText(description);
 
             instance.Show();
 
-            instance.CancelButton.interactable = true;
-            instance.ConfirmButton.interactable = true;
-            instance.Confirm2Button.interactable = true;
+            instance.Modal1Button.interactable = true;
+            instance.Modal2Button.interactable = true;
+            instance.Modal3Button.interactable = true;
         
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
         }
 
-        public struct ModalPopupData
-        {
-            public string Text;
-            public Action Action;
-        }
-    
         public static void ShowButtonsModal(string title, string description, ModalPopupData button1, ModalPopupData button2, ModalPopupData button3, Func<string, IEnumerator> descriptionUpdater = null)
         {
             var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
@@ -237,22 +227,17 @@ namespace TrickCore
                 return;
             }
 
-            instance.SetCancelButtonText(button1.Text);
-            instance._cancelAction = button1.Action;
-        
-            instance.SetConfirmButtonText(button2.Text);
-            instance._confirmAction = button2.Action;
-        
-            instance.SetConfirm2ButtonText(button3.Text);
-            instance._confirm2Action = button3.Action;
+            instance.SetModal1Data(button1);
+            instance.SetModal2Data(button2);
+            instance.SetModal3Data(button3);
             instance.SetTitleText(title);
             instance.SetDescriptionText(description);
 
             instance.Show();
         
-            instance.CancelButton.interactable = true;
-            instance.ConfirmButton.interactable = true;
-            instance.Confirm2Button.interactable = true;
+            instance.Modal1Button.interactable = true;
+            instance.Modal2Button.interactable = true;
+            instance.Modal3Button.interactable = true;
 
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
@@ -288,54 +273,52 @@ namespace TrickCore
             }
         }
 
-        /// <summary>
-        /// Sets the confirm button text.
-        /// </summary>
-        /// <param name="text">The confirm button text.</param>
-        public void SetConfirmButtonText(string text)
+        public void SetModal1Data(ModalPopupData data)
         {
-            if (text != null)
+            _modalData1 = data;
+
+            if (data.Text != null)
             {
-                ConfirmButtonText.SetText(text);
-                ConfirmButton.gameObject.SetActive(true);
+                Modal1ButtonText.SetText(data.Text);
+                Modal1Button.gameObject.SetActive(true);
+                Modal1Button.image.color = data.ButtonColor != null ? ColorUtility.TryParseHtmlString(data.ButtonColor, out var color) ? color : DefaultColor1 : DefaultColor1;
             }
             else
             {
-                ConfirmButton.gameObject.SetActive(false);
+                Modal1Button.gameObject.SetActive(false);
             }
         }
 
-        /// <summary>
-        /// Sets the confirm button text.
-        /// </summary>
-        /// <param name="text">The confirm button text.</param>
-        public void SetConfirm2ButtonText(string text)
+        public void SetModal2Data(ModalPopupData data)
         {
-            if (text != null)
+            _modalData2 = data;
+
+            if (data.Text != null)
             {
-                Confirm2ButtonText.SetText(text);
-                Confirm2Button.gameObject.SetActive(true);
+                Modal2ButtonText.SetText(data.Text);
+                Modal2Button.gameObject.SetActive(true);
+                
+                Modal2Button.image.color = data.ButtonColor != null ? ColorUtility.TryParseHtmlString(data.ButtonColor, out var color) ? color : DefaultColor2 : DefaultColor2;
             }
             else
             {
-                Confirm2Button.gameObject.SetActive(false);
+                Modal2Button.gameObject.SetActive(false);
             }
         }
 
-        /// <summary>
-        /// Sets the cancel button text.
-        /// </summary>
-        /// <param name="text">The cancel button text.</param>
-        public void SetCancelButtonText(string text)
+        public void SetModal3Data(ModalPopupData data)
         {
-            if (text != null)
+            _modalData3 = data;
+
+            if (data.Text != null)
             {
-                CancelButtonText.SetText(text);
-                CancelButton.gameObject.SetActive(true);
+                Modal3ButtonText.SetText(data.Text);
+                Modal3Button.gameObject.SetActive(true);
+                Modal3Button.image.color = data.ButtonColor != null ? ColorUtility.TryParseHtmlString(data.ButtonColor, out var color) ? color : DefaultColor3 : DefaultColor3;
             }
             else
             {
-                CancelButton.gameObject.SetActive(false);
+                Modal3Button.gameObject.SetActive(false);
             }
         }
 
@@ -351,20 +334,20 @@ namespace TrickCore
             switch (index)
             {
                 case 0:
-                    instance.CancelButton.interactable = enable;
+                    instance.Modal1Button.interactable = enable;
                     break;
                 case 1:
-                    instance.ConfirmButton.interactable = enable;
+                    instance.Modal2Button.interactable = enable;
                     break;
                 case 2:
-                    instance.Confirm2Button.interactable = enable;
+                    instance.Modal3Button.interactable = enable;
                     break;
             }
         }
 
         public static void ShowError(string result, Action okAction)
         {
-            ShowOkModal("Error", result, "Ok", okAction);
+            ShowOkModal("Error", result, new ModalPopupData("Ok", okAction));
         }
 
         public static void ShowError(Exception exception, Action okAction)
@@ -374,12 +357,26 @@ namespace TrickCore
 
         public static void ShowError(string result)
         {
-            ShowOkModal("Error", result, "Ok", null);
+            ShowError(result, null);
         }
 
         public static void ShowError(Exception exception)
         {
             ShowError(exception.Message, null);
         }
+    }
+}
+
+public struct ModalPopupData
+{
+    public string Text;
+    public Action Action;
+    public string ButtonColor;
+            
+    public ModalPopupData(string text, Action action = null, string buttonColor = null)
+    {
+        Text = text;
+        Action = action;
+        ButtonColor = buttonColor;
     }
 }

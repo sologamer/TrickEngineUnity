@@ -272,7 +272,7 @@ namespace TrickCore
                     }
                 }
             
-                ModalPopupMenu.ShowOkModal("Debug", tuple.content, "ok", null);
+                ModalPopupMenu.ShowOkModal("Debug", tuple.content, new ModalPopupData("ok"), null);
             }
         }
 

@@ -197,31 +197,38 @@ namespace TrickCore
                         {
                             list.ForEach(tuple =>
                             {
-                                // Let's invoke it here
-                                var parameters = tuple.info.GetParameters();
-                                if (parameters.Length == 0)
-                                    tuple.info.Invoke(tuple.inst, null);
-                                else if (parameters.Length == 1)
+                                try
                                 {
-                                    var type = parameters[0].ParameterType;
+                                    // Let's invoke it here
+                                    var parameters = tuple.info.GetParameters();
+                                    if (parameters.Length == 0)
+                                        tuple.info.Invoke(tuple.inst, null);
+                                    else if (parameters.Length == 1)
+                                    {
+                                        var type = parameters[0].ParameterType;
                                     
-                                    if (type == typeof(string))
-                                    {
-                                        JToken.Parse(message.Payload);                                        
-                                    }
-                                    if (type == typeof(string))
-                                    {
-                                        if (!(message.Payload.StartsWith('{') && message.Payload.EndsWith('}')))
+                                        if (type == typeof(string))
+                                        {
+                                            JToken.Parse(message.Payload);                                        
+                                        }
+                                        if (type == typeof(string))
+                                        {
+                                            if (!(message.Payload.StartsWith("{") && message.Payload.EndsWith("}")))
+                                                tuple.info.Invoke(tuple.inst,
+                                                    new[] { message.Payload?.Trim('\"') as object });
+                                        }
+                                        else 
                                             tuple.info.Invoke(tuple.inst,
-                                                new[] { message.Payload?.Trim('\"') as object });
+                                                new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
                                     }
-                                    else 
-                                        tuple.info.Invoke(tuple.inst,
-                                            new[] { message.Payload.DeserializeJson(parameters[0].ParameterType) });
+                                    else
+                                        Debug.LogError(
+                                            $"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
                                 }
-                                else
-                                    Debug.LogError(
-                                        $"[SocketIO] Event of name '{message.EventName}' only supports one payload (parameter).");
+                                catch (Exception e)
+                                {
+                                    Debug.LogException(e);
+                                }
                             });
                         }
                         else
