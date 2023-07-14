@@ -29,7 +29,7 @@ namespace TrickCore
         /// <summary>
         /// Event invoked whenever the user clicks on a link, do your implementation in this event
         /// </summary>
-        public static UnityEvent<string> OnLinkClicked { get; } = new UnityEvent<string>();
+        public static UnityEvent<string, string> OnLinkClicked { get; } = new UnityEvent<string, string>();
 
         private void Awake()
         {
@@ -81,7 +81,7 @@ namespace TrickCore
                 Debug.Log(string.Format("id: {0}, text: {1}", link, linkInfo.GetLinkText()));
 
                 // Make generic, so we can handle things
-                OnLinkClicked?.Invoke(link);
+                OnLinkClicked?.Invoke(link, linkInfo.GetLinkText());
             }
         }
 
