@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using BeauRoutine;
 using TrickCore;
 using UnityEngine;
@@ -109,7 +110,11 @@ namespace TrickCore
             new HandleSortingOrderMenuAction(),
             new HandleCallbackMenuAction(),
         };
-        
+
+        private CancellationTokenSource _showTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _hideTokenSource = new CancellationTokenSource();
+        private List<Routine> _transitionRoutines = new List<Routine>();
+
         /// <summary>
         /// Check if the menu is focused, active and not faded out
         /// </summary>
@@ -306,21 +311,30 @@ namespace TrickCore
         {
             EnqueueAction(MenuAction.Hide);
         }
-    
+
+        private void StopOngoingTransitions()
+        {
+            _transitionRoutines.ForEach(routine => routine.Stop());
+            _transitionRoutines.Clear();
+        }
+        
         /// <summary>
         /// Show the UI
         /// </summary>
-        private UIMenu ActualShow()
+        private void ActualShow()
         {
-            if (_isOpen) return this;
-            
-            IsTransitioning = true;
-        
-            if (ScaleWithScreen) Rescale();
+            if (_isOpen) return;
+
+            _showTokenSource = new CancellationTokenSource();
             gameObject.SetActive(true);
-        
+            _hideTokenSource?.Cancel();
+            StopOngoingTransitions();
+            _isOpen = true;
+
+            IsTransitioning = true;
+
             _manager.PreMenuShowEvent?.Invoke(this);
-        
+
             if (Transitions != null && Transitions.Count > 0)
             {
                 int completed = 0;
@@ -328,43 +342,33 @@ namespace TrickCore
                 {
                     if (transition.TransitionPanelTransform == null)
                     {
-                        if (++completed == Transitions.Count)
-                            InternalShow();
+                        if (++completed == Transitions.Count) InternalShow();
                         continue;
                     }
-                    
-                    if (!_transitionForceRebuild)
-                    {
-                        LayoutRebuilder.ForceRebuildLayoutImmediate(transition.TransitionPanelTransform);
-                    }
-                    
+
                     transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
-                    
-                    transition.TransitionPanelTransform.TransitionIn(transition.TransitionInSettings, transition.TransitionDirectionIn, transition.Delay, () =>
-                    {
-                        transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+
+                    _transitionRoutines.Add(transition.TransitionPanelTransform.TransitionIn(transition.TransitionInSettings, transition.TransitionDirectionIn, transition.Delay, () => {
+                        if (_showTokenSource.IsCancellationRequested) return;
                         
-                        // ReSharper disable once AccessToModifiedClosure
-                        if (++completed == Transitions.Count)
-                            InternalShow();
-                    });
-                    
+                        transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
+
+                        if (++completed == Transitions.Count) InternalShow();
+                    }));
+
                     if (transition.PanelFading.HasFlag(FadeEnableType.In))
                         transition.TransitionPanelTransform.FadeIn(transition.FadeInSettings, delay: transition.Delay);
                 }
-
-                _transitionForceRebuild = true;
-                
             }
             else
             {
                 InternalShow();
             }
-
+            
             if (MenuFading.HasFlag(FadeEnableType.In))
                 FadeIn(ShowFadeInSettings);
             
-            return this;
+            return;
 
             void InternalShow()
             {
@@ -378,7 +382,6 @@ namespace TrickCore
                 if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[UIMenu] SHOW {this}");
                 
                 _manager.PostMenuShowEvent?.Invoke(this);
-                _isOpen = true;
                 IsTransitioning = false;
                 ProcessNextAction();
             }
@@ -390,9 +393,13 @@ namespace TrickCore
         private void ActualHide()
         {
             if (!_isOpen) return;
-        
+
+            _hideTokenSource = new CancellationTokenSource();
+            _showTokenSource?.Cancel();
+            StopOngoingTransitions();
             _manager.PreMenuHideEvent?.Invoke(this);
-        
+            _isOpen = false;
+
             if (Transitions != null && Transitions.Count > 0)
             {
                 int completed = 0;
@@ -400,22 +407,21 @@ namespace TrickCore
                 {
                     if (transition.TransitionPanelTransform == null)
                     {
-                        if (++completed == Transitions.Count)
-                            InternalHide();
+                        if (++completed == Transitions.Count) InternalHide();
                         continue;
                     }
 
                     transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, false);
-                    transition.TransitionPanelTransform.TransitionOut(transition.TransitionOutSettings, transition.TransitionDirectionOut, transition.Delay, () =>
-                    {
-                        // ReSharper disable once AccessToModifiedClosure
+
+                    _transitionRoutines.Add(transition.TransitionPanelTransform.TransitionOut(transition.TransitionOutSettings, transition.TransitionDirectionOut, transition.Delay, () => {
+                        if (_hideTokenSource.IsCancellationRequested) return;
+
                         if (++completed == Transitions.Count) InternalHide();
                         transition.TransitionPanelTransform.SetCanvasGroupInteractable(null, true);
-                    });
-                    
+                    }));
+            
                     if (transition.PanelFading.HasFlag(FadeEnableType.Out))
                     {
-                        // wait for the panel to fade out and count as a complete
                         transition.TransitionPanelTransform.FadeOut(transition.FadeOutSettings, delay: transition.Delay);
                     }
                 }
@@ -431,21 +437,18 @@ namespace TrickCore
                     InternalHide();
             }
 
-            return;
-
             void InternalHide()
             {
                 gameObject.SetActive(false);
-            
+
                 foreach (var action in DefaultActions)
                 {
                     action.ExecuteHide(this);
                 }
 
                 if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[UIMenu] HIDE {this}");
-                
+
                 _manager.PostMenuHideEvent?.Invoke(this);
-                _isOpen = false;
                 IsTransitioning = false;
                 ProcessNextAction();
             }
