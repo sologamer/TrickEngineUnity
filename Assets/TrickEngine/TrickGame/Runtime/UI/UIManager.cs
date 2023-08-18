@@ -18,6 +18,13 @@ namespace TrickCore
     /// </summary>
     public sealed class UIManager : MonoSingleton<UIManager>
     {
+        public enum MenuDebugMode
+        {
+            Off,
+            On,
+            EditorOnly,
+        }
+        
         public List<UIMenu> MenuAssets = new List<UIMenu>();
 
         public bool AutoShowFirstMenuAsset;
@@ -32,7 +39,7 @@ namespace TrickCore
         public TrickAudioId ButtonAudioId;
     
         [Tooltip("Enable for debugging menu's")]
-        public bool DisableMenuDebugging;
+        public MenuDebugMode MenuDebug = MenuDebugMode.EditorOnly;
     
         public float TargetScaleWidth = 1920f;
         public float TargetScaleHeight = 1080f;

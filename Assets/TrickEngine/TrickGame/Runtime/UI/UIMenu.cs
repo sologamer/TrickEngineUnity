@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BeauRoutine;
 using TrickCore;
 using UnityEngine;
@@ -76,23 +77,39 @@ namespace TrickCore
         /// </summary>
         public bool FixRenderScale;
 
-        private float _renderScaleBefore;
-        private Canvas _canvas;
+        internal float RenderScaleBefore;
+        internal Camera MainCamera;
+        internal Canvas MenuCanvas;
+        internal int StartingSortingOrder;
+        internal Stack<Action> HideCallbackOnceQueue { get; set; } = new Stack<Action>();
+        
         private CanvasGroup _canvasGroup;
         private Routine _fadeRoutine;
         private int _numFadeOuts;
         private UIManager _manager;
-        private Camera _mainCamera;
         private bool _isOpen;
-        private int _startingSortingOrder;
         private RectTransform _rt;
         private bool _transitionForceRebuild;
 
         public float LastShowTime { get; set; }
         public bool IsOpen => _isOpen;
+        public bool IsTransitioning { get; private set; } = false;
+
         public bool IsInstantiated { get; private set; }
-        private Stack<Action> HideCallbackOnceQueue { get; set; } = new Stack<Action>();
     
+        private enum MenuAction { None, Show, Hide }
+        private readonly Queue<MenuAction> _actionQueue = new Queue<MenuAction>();
+        private MenuAction? _lastEnqueuedAction = null;
+
+        public List<IUIMenuAction> DefaultActions = new()
+        {
+            new FixURPUIMenuAction(),
+            new HandleAudioMenuAction(),
+            new HandleMainCameraMenuAction(),
+            new HandleSortingOrderMenuAction(),
+            new HandleCallbackMenuAction(),
+        };
+        
         /// <summary>
         /// Check if the menu is focused, active and not faded out
         /// </summary>
@@ -101,11 +118,11 @@ namespace TrickCore
 
         public void InternalInit()
         {
-            _canvas = GetComponent<Canvas>();
+            MenuCanvas = GetComponent<Canvas>();
             _canvasGroup = GetComponent<CanvasGroup>();
             if (_canvasGroup == null) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
-            _startingSortingOrder = _canvas != null ? _canvas.sortingOrder : 0;
-            _mainCamera = Camera.main;
+            StartingSortingOrder = MenuCanvas != null ? MenuCanvas.sortingOrder : 0;
+            MainCamera = Camera.main;
             _rt = transform as RectTransform;
             AddressablesAwake();
         
@@ -168,7 +185,7 @@ namespace TrickCore
             _numFadeOuts--;
             if (_numFadeOuts < 0) _numFadeOuts = 0;
 
-            if (!_manager.DisableMenuDebugging) Debug.Log($"[FadeIn-{GetType().Name}]: {_numFadeOuts}");
+            if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[FadeIn-{GetType().Name}]: {_numFadeOuts}");
         
             if (_numFadeOuts == 0)
             {
@@ -190,7 +207,7 @@ namespace TrickCore
         {
             if (alpha != null) SetAlpha(alpha.Value);
             _numFadeOuts++;
-            if (!_manager.DisableMenuDebugging) Debug.Log($"[FadeOut-{GetType().Name}]: {_numFadeOuts}");
+            if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[FadeOut-{GetType().Name}]: {_numFadeOuts}");
             if (_numFadeOuts == 1)
             {
                 return _fadeRoutine.Replace(_canvasGroup != null
@@ -247,13 +264,57 @@ namespace TrickCore
             else Show();
         }
     
+        // This function checks the current state and processes the next action in the queue.
+        private void ProcessNextAction()
+        {
+            while (true)
+            {
+                if (IsTransitioning || _actionQueue.Count == 0) return;
+
+                MenuAction nextAction = _actionQueue.Dequeue();
+
+                if (nextAction == MenuAction.Show && !_isOpen)
+                    ActualShow();
+                else if (nextAction == MenuAction.Hide && _isOpen)
+                    ActualHide();
+                else
+                    continue;
+                break;
+            }
+        }
+
+        // A helper function to add actions to the queue and initiate processing.
+        private void EnqueueAction(MenuAction action)
+        {
+            if (_lastEnqueuedAction == action)
+                return;
+
+            _actionQueue.Enqueue(action);
+            _lastEnqueuedAction = action;
+            ProcessNextAction();
+        }
+
+        
+
+        public virtual UIMenu Show()
+        {
+            EnqueueAction(MenuAction.Show);
+            return this;
+        }
+
+        public virtual void Hide()
+        {
+            EnqueueAction(MenuAction.Hide);
+        }
     
         /// <summary>
         /// Show the UI
         /// </summary>
-        public virtual UIMenu Show()
+        private UIMenu ActualShow()
         {
             if (_isOpen) return this;
+            
+            IsTransitioning = true;
         
             if (ScaleWithScreen) Rescale();
             gameObject.SetActive(true);
@@ -294,59 +355,39 @@ namespace TrickCore
 
                 _transitionForceRebuild = true;
                 
-                if (MenuFading.HasFlag(FadeEnableType.In))
-                    FadeIn(ShowFadeInSettings);
             }
             else
             {
                 InternalShow();
-                if (MenuFading.HasFlag(FadeEnableType.In))
-                    FadeIn(ShowFadeInSettings);
             }
+
+            if (MenuFading.HasFlag(FadeEnableType.In))
+                FadeIn(ShowFadeInSettings);
+            
+            return this;
 
             void InternalShow()
             {
-                _isOpen = true;
-                _manager.PostMenuShowEvent?.Invoke(this);
                 LastShowTime = Time.realtimeSinceStartup;
-                if (DisableMainCamera)
+                
+                foreach (var action in DefaultActions)
                 {
-                    if (_mainCamera == null) _mainCamera = Camera.main;
-                    if (_mainCamera != null) _mainCamera.enabled = false;
-                }
-
-                // In some cases, we need to fix render scale, however doing this makes this plugin requires URP
-                if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
-                {
-                    _renderScaleBefore = asset.renderScale;
-                    if (asset.renderScale < 1)
-                        asset.renderScale = 1.0f;
-                }
-
-                // Stop main track if any is playing
-                if (StopMainTrack)
-                {
-                    if (AudioManager.Instance != null) AudioManager.Instance.ActiveMainTrack?.Stop();
+                    action.ExecuteShow(this);
                 }
                 
-                // Play main track audio if any is assigned
-                if (MenuShowAudio != null && MenuShowAudio.IsValid())
-                {
-                    if (AudioManager.Instance != null) AudioManager.Instance.PlayMainTrack(MenuShowAudio);
-                }
+                if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[UIMenu] SHOW {this}");
                 
-#if UNITY_EDITOR
-                if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] SHOW {this}");
-#endif
+                _manager.PostMenuShowEvent?.Invoke(this);
+                _isOpen = true;
+                IsTransitioning = false;
+                ProcessNextAction();
             }
-        
-            return this;
         }
 
         /// <summary>
         /// Hides the current menu
         /// </summary>
-        public virtual void Hide()
+        private void ActualHide()
         {
             if (!_isOpen) return;
         
@@ -390,34 +431,23 @@ namespace TrickCore
                     InternalHide();
             }
 
+            return;
+
             void InternalHide()
             {
-                _isOpen = false;
-            
                 gameObject.SetActive(false);
             
-                if (_canvas != null) _canvas.sortingOrder = _startingSortingOrder;
+                foreach (var action in DefaultActions)
+                {
+                    action.ExecuteHide(this);
+                }
 
+                if (_manager.MenuDebug != UIManager.MenuDebugMode.Off) Debug.Log($"[UIMenu] HIDE {this}");
+                
                 _manager.PostMenuHideEvent?.Invoke(this);
-                if (DisableMainCamera)
-                {
-                    if (_mainCamera == null) _mainCamera = Camera.main;
-                    if (_mainCamera != null) _mainCamera.enabled = true;
-                }
-
-                if (FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
-                {
-                    asset.renderScale = _renderScaleBefore;
-                }
-
-                if (HideCallbackOnceQueue.Count > 0)
-                {
-                    HideCallbackOnceQueue.Pop()?.Invoke();
-                }
-
-#if UNITY_EDITOR
-                if (!_manager.DisableMenuDebugging) Debug.Log($"[UIMenu] HIDE {this}");
-#endif
+                _isOpen = false;
+                IsTransitioning = false;
+                ProcessNextAction();
             }
         }
 
