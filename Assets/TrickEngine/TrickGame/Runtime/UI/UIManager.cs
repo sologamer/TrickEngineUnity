@@ -272,7 +272,7 @@ namespace TrickCore
         public T TryShow<T>(Action<T> showAction) where T : UIMenu
         {
             var menu = GetMenu<T>();
-            if (menu.IsOpen) return menu;
+            if (menu.IsOpen && menu._lastEnqueuedAction == UIMenu.MenuAction.Show) return menu;
             menu.Show();
             showAction?.Invoke(menu);
             return menu;
@@ -289,7 +289,7 @@ namespace TrickCore
         public T TryHide<T>(Action<T> hideAction) where T : UIMenu
         {
             var menu = GetMenu<T>();
-            if (!menu.IsOpen) return menu;
+            if (!menu.IsOpen && menu._lastEnqueuedAction == UIMenu.MenuAction.Hide) return menu;
             menu.Hide();
             hideAction?.Invoke(menu);
             return menu;

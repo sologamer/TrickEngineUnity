@@ -97,9 +97,9 @@ namespace TrickCore
 
         public bool IsInstantiated { get; private set; }
     
-        private enum MenuAction { None, Show, Hide }
+        internal enum MenuAction { None, Show, Hide }
         private readonly Queue<MenuAction> _actionQueue = new Queue<MenuAction>();
-        private MenuAction? _lastEnqueuedAction = null;
+        internal MenuAction? _lastEnqueuedAction = null;
 
         public List<IUIMenuAction> DefaultActions = new()
         {
