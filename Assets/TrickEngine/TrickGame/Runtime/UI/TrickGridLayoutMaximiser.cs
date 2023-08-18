@@ -67,7 +67,8 @@ namespace TrickCore
 
             var size = ((RectTransform)transform).rect.size - new Vector2(padding.horizontal, padding.vertical);
 
-            float width = 0, height = 0;
+            float width = gridLayoutGroup.cellSize.x; // Default to existing width
+            float height = gridLayoutGroup.cellSize.y; // Default to existing height
 
             if (columns > 0)
             {
@@ -79,19 +80,10 @@ namespace TrickCore
                 height = (size.y - (rows - 1) * spacing.y) / rows;
             }
 
-            // If rows or columns not defined, set height or width respectively
-            if (columns <= 0)
-            {
-                width = height;
-            }
-            else if (rows <= 0)
-            {
-                height = width;
-            }
-
             gridLayoutGroup.cellSize = new Vector2(width, height);
 
             isSettingSizes = false;
         }
+
     }
 }
