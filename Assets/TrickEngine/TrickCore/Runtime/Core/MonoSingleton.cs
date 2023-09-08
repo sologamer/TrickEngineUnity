@@ -11,13 +11,13 @@ using TrickCore;
 
 namespace TrickCore
 {
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
     using Sirenix.OdinInspector;
 #endif
 
     public abstract class MonoSingleton<T>
 #if !NO_UNITY
-#if ODIN_INSPECTOR    
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
     : SerializedMonoBehaviour
 #else
         : UnityEngine.MonoBehaviour

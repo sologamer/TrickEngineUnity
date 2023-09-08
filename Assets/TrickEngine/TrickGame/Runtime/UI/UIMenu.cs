@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
     using Sirenix.OdinInspector;
 #endif
 
@@ -19,7 +19,7 @@ namespace TrickCore
     /// The base class of a UI menu. Inherit all your UI menu's from this!
     /// </summary>
     public abstract class UIMenu 
-#if ODIN_INSPECTOR    
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
         : SerializedMonoBehaviour
 #else
         : MonoBehaviour

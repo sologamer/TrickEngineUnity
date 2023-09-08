@@ -5,7 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
 using Sirenix.OdinInspector;
 #endif
 
@@ -67,7 +67,7 @@ namespace TrickCore
             /// The object
             /// </summary>
             [JsonProperty(PropertyName = "o")]
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
             [HideLabel]
 #endif
             public T Object;
@@ -81,7 +81,7 @@ namespace TrickCore
             /// <summary>
             /// The weight normalized to 100% (1.0f)
             /// </summary>
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
             [ShowIf("@UnityEngine.Application.isPlaying")]
 #endif
             [JsonIgnore]
@@ -97,7 +97,7 @@ namespace TrickCore
                 Weight = (float) weight;
             }
         }
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
         [ListDrawerSettings(OnBeginListElementGUI = "BeginList")]
 #endif
         public List<Item> Items = new List<Item>();
@@ -133,7 +133,7 @@ namespace TrickCore
         }
         #endif
         
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
         [Button, HorizontalGroup("DropTableHorizontal")]
 #endif
         public void NormalizeWeights()
@@ -143,7 +143,7 @@ namespace TrickCore
             foreach (var item in Items) item.Weight = item.NormalizedWeight;
         }
 
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
         [Button, HorizontalGroup("DropTableHorizontal")]
 #endif
         public void SortByWeight()

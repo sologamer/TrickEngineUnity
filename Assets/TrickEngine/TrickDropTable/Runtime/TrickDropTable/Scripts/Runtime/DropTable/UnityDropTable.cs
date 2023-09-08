@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
 using Sirenix.OdinInspector;
 #endif
 
@@ -66,7 +66,7 @@ namespace TrickCore
         /// <summary>
         /// The drop table entries
         /// </summary>
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
         [ListDrawerSettings(OnBeginListElementGUI = "BeginList"), ValidateInput("OnValidate")]
         //public List<Entry> Items = new List<Entry>();
         public ReorderableArrayEntry Items = new ReorderableArrayEntry();
@@ -95,7 +95,7 @@ namespace TrickCore
         [Reorderable()] public ReorderableArrayEntry Items = new ReorderableArrayEntry();
 #endif	
         
-#if ODIN_INSPECTOR && UNITY_EDITOR
+#if ODIN_INSPECTOR && UNITY_EDITOR && !ODIN_INSPECTOR_EDITOR_ONLY
         private bool OnValidate(ReorderableArrayEntry list)
         {
             IsDirty = true;

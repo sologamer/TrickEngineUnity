@@ -14,7 +14,7 @@ using CodeStage.AntiCheat.ObscuredTypes;
 #if UNITY_ADDRESSABLES
 using UnityEngine.AddressableAssets;
 #endif
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
 using Sirenix.Serialization;
 #endif
 
@@ -235,7 +235,7 @@ namespace TrickCore
                             }
 
                             return res && (attris.Length == 0 
-#if ODIN_INSPECTOR
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
                                            || attris.Any(o2=> o2 is OdinSerializeAttribute)
 #endif
                                            || attris.All(o => (!(o is NonSerializedAttribute)) && !(o is JsonIgnoreAttribute)));;
