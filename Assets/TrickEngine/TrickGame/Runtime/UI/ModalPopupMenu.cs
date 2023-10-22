@@ -54,21 +54,21 @@ namespace TrickCore
         {
             Modal1Button.onClick.AddListener(() =>
             {
+                SetHideCallbackOnce(() => ExecutePopupQueue());
                 if (HideOnResponseClicked) Hide();
                 _modalData1.Action?.Invoke();
-                ExecutePopupQueue();
             });
             Modal2Button.onClick.AddListener(() =>
             {
+                SetHideCallbackOnce(() => ExecutePopupQueue());
                 if (HideOnResponseClicked) Hide();
                 _modalData2.Action?.Invoke();
-                ExecutePopupQueue();
             });
             Modal3Button.onClick.AddListener(() =>
             {
+                SetHideCallbackOnce(() => ExecutePopupQueue());
                 if (HideOnResponseClicked) Hide();
                 _modalData3.Action?.Invoke();
-                ExecutePopupQueue();
             });
         }
 
