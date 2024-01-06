@@ -184,5 +184,23 @@ namespace TrickCore
             if (randomizer == null) randomizer = TrickIRandomizer.Default;
             return randomizer.RandomItems(GetDropTable(true), minItems, maxItems, allowDuplicate);
         }
+        
+        public T RandomItemAs(IRandomizer randomizer = null)
+        {
+            randomizer ??= TrickIRandomizer.Default;
+            return randomizer.RandomItem(GetDropTable(true));
+        }
+        
+        public List<T> RandomItemsAs(IRandomizer randomizer, int count, bool allowDuplicate)
+        {
+            randomizer ??= TrickIRandomizer.Default;
+            return randomizer.RandomItems(GetDropTable(true), count, allowDuplicate);
+        }
+        
+        public List<T> RandomItemsAs(IRandomizer randomizer, int minItems, int maxItems, bool allowDuplicate)
+        {
+            randomizer ??= TrickIRandomizer.Default;
+            return randomizer.RandomItems(GetDropTable(true), minItems, maxItems, allowDuplicate);
+        }
     }
 }
