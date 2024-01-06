@@ -374,7 +374,6 @@ namespace BeauRoutine
         /// </summary>
         static public IEnumerator Combine(params IEnumerator[] inRoutines)
         {
-            Debug.Log($"[BeauRoutine-Combine]: {inRoutines.Length}");
             if (inRoutines.Length == 0)
                 return null;
             if (inRoutines.Length == 1)

@@ -12,7 +12,7 @@ namespace TrickCore
     /// <summary>
     /// A modal popup UI menu
     /// </summary>
-    public sealed partial class ModalPopupMenu : UIMenu
+    public partial class ModalPopupMenu : UIMenu
     {
         /// <summary>
         /// Automatically hide whenever we click a response, otherwise you need to handle the hiding yourself
@@ -103,6 +103,8 @@ namespace TrickCore
             }
         }
 
+        private Routine _waitRoutine;
+        
         private static void ExecutePopupQueue()
         {
             if (PopupDataQueue.Count <= 0) return;
@@ -110,13 +112,14 @@ namespace TrickCore
             var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
             if (instance.IsOpen)
             {
+                instance._waitRoutine.Replace(WaitToExecuteQueue());
+                
                 // wait until popup closes, before we show again
                 IEnumerator WaitToExecuteQueue()
                 {
-                    yield return Routine.WaitCondition(() => !instance.IsOpen);
+                    yield return Routine.WaitCondition(() => !instance.IsOpen && !instance.IsTransitioning);
                     ExecuteQueue();
                 }
-                Routine.Start(WaitToExecuteQueue());
             }
             else
             {
