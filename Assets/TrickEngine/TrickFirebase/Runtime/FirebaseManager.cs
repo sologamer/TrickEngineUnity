@@ -245,16 +245,16 @@ namespace TrickCore
                     if(newError.LastIndexOf('(') is {} i1 && newError.LastIndexOf(')') is {} i2 && i1 != -1 && i2 != -1)
                     {
                         newError = newError.Substring(0, i1).Trim();
-                        ModalPopupMenu.ShowError(newError);
+                        ModalPopupMenu.Instance.ShowError(newError);
                     }
                     else
                     {
-                        ModalPopupMenu.ShowError(error);
+                        ModalPopupMenu.Instance.ShowError(error);
                     }
                 }
                 else
                 {
-                    ModalPopupMenu.ShowError(error);
+                    ModalPopupMenu.Instance.ShowError(error);
                 }
             }
             else
@@ -266,13 +266,13 @@ namespace TrickCore
                     {
                         if (!string.IsNullOrEmpty(firebaseError.message) && !string.IsNullOrEmpty(firebaseError.name))
                         {
-                            ModalPopupMenu.ShowError(firebaseError.ToString());
+                            ModalPopupMenu.Instance.ShowError(firebaseError.ToString());
                             return;
                         }
                     }
                 }
             
-                ModalPopupMenu.ShowOkModal("Debug", tuple.content, new ModalPopupData("ok"), null);
+                ModalPopupMenu.Instance.ShowOkModal("Debug", tuple.content, new ModalPopupData("ok"), null);
             }
         }
 

@@ -827,7 +827,7 @@ namespace TrickCore
         //if (localSize != 0)
         {
             bool? downloadAddressables = null;
-            ModalPopupMenu.ShowYesNoModal("Game Asset Update",
+            ModalPopupMenu.Instance.ShowYesNoModal("Game Asset Update",
                 $"A total of {remoteSize.SizeSuffix(1)} will be downloaded.\nA Wi-Fi connection is recommended.", "Yes", "No",
                 () => { downloadAddressables = true; }, () => { downloadAddressables = false; });
             yield return new UnityEngine.WaitUntil(() => downloadAddressables != null);
@@ -964,7 +964,7 @@ namespace TrickCore
         if (remoteSize != 0)
         {
             bool? downloadAddressables = null;
-            ModalPopupMenu.ShowYesNoModal("Game Update",
+            ModalPopupMenu.Instance.ShowYesNoModal("Game Update",
                 $"A total of {remoteSize.SizeSuffix(1)} will be downloaded.\nA Wi-Fi connection is recommended.", "Yes", "No",
                 () => { downloadAddressables = true; }, () => { downloadAddressables = false; });
             yield return new UnityEngine.WaitUntil(() => downloadAddressables != null);

@@ -12,8 +12,14 @@ namespace TrickCore
     /// <summary>
     /// A modal popup UI menu
     /// </summary>
-    public partial class ModalPopupMenu : UIMenu
+    public partial class ModalPopupMenu : ModalPopupMenuT<ModalPopupMenu>
     {
+    }
+    
+    public abstract class ModalPopupMenuT<T> : UIMenu where T : ModalPopupMenuT<T>
+    {
+        public static T Instance => UIManager.Instance.GetMenu<T>();
+        
         /// <summary>
         /// Automatically hide whenever we click a response, otherwise you need to handle the hiding yourself
         /// </summary>
@@ -35,20 +41,21 @@ namespace TrickCore
         [FormerlySerializedAs("Confirm2ButtonText")] public TextMeshProUGUI Modal3ButtonText;
         
         // #d4442a
-        public Color DefaultColor1 = new Color(212, 68, 42) / 255f;
+        public Color DefaultColor1 = new Color(212, 68, 42, 255) / 255f;
         // #34911a
-        public Color DefaultColor2 = new Color(52, 145, 26) / 255f;
+        public Color DefaultColor2 = new Color(52, 145, 26, 255) / 255f;
         // #9c6b10
-        public Color DefaultColor3 = new Color(156, 107, 16) / 255f;
+        public Color DefaultColor3 = new Color(156, 107, 16, 255) / 255f;
     
+
+        public int MaxDescriptionLength = 2500;
+
+        protected readonly Queue<PopupQueueData> PopupDataQueue = new();
+
         private ModalPopupData _modalData1;
         private ModalPopupData _modalData2;
         private ModalPopupData _modalData3;
-
-        private int MaxTextLength = 2500;
-
-        private static readonly Queue<PopupQueueData> PopupDataQueue = new Queue<PopupQueueData>();
-        private static Routine _updater;
+        private Routine _updater;
     
         protected override void AddressablesAwake()
         {
@@ -84,40 +91,21 @@ namespace TrickCore
             base.Hide();
             _updater.Stop();
         }
-
-        private class PopupQueueData
-        {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public PopupType Popup { get; set; }
-            public ModalPopupData Button1 { get; set; }
-            public ModalPopupData Button2 { get; set; }
-            public ModalPopupData Button3 { get; set; }
-            public Func<string, IEnumerator> DescriptionUpdater { get; set; }
-
-            public enum PopupType
-            {
-                Ok,
-                YesNo,
-                ButtonModal,
-            }
-        }
-
+        
         private Routine _waitRoutine;
         
-        private static void ExecutePopupQueue()
+        private void ExecutePopupQueue()
         {
             if (PopupDataQueue.Count <= 0) return;
         
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
-            if (instance.IsOpen)
+            if (IsOpen)
             {
-                instance._waitRoutine.Replace(WaitToExecuteQueue());
+                _waitRoutine.Replace(WaitToExecuteQueue());
                 
                 // wait until popup closes, before we show again
                 IEnumerator WaitToExecuteQueue()
                 {
-                    yield return Routine.WaitCondition(() => !instance.IsOpen && !instance.IsTransitioning);
+                    yield return Routine.WaitCondition(() => !IsOpen && !IsTransitioning);
                     ExecuteQueue();
                 }
             }
@@ -125,6 +113,8 @@ namespace TrickCore
             {
                 ExecuteQueue();
             }
+
+            return;
 
             void ExecuteQueue()
             {
@@ -144,11 +134,9 @@ namespace TrickCore
             }
         }
 
-        public static void ShowOkModal(string title, string description, ModalPopupData okData, Func<string, IEnumerator> descriptionUpdater = null, string buttonColor = null)
+        public void ShowOkModal(string title, string description, ModalPopupData okData, Func<string, IEnumerator> descriptionUpdater = null, string buttonColor = null)
         {
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
-
-            if (instance.IsOpen)
+            if (IsOpen)
             {
                 PopupDataQueue.Enqueue(new PopupQueueData()
                 {
@@ -161,27 +149,25 @@ namespace TrickCore
                 return;
             }
         
-            instance.SetModal1Data(default);
-            instance.SetModal2Data(okData);
-            instance.SetModal3Data(default);
-            instance.SetTitleText(title);
-            instance.SetDescriptionText(description);
+            SetModal1Data(okData);
+            SetModal2Data(default);
+            SetModal3Data(default);
+            SetTitleText(title);
+            SetDescriptionText(description);
 
-            instance.Show();
+            Show();
         
-            instance.Modal1Button.interactable = true;
-            instance.Modal2Button.interactable = true;
-            instance.Modal3Button.interactable = true;
+            Modal1Button.interactable = true;
+            Modal2Button.interactable = true;
+            Modal3Button.interactable = true;
 
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
         }
 
-        public static void ShowYesNoModal(string title, string description, ModalPopupData yesData, ModalPopupData noData, Func<string, IEnumerator> descriptionUpdater = null)
+        public void ShowYesNoModal(string title, string description, ModalPopupData yesData, ModalPopupData noData, Func<string, IEnumerator> descriptionUpdater = null)
         {
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
-        
-            if (instance.IsOpen)
+            if (IsOpen)
             {
                 PopupDataQueue.Enqueue(new PopupQueueData()
                 {
@@ -195,27 +181,25 @@ namespace TrickCore
                 return;
             }
 
-            instance.SetModal1Data(noData);
-            instance.SetModal2Data(yesData);
-            instance.SetModal3Data(default);
-            instance.SetTitleText(title);
-            instance.SetDescriptionText(description);
+            SetModal1Data(noData);
+            SetModal2Data(yesData);
+            SetModal3Data(default);
+            SetTitleText(title);
+            SetDescriptionText(description);
 
-            instance.Show();
+            Show();
 
-            instance.Modal1Button.interactable = true;
-            instance.Modal2Button.interactable = true;
-            instance.Modal3Button.interactable = true;
+            Modal1Button.interactable = true;
+            Modal2Button.interactable = true;
+            Modal3Button.interactable = true;
         
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
         }
 
-        public static void ShowButtonsModal(string title, string description, ModalPopupData button1, ModalPopupData button2, ModalPopupData button3, Func<string, IEnumerator> descriptionUpdater = null)
+        public void ShowButtonsModal(string title, string description, ModalPopupData button1, ModalPopupData button2, ModalPopupData button3, Func<string, IEnumerator> descriptionUpdater = null)
         {
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
-        
-            if (instance.IsOpen)
+            if (IsOpen)
             {
                 PopupDataQueue.Enqueue(new PopupQueueData()
                 {
@@ -230,17 +214,17 @@ namespace TrickCore
                 return;
             }
 
-            instance.SetModal1Data(button1);
-            instance.SetModal2Data(button2);
-            instance.SetModal3Data(button3);
-            instance.SetTitleText(title);
-            instance.SetDescriptionText(description);
+            SetModal1Data(button1);
+            SetModal2Data(button2);
+            SetModal3Data(button3);
+            SetTitleText(title);
+            SetDescriptionText(description);
 
-            instance.Show();
+            Show();
         
-            instance.Modal1Button.interactable = true;
-            instance.Modal2Button.interactable = true;
-            instance.Modal3Button.interactable = true;
+            Modal1Button.interactable = true;
+            Modal2Button.interactable = true;
+            Modal3Button.interactable = true;
 
             _updater.Stop();
             if (descriptionUpdater != null) _updater = Routine.Start(descriptionUpdater?.Invoke(description));
@@ -252,11 +236,9 @@ namespace TrickCore
         /// <param name="text"></param>
         public void SetTitleText(string text)
         {
-            if (TitleText != null)
-            {
-                TitleText.text = text;
-                TitleText.gameObject.SetActive(!string.IsNullOrEmpty(text));
-            }
+            if (TitleText == null) return;
+            TitleText.text = text;
+            TitleText.gameObject.SetActive(!string.IsNullOrEmpty(text));
         }
 
         /// <summary>
@@ -265,15 +247,13 @@ namespace TrickCore
         /// <param name="text"></param>
         public void SetDescriptionText(string text)
         {
-            if (DescriptionText != null)
-            {
-                var str = text;
-                if (str != null && str.Length > MaxTextLength)
-                    str = str.Substring(0, MaxTextLength);
+            if (DescriptionText == null) return;
+            var str = text;
+            if (str != null && str.Length > MaxDescriptionLength)
+                str = str.Substring(0, MaxDescriptionLength);
             
-                DescriptionText.text = str;
-                DescriptionText.gameObject.SetActive(!string.IsNullOrEmpty(str));
-            }
+            DescriptionText.text = str;
+            DescriptionText.gameObject.SetActive(!string.IsNullOrEmpty(str));
         }
 
         public void SetModal1Data(ModalPopupData data)
@@ -325,45 +305,43 @@ namespace TrickCore
             }
         }
 
-        public static void SetDescription(string s)
+        public void SetDescription(string s)
         {
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
-            instance.DescriptionText.text = s;
+            if (DescriptionText != null) DescriptionText.text = s;
         }
 
-        public static void EnableButton(int index, bool enable)
+        public void EnableButton(int index, bool enable)
         {
-            var instance = UIManager.Instance.GetMenu<ModalPopupMenu>();
             switch (index)
             {
                 case 0:
-                    instance.Modal1Button.interactable = enable;
+                    Modal1Button.interactable = enable;
                     break;
                 case 1:
-                    instance.Modal2Button.interactable = enable;
+                    Modal2Button.interactable = enable;
                     break;
                 case 2:
-                    instance.Modal3Button.interactable = enable;
+                    Modal3Button.interactable = enable;
                     break;
             }
         }
 
-        public static void ShowError(string result, Action okAction)
+        public void ShowError(string result, Action okAction)
         {
             ShowOkModal("Error", result, new ModalPopupData("Ok", okAction));
         }
 
-        public static void ShowError(Exception exception, Action okAction)
+        public void ShowError(Exception exception, Action okAction)
         {
             ShowError(exception.Message, okAction);
         }
 
-        public static void ShowError(string result)
+        public void ShowError(string result)
         {
             ShowError(result, null);
         }
 
-        public static void ShowError(Exception exception)
+        public void ShowError(Exception exception)
         {
             ShowError(exception.Message, null);
         }
@@ -372,14 +350,32 @@ namespace TrickCore
 
 public struct ModalPopupData
 {
-    public string Text;
-    public Action Action;
-    public string ButtonColor;
+    public readonly string Text;
+    public readonly Action Action;
+    public readonly string ButtonColor;
             
     public ModalPopupData(string text, Action action = null, string buttonColor = null)
     {
         Text = text;
         Action = action;
         ButtonColor = buttonColor;
+    }
+}
+
+public class PopupQueueData
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public PopupType Popup { get; set; }
+    public ModalPopupData Button1 { get; set; }
+    public ModalPopupData Button2 { get; set; }
+    public ModalPopupData Button3 { get; set; }
+    public Func<string, IEnumerator> DescriptionUpdater { get; set; }
+
+    public enum PopupType
+    {
+        Ok,
+        YesNo,
+        ButtonModal,
     }
 }
