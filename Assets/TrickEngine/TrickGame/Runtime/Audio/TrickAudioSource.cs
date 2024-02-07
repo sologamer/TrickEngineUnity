@@ -23,60 +23,41 @@ public class TrickAudioSource
     /// Plays the audio in a loop
     /// </summary>
     /// <param name="audioId"></param>
-    public void PlayLoop(TrickAudioId audioId)
+    public void PlayLoop(ITrickAudioId audioId)
     {
-        AudioManager.Instance.AudioClipResolver(audioId, clip =>
-        {
-            Source.clip = clip;
-            Source.outputAudioMixerGroup = audioId.Mixer;
-            Source.loop = true;
-            Source.volume = audioId.VolumeFromTo.x;
-            if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
-                _volumeRoutine.Replace(Source.VolumeTo(audioId.VolumeFromTo.y, audioId.VolumeTweenSettings).Play());
-            else
-                _volumeRoutine.Stop();
-            
-            Source.pitch = audioId.PitchFromTo.x;
-            if (Math.Abs(audioId.PitchFromTo.x - audioId.PitchFromTo.y) > float.Epsilon)
-                _pitchRoutine.Replace(Source.PitchTo(audioId.PitchFromTo.y, audioId.PitchTweenSettings).Play());
-            else
-                _pitchRoutine.Stop();
-
-            if (audioId.Delay > 0)
-                Source.PlayDelayed(audioId.Delay);
-            else
-                Source.Play();
-        });
+        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, true));
     }
 
     /// <summary>
     /// Plays the audio one time
     /// </summary>
     /// <param name="audioId"></param>
-    public void PlayOneShot(TrickAudioId audioId)
+    public void PlayOneShot(ITrickAudioId audioId)
     {
-        AudioManager.Instance.AudioClipResolver(audioId, clip =>
-        {
-            Source.clip = clip;
-            Source.outputAudioMixerGroup = audioId.Mixer;
-            Source.loop = false;
-            Source.volume = audioId.VolumeFromTo.x;
-            if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
-                _volumeRoutine.Replace(Source.VolumeTo(audioId.VolumeFromTo.y, audioId.VolumeTweenSettings).Play());
-            else
-                _volumeRoutine.Stop();
-            
-            Source.pitch = audioId.PitchFromTo.x;
-            if (Math.Abs(audioId.PitchFromTo.x - audioId.PitchFromTo.y) > float.Epsilon)
-                _pitchRoutine.Replace(Source.PitchTo(audioId.PitchFromTo.y, audioId.PitchTweenSettings).Play());
-            else
-                _pitchRoutine.Stop();
-            
-            if (audioId.Delay > 0)
-                Source.PlayDelayed(audioId.Delay);
-            else
-                Source.Play();
-        });
+        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, false));
+    }
+
+    private void DefaultResolver(ITrickAudioId audioId, AudioClip clip, bool loop)
+    {
+        Source.clip = clip;
+        Source.outputAudioMixerGroup = audioId.Mixer;
+        Source.loop = loop;
+        Source.volume = audioId.VolumeFromTo.x;
+        if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
+            _volumeRoutine.Replace(Source.VolumeTo(audioId.VolumeFromTo.y, audioId.VolumeTweenSettings).Play());
+        else
+            _volumeRoutine.Stop();
+
+        Source.pitch = audioId.PitchFromTo.x;
+        if (Math.Abs(audioId.PitchFromTo.x - audioId.PitchFromTo.y) > float.Epsilon)
+            _pitchRoutine.Replace(Source.PitchTo(audioId.PitchFromTo.y, audioId.PitchTweenSettings).Play());
+        else
+            _pitchRoutine.Stop();
+
+        if (audioId.Delay > 0)
+            Source.PlayDelayed(audioId.Delay);
+        else
+            Source.Play();
     }
     
     /// <summary>

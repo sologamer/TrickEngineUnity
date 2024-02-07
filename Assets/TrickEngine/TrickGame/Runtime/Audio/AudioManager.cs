@@ -9,7 +9,7 @@ namespace TrickCore
         /// <summary>
         /// The way how we transform a TrickAudioId into a AudioClip
         /// </summary>
-        public Action<TrickAudioId, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
+        public Action<ITrickAudioId, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
 
         /// <summary>
         /// The number of audio sources to pool
@@ -24,7 +24,7 @@ namespace TrickCore
         /// <summary>
         /// The default main track to play
         /// </summary>
-        public TrickAudioId DefaultMainTrack;
+        public ITrickAudioId DefaultMainTrack;
 
         private readonly List<TrickAudioSource> _sources = new List<TrickAudioSource>();
 
@@ -64,29 +64,31 @@ namespace TrickCore
             return _sources.Find(source => source.IsAvailable());
         }
 
-        public TrickAudioSource PlayMainTrack(TrickAudioId audioId)
+        public TrickAudioSource PlayMainTrack(ITrickAudioId audioId)
         {
             if (audioId == null || !audioId.IsValid()) return null;
+            
             if (ActiveMainTrack != null && ActiveMainTrack.IsPlaying())
             {
-                // if same clip don't do anything
-                if (audioId.Clip == ActiveMainTrack.GetActiveClip()) return ActiveMainTrack;
-                ActiveMainTrack?.Stop();
-                ActiveMainTrack = PlayLoop(audioId);
+                AudioClipResolver(audioId, clip =>
+                {
+                    if (clip == ActiveMainTrack.GetActiveClip()) return;
+                    ActiveMainTrack.Stop();
+                    ActiveMainTrack = PlayLoop(audioId);
+                });
             }
             else
             {
-                // not playing anything yet, lets play the audio id
                 ActiveMainTrack = PlayLoop(audioId);
             }
 
             return ActiveMainTrack;
         }
 
-        public TrickAudioSource PlayLoop(List<TrickAudioId> audioIds) =>
+        public TrickAudioSource PlayLoop(List<ITrickAudioId> audioIds) =>
             PlayLoop(audioIds.Random(TrickIRandomizer.Default));
 
-        public TrickAudioSource PlayLoop(TrickAudioId audioId)
+        public TrickAudioSource PlayLoop(ITrickAudioId audioId)
         {
             if (audioId == null || !audioId.IsValid()) return null;
 
@@ -103,14 +105,14 @@ namespace TrickCore
             return source;
         }
 
-        public TrickAudioSource PlayOneShot(List<TrickAudioId> audioIds)
+        public TrickAudioSource PlayOneShot(List<ITrickAudioId> audioIds)
         {
             return audioIds != null && audioIds.Count > 0
                 ? PlayOneShot(audioIds.Random(TrickIRandomizer.Default))
                 : null;
         }
 
-        public TrickAudioSource PlayOneShot(TrickAudioId audioId)
+        public TrickAudioSource PlayOneShot(ITrickAudioId audioId)
         {
             if (audioId == null || !audioId.IsValid()) return null;
 
@@ -144,7 +146,16 @@ namespace TrickCore
         /// </summary>
         /// <param name="arg1"></param>
         /// <param name="arg2"></param>
-        private static void DefaultAudioClipResolver(TrickAudioId arg1, Action<AudioClip> arg2) =>
-            arg2?.Invoke(arg1.Clip);
+        public static void DefaultAudioClipResolver(ITrickAudioId arg1, Action<AudioClip> arg2)
+        {
+            if (arg1 is TrickAudioId trickAudioId)
+            {
+                arg2?.Invoke(trickAudioId.Clip);
+            }
+            else if (arg1 is TrickAudioIdAsync)
+            {
+                Debug.LogError("Async audio not supported yet, please implement your own resolver!");
+            }
+        }
     }
 }

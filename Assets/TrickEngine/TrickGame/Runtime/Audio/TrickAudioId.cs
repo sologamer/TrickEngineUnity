@@ -2,36 +2,72 @@ using System;
 using BeauRoutine;
 using TrickCore;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
 
-[Serializable]
-public class TrickAudioId
+public interface ITrickAudioId
 {
-    //public ClipLoadType LoadType;
-    
-    /// <summary>
-    /// The audio clip
-    /// </summary>
-    public AudioClip Clip;
-    public AudioMixerGroup Mixer;
+    AudioMixerGroup Mixer { get; }
+    float Delay { get; }
+    Vector2 VolumeFromTo { get; }
+    TweenSettings VolumeTweenSettings { get; }
+    Vector2 PitchFromTo { get; }
+    TweenSettings PitchTweenSettings { get; }
+    void PlayLoop();
+    void PlayOneShot();
+    bool IsValid();
+}
 
-    // Later for the addressables resolver
-    //public AssetReferenceT<AudioClip> ClipAsset;
-
-    [Header("Settings")]
-    public float Delay;
+[Serializable]
+public class TrickAudioIdAsync : ITrickAudioId
+{
+    [SerializeField] private AssetReferenceT<AudioClip> clip;
+    [SerializeField] private AudioMixerGroup mixer;
+    [SerializeField] private float delay;
+    [SerializeField] private Vector2 volumeFromTo = new Vector2(1.0f, 1.0f);
+    [SerializeField] private TweenSettings volumeTweenSettings;
     
-    public Vector2 VolumeFromTo = new Vector2(1.0f, 1.0f);
-    public TweenSettings VolumeTweenSettings;
+    [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
+    [SerializeField] private TweenSettings pitchTweenSettings;
     
-    public Vector2 PitchFromTo = new Vector2(1.0f, 1.0f);
-    public TweenSettings PitchTweenSettings;
+    public AssetReferenceT<AudioClip> Clip => clip;
+    public AudioMixerGroup Mixer => mixer;
+    public float Delay => delay;
+    public Vector2 VolumeFromTo => volumeFromTo;
+    public TweenSettings VolumeTweenSettings => volumeTweenSettings;
+    public Vector2 PitchFromTo => pitchFromTo;
+    public TweenSettings PitchTweenSettings => pitchTweenSettings;
+    
     
     public void PlayLoop() => AudioManager.Instance.PlayLoop(this);
     public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);
 
-    public bool IsValid()
-    {
-        return Clip != null;
-    }
+    public bool IsValid() => Clip != null;
+}
+
+[Serializable]
+public class TrickAudioId : ITrickAudioId
+{
+    [SerializeField] private AudioClip clip;
+    [SerializeField] private AudioMixerGroup mixer;
+    [SerializeField] private float delay;
+    [SerializeField] private Vector2 volumeFromTo = new Vector2(1.0f, 1.0f);
+    [SerializeField] private TweenSettings volumeTweenSettings;
+    
+    [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
+    [SerializeField] private TweenSettings pitchTweenSettings;
+    
+    public AudioClip Clip => clip;
+    public AudioMixerGroup Mixer => mixer;
+    public float Delay => delay;
+    public Vector2 VolumeFromTo => volumeFromTo;
+    public TweenSettings VolumeTweenSettings => volumeTweenSettings;
+    public Vector2 PitchFromTo => pitchFromTo;
+    public TweenSettings PitchTweenSettings => pitchTweenSettings;
+    
+    
+    public void PlayLoop() => AudioManager.Instance.PlayLoop(this);
+    public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);
+
+    public bool IsValid() => Clip != null;
 }
