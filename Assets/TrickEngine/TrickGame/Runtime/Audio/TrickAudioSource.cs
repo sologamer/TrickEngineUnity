@@ -6,7 +6,6 @@ using UnityEngine;
 public class TrickAudioSource
 {
     private Routine _volumeRoutine;
-    private Routine _pitchRoutine;
     private AudioSource Source { get; }
     public TrickAudioSource(AudioSource source)
     {
@@ -48,20 +47,21 @@ public class TrickAudioSource
         else
             _volumeRoutine.Stop();
 
-        Source.pitch = audioId.PitchFromTo.x;
+
         if (Math.Abs(audioId.PitchFromTo.x - audioId.PitchFromTo.y) > float.Epsilon)
-            _pitchRoutine.Replace(Source.PitchTo(audioId.PitchFromTo.y, audioId.PitchTweenSettings).Play());
+        {
+            Source.pitch = TrickIRandomizer.Default.Next(audioId.PitchFromTo.x, audioId.PitchFromTo.y);
+        }
         else
         {
             if (audioId.IgnoreApplyDefaultPitch)
             {
-                _pitchRoutine.Stop();
+                Source.pitch = 1;
             }
             else
             {
                 var range = AudioManager.Instance.DefaultPitchRange;
-                Source.pitch = range.x;
-                _pitchRoutine.Replace(Source.PitchTo(range.y, audioId.PitchTweenSettings).Play());
+                Source.pitch = TrickIRandomizer.Default.Next(range.x, range.y);
             }
         }
 
