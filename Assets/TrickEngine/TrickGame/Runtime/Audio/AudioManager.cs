@@ -20,7 +20,12 @@ namespace TrickCore
         /// The maximum number of pooled audio sources 
         /// </summary>
         public int MaxAudioSourcePool = 20;
-
+        
+        /// <summary>
+        /// This is the default pitch range for all audio sources
+        /// </summary>
+        public Vector2 DefaultPitchRange = new Vector2(0.9f, 1.1f);
+        
         /// <summary>
         /// The default main track to play
         /// </summary>

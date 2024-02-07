@@ -4,6 +4,7 @@ using TrickCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 public interface ITrickAudioId
 {
@@ -16,6 +17,7 @@ public interface ITrickAudioId
     void PlayLoop();
     void PlayOneShot();
     bool IsValid();
+    bool IgnoreApplyDefaultPitch { get; }
 }
 
 [Serializable]
@@ -29,7 +31,8 @@ public class TrickAudioIdAsync : ITrickAudioId
     
     [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings pitchTweenSettings;
-    
+    [SerializeField] private bool ignoreApplyDefaultPitch;
+
     public AssetReferenceT<AudioClip> Clip => clip;
     public AudioMixerGroup Mixer => mixer;
     public float Delay => delay;
@@ -43,6 +46,7 @@ public class TrickAudioIdAsync : ITrickAudioId
     public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);
 
     public bool IsValid() => Clip != null;
+    public bool IgnoreApplyDefaultPitch => ignoreApplyDefaultPitch;
 }
 
 [Serializable]
@@ -56,6 +60,7 @@ public class TrickAudioId : ITrickAudioId
     
     [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings pitchTweenSettings;
+    [SerializeField] private bool ignoreApplyDefaultPitch;
     
     public AudioClip Clip => clip;
     public AudioMixerGroup Mixer => mixer;
@@ -70,4 +75,5 @@ public class TrickAudioId : ITrickAudioId
     public void PlayOneShot() => AudioManager.Instance.PlayOneShot(this);
 
     public bool IsValid() => Clip != null;
+    public bool IgnoreApplyDefaultPitch => ignoreApplyDefaultPitch;
 }

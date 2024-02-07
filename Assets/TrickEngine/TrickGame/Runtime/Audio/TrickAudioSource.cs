@@ -52,7 +52,18 @@ public class TrickAudioSource
         if (Math.Abs(audioId.PitchFromTo.x - audioId.PitchFromTo.y) > float.Epsilon)
             _pitchRoutine.Replace(Source.PitchTo(audioId.PitchFromTo.y, audioId.PitchTweenSettings).Play());
         else
-            _pitchRoutine.Stop();
+        {
+            if (audioId.IgnoreApplyDefaultPitch)
+            {
+                _pitchRoutine.Stop();
+            }
+            else
+            {
+                var range = AudioManager.Instance.DefaultPitchRange;
+                Source.pitch = range.x;
+                _pitchRoutine.Replace(Source.PitchTo(range.y, audioId.PitchTweenSettings).Play());
+            }
+        }
 
         if (audioId.Delay > 0)
             Source.PlayDelayed(audioId.Delay);
