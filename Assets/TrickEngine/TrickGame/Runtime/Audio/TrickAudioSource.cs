@@ -6,6 +6,7 @@ using UnityEngine;
 public class TrickAudioSource
 {
     private Routine _volumeRoutine;
+    private bool _isResolving;
     private AudioSource Source { get; }
     public TrickAudioSource(AudioSource source)
     {
@@ -16,7 +17,7 @@ public class TrickAudioSource
     /// Is the source is not playing, we can use it
     /// </summary>
     /// <returns></returns>
-    public bool IsAvailable() => !Source.isPlaying;
+    public bool IsAvailable() => !_isResolving && !Source.isPlaying;
 
     /// <summary>
     /// Plays the audio in a loop
@@ -24,6 +25,7 @@ public class TrickAudioSource
     /// <param name="audioId"></param>
     public void PlayLoop(ITrickAudioId audioId)
     {
+        _isResolving = true;
         AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, true));
     }
 
@@ -33,6 +35,7 @@ public class TrickAudioSource
     /// <param name="audioId"></param>
     public void PlayOneShot(ITrickAudioId audioId)
     {
+        _isResolving = true;
         AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, false));
     }
 
@@ -61,6 +64,8 @@ public class TrickAudioSource
             Source.PlayDelayed(audioId.Delay);
         else
             Source.Play();
+        
+        _isResolving = false;
     }
     
     /// <summary>
@@ -69,6 +74,7 @@ public class TrickAudioSource
     public void Stop()
     {
         Source.Stop();
+        _isResolving = false;
     }
 
     public AudioClip GetActiveClip()
