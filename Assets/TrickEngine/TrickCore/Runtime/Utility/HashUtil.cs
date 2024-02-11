@@ -12,7 +12,7 @@ namespace TrickCore
         /// </summary>
         /// <param name="str">The string to hash</param>
         /// <returns>The hash</returns>
-        static uint DJB2_hash(string str)
+        public static uint DJB2_hash(string str)
         {
             uint hash = 5381;
             uint c;
@@ -50,7 +50,13 @@ namespace TrickCore
         /// <returns>Returns the 32-bit hash</returns>
         public static uint GetHash32(string str)
         {
-            return str.Aggregate(2166136261, (current, t) => (current ^ t) * 16777619);
+            uint hash = 2166136261;
+            for (int i = 0; i < str.Length; i++)
+            {
+                hash ^= str[i];
+                hash *= 16777619;
+            }
+            return hash;
         }
         
         /// <summary>
@@ -60,7 +66,13 @@ namespace TrickCore
         /// <returns>Returns the 64-bit hash</returns>
         public static ulong GetHash64(string str)
         {
-            return str.Aggregate(14695981039346656037, (current, t) => (current ^ t) * 16777619);
+            ulong hash = 14695981039346656037;
+            for (int i = 0; i < str.Length; i++)
+            {
+                hash ^= str[i];
+                hash *= 16777619;
+            }
+            return hash;
         }
 
         /// <summary>
