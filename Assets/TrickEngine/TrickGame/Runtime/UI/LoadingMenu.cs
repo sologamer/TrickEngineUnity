@@ -14,13 +14,15 @@ namespace TrickCore
         public Image FillProgress;
         public TextMeshProUGUI ProgressText;
 
+        protected Routine Routine { get; set; }
+
         public virtual void UpdateProgress(float progress)
         {
             if (FillProgress != null) FillProgress.fillAmount = progress;
             if (ProgressText != null) ProgressText.text = $"{progress * 100.0f:F0}%";
         }
         
-        public LoadingMenu WaitFor(string waitText, Action onLoadAction, Func<float> waitCondition, float waitCompleteDelay = 0.25f, float waitConditionInterval = 0.1f)
+        public virtual LoadingMenu WaitFor(string waitText, Action onLoadAction, Func<float> waitCondition, float waitCompleteDelay = 0.25f, float waitConditionInterval = 0.1f)
         {
             if (WaitText != null) WaitText.text = string.IsNullOrEmpty(waitText) ? DefaultWaitText : waitText;
 
@@ -37,12 +39,12 @@ namespace TrickCore
                 onLoadAction?.Invoke();
             }
         
-            Routine.Start(CustomWaiter());
+            Routine.Replace(CustomWaiter());
 
             return this;
         }
     
-        public LoadingMenu WaitForSceneLoad(string waitText, int buildIndex, Action onLoadAction)
+        public virtual LoadingMenu WaitForSceneLoad(string waitText, int buildIndex, Action onLoadAction)
         {
             WaitText.text = string.IsNullOrEmpty(waitText) ? DefaultWaitText : waitText;
         
@@ -52,7 +54,7 @@ namespace TrickCore
                 Hide();
                 onLoadAction?.Invoke();
             }
-            Routine.Start(Waiter());
+            Routine.Replace(Waiter());
             return this;
         }
     }
