@@ -28,11 +28,12 @@ namespace TrickCore
         private static readonly Dictionary<Type, MemberInfo[]> MemberInfoTypeCache = new Dictionary<Type, MemberInfo[]>();
         private static readonly object LockObject = new object();
 
+
         public static T TrickDeepClone<T>(this T original, HashSet<object> visited = null)
         {
             try
             {
-                if (original == null) return default;
+                if (original == null) return default(T);
                 var type = original.GetType();
 
                 // Skip cloning for Unity objects, strings, or value types (including Nullable<>)
@@ -41,20 +42,56 @@ namespace TrickCore
                 visited ??= new HashSet<object>();
                 if (!visited.Add(original)) return original; // Prevent infinite recursion
 
-                if (TryCloneUnitySpecific(original, out T clonedUnityObject)) return clonedUnityObject;
+                // Handling for arrays
+                if (type.IsArray)
+                {
+                    var elementType = type.GetElementType();
+                    var array = original as Array;
+                    var clonedArray = Array.CreateInstance(elementType, array.Length);
+                    for (int i = 0; i < array.Length; i++)
+                    {
+                        clonedArray.SetValue(TrickDeepClone(array.GetValue(i), visited), i);
+                    }
 
+                    return (T)(object)clonedArray; // Cast back to generic type
+                }
+
+                // Handling for IList and IDictionary
+                if (typeof(IDictionary).IsAssignableFrom(type))
+                {
+                    var dictionary = (IDictionary)Activator.CreateInstance(type);
+                    foreach (DictionaryEntry entry in (IDictionary)original)
+                    {
+                        dictionary.Add(TrickDeepClone(entry.Key, visited), TrickDeepClone(entry.Value, visited));
+                    }
+
+                    return (T)dictionary;
+                }
+
+                if (typeof(IList).IsAssignableFrom(type))
+                {
+                    var list = (IList)Activator.CreateInstance(type);
+                    foreach (var item in (IList)original)
+                    {
+                        list.Add(TrickDeepClone(item, visited));
+                    }
+
+                    return (T)list;
+                }
+
+                // Handle complex objects
                 var clone = Activator.CreateInstance(type);
-                foreach (var memberInfo in type.TrickGetMemberInfoFromType(true))
+                foreach (var memberInfo in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
                     if (memberInfo is FieldInfo field)
                     {
                         var fieldValue = field.GetValue(original);
-                        field.SetValue(clone, fieldValue is Object ? fieldValue : TrickDeepClone(fieldValue, visited));
+                        field.SetValue(clone, TrickDeepClone(fieldValue, visited));
                     }
                     else if (memberInfo is PropertyInfo property && property.CanRead && property.CanWrite)
                     {
                         var propertyValue = property.GetValue(original);
-                        property.SetValue(clone, propertyValue is Object ? propertyValue : TrickDeepClone(propertyValue, visited));
+                        property.SetValue(clone, TrickDeepClone(propertyValue, visited));
                     }
                 }
 
@@ -62,11 +99,13 @@ namespace TrickCore
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to deep clone object of type {typeof(T)}");
+                // Handle or log the exception as needed
+                Debug.LogError($"Failed to deep clone object of type {typeof(T).FullName}");
                 Debug.LogException(e);
                 return default;
             }
         }
+
 
         private static bool TryCloneUnitySpecific<T>(T original, out T clonedObject)
         {
