@@ -38,6 +38,8 @@ namespace TrickCore
 
                 // Skip cloning for Unity objects, strings, or value types (including Nullable<>)
                 if (typeof(Object).IsAssignableFrom(type) || type == typeof(string) || type.IsValueType) return original;
+                
+                if (TryCloneUnitySpecific(original, out var unitySpecificClone)) return unitySpecificClone;
 
                 visited ??= new HashSet<object>();
                 if (!visited.Add(original)) return original; // Prevent infinite recursion
@@ -118,6 +120,22 @@ namespace TrickCore
 
                 clonedObject = (T)(object)clonedCurve; // Cast back to T
                 return true; // Indicate that cloning was handled
+            }
+            
+            if (original is Gradient originalGradient)
+            {
+                var clonedGradient = new Gradient();
+                clonedGradient.alphaKeys = originalGradient.alphaKeys;
+                clonedGradient.colorKeys = originalGradient.colorKeys;
+
+                clonedObject = (T)(object)clonedGradient; // Cast back to T
+                return true; // Indicate that cloning was handled
+            }
+            
+            if (original is AssetReference)
+            {
+                clonedObject = original;
+                return true;
             }
             
             if (UnitySpecificDeepClone != null)
