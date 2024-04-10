@@ -184,7 +184,35 @@ namespace TrickCore
             if (randomizer == null) randomizer = TrickIRandomizer.Default;
             return randomizer.RandomItems(GetDropTable(true), minItems, maxItems, allowDuplicate);
         }
-        
+
+        public override void Clear()
+        {
+            Items.Clear();
+        }
+
+        public override void AddObject(object item, float weight)
+        {
+            Items.Add(new Entry {Object = (T) item, Weight = weight});
+        }
+
+        public override bool RemoveObject(object item)
+        {
+            var entry = Items.FirstOrDefault(e => e.Object.Equals(item));
+            if (entry.Equals(default(Entry))) return false;
+            Items.Remove(entry);
+            return true;
+        }
+
+        public override List<object> GetItems()
+        {
+            return Items.Select(e => e.Object).Cast<object>().ToList();
+        }
+
+        public override List<(object, float)> GetItemsWithWeights()
+        {
+            return Items.Select(e => ((object) e.Object, e.Weight)).ToList();
+        }
+
         public T RandomItemAs(IRandomizer randomizer = null)
         {
             randomizer ??= TrickIRandomizer.Default;

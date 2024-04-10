@@ -15,7 +15,7 @@ namespace TrickCore
     /// The DropTable class is used to get a random object sorted by their weight.
     /// </summary>
     [UnityEngine.Scripting.Preserve, Serializable]
-    public abstract class DropTable
+    public abstract class DropTable : IDropTable
     {
         public IRandomizer Randomizer { get; set; }
 
@@ -47,10 +47,11 @@ namespace TrickCore
         /// <summary>
         /// Clear the drop table
         /// </summary>
-        public virtual void Clear()
-        {
-            
-        }
+        public abstract void Clear();
+        public abstract void AddObject(object item, float weight);
+        public abstract bool RemoveObject(object item);
+        public abstract List<object> GetItems();
+        public abstract List<(object, float)> GetItemsWithWeights();
     }
 
     /// <summary>
@@ -237,6 +238,26 @@ namespace TrickCore
         public override void Clear()
         {
             Items.Clear();
+        }
+
+        public override void AddObject(object item, float weight)
+        {
+            Add((T) item, weight);
+        }
+
+        public override bool RemoveObject(object item)
+        {
+            return Remove(item);
+        }
+
+        public override List<object> GetItems()
+        {
+            return Items.Select(item => item.Object).Cast<object>().ToList();
+        }
+
+        public override List<(object, float)> GetItemsWithWeights()
+        {
+            return Items.Select(item => ((object) item.Object, item.Weight)).ToList();
         }
 
         public override string ToString()

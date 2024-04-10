@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
-using UnityEngine.Scripting;
 
 namespace TrickCore
 {
@@ -8,7 +8,7 @@ namespace TrickCore
     /// The UnityDropTable base class
     /// </summary>
     [Preserve, JsonObject, Serializable]
-    public abstract class BaseUnityDropTable
+    public abstract class BaseUnityDropTable : IDropTable
     {
         /// <summary>
         /// If true, the drop table might have been modified.
@@ -53,5 +53,12 @@ namespace TrickCore
         /// <param name="allowDuplicate">True if duplicate entries, if no entry is found null will be supplied</param>
         /// <returns>Returns the list of the randomized objects from the DropTable</returns>
         public abstract object RandomItems(IRandomizer randomizer, int minItems, int maxItems, bool allowDuplicate);
+
+        public abstract void Clear();
+        public abstract void AddObject(object item, float weight);
+        public abstract bool RemoveObject(object item);
+        
+        public abstract List<object> GetItems();
+        public abstract List<(object, float)> GetItemsWithWeights();
     }
 }
