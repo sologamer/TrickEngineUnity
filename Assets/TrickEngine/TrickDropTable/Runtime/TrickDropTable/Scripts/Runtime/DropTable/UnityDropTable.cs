@@ -205,7 +205,10 @@ namespace TrickCore
 
         public override List<object> GetItems()
         {
-            return Items.Select(e => e.Object).Cast<object>().ToList();
+            return Items.Select(e => e.Object)
+                .Where(e => e != null)
+                .Cast<object>()
+                .ToList();
         }
 
         public override List<(object, float)> GetItemsWithWeights()
