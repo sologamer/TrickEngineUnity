@@ -4,6 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
+    using Sirenix.OdinInspector;
+#endif
+
 namespace TrickCore
 {
     public static class ReflectionHelperExtension
@@ -86,7 +90,13 @@ namespace TrickCore
 #if !NO_UNITY
                                    attris.Any(o => o is MinMaxRangeAttribute) ||
  #endif
-                                   attris.All(o => !(o is NonSerializedAttribute) && !(o is JsonIgnoreAttribute)));
+                                   // Ignore JsonIgnoreAttribute and NonSerializedAttribute and ensure that OdinSerialize is not present
+                                   
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+#else
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
+#endif
                 }).Select((info, i) => new KeyValuePair<MemberInfo, object>(info, instance)).ToList();
 
 
@@ -159,7 +169,12 @@ namespace TrickCore
 #if !NO_UNITY
                                    attris.Any(o => o is MinMaxRangeAttribute) ||
 #endif
-                                   attris.All(o => !(o is NonSerializedAttribute) && !(o is JsonIgnoreAttribute)));
+                                   
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+#else
+                                   attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
+#endif
                 }).ToList();
 
             for (int i = 0; i < list.Count; i++)
@@ -250,7 +265,12 @@ namespace TrickCore
                         res = includeProperty && prop.GetGetMethod() != null && prop.GetSetMethod() != null;
                     }
 
-                    return res && (attris.Length == 0 || attris.All(o => !(o is NonSerializedAttribute) && !(o is JsonIgnoreAttribute)));
+                    return res && (attris.Length == 0 ||
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+#else
+                                   attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
+#endif
                 }).ToArray();
         }
 
