@@ -86,17 +86,7 @@ namespace TrickCore
                         res = includeProperty && prop.GetGetMethod() != null;
                     }
 
-                    return res && (attris.Length == 0 || 
-#if !NO_UNITY
-                                   attris.Any(o => o is MinMaxRangeAttribute) ||
- #endif
-                                   // Ignore JsonIgnoreAttribute and NonSerializedAttribute and ensure that OdinSerialize is not present
-                                   
-#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
-#else
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
-#endif
+                    return res && IsAttributeValid(attris);
                 }).Select((info, i) => new KeyValuePair<MemberInfo, object>(info, instance)).ToList();
 
 
@@ -140,6 +130,15 @@ namespace TrickCore
             return list.ToArray();
         }
 
+        private static bool IsAttributeValid(object[] attributes)
+        {
+            return attributes.Length == 0 || 
+#if !NO_UNITY
+                   attributes.Any(o => o is MinMaxRangeAttribute || o.GetType().Name == "OdinSerializeAttribute") ||
+#endif
+                   attributes.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute);
+        }
+
         /// <summary>
         /// Gets the memberinfo from a type
         /// </summary>
@@ -165,16 +164,7 @@ namespace TrickCore
                         res = includeProperty && prop.GetGetMethod() != null;
                     }
 
-                    return res && (attris.Length == 0 || 
-#if !NO_UNITY
-                                   attris.Any(o => o is MinMaxRangeAttribute) ||
-#endif
-                                   
-#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
-#else
-                                   attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
-#endif
+                    return res && IsAttributeValid(attris);
                 }).ToList();
 
             for (int i = 0; i < list.Count; i++)
@@ -265,12 +255,7 @@ namespace TrickCore
                         res = includeProperty && prop.GetGetMethod() != null && prop.GetSetMethod() != null;
                     }
 
-                    return res && (attris.Length == 0 ||
-#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
-#else
-                                   attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
-#endif
+                    return res && IsAttributeValid(attris);
                 }).ToArray();
         }
 
