@@ -155,7 +155,10 @@ namespace TrickCore
         {
             if (arg1 is TrickAudioId trickAudioId)
             {
-                arg2?.Invoke(trickAudioId.Clip);
+                if (trickAudioId.Clip != null)
+                    arg2?.Invoke(trickAudioId.Clip);
+                else if (trickAudioId.Clips != null && trickAudioId.Clips.Count > 0)
+                    arg2?.Invoke(trickAudioId.Clips.Random(TrickIRandomizer.Default));
             }
             else if (arg1 is TrickAudioIdAsync)
             {
