@@ -93,7 +93,7 @@ namespace TrickCore
                                    // Ignore JsonIgnoreAttribute and NonSerializedAttribute and ensure that OdinSerialize is not present
                                    
 #if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
 #else
                                     attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
 #endif
@@ -171,7 +171,7 @@ namespace TrickCore
 #endif
                                    
 #if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
 #else
                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
 #endif
@@ -267,7 +267,7 @@ namespace TrickCore
 
                     return res && (attris.Length == 0 ||
 #if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
-                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o is not OdinSerializeAttribute));
+                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute && o.GetType().Name != "OdinSerializeAttribute"));
 #else
                                    attris.All(o => o is not NonSerializedAttribute && o is not JsonIgnoreAttribute));
 #endif
