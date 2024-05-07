@@ -14,6 +14,7 @@ public interface ITrickAudioId
     Vector2 VolumeFromTo { get; }
     TweenSettings VolumeTweenSettings { get; }
     Vector2 PitchFromTo { get; }
+    float? SpatialBlend { get; }
     TweenSettings PitchTweenSettings { get; }
     void PlayLoop();
     void PlayOneShot();
@@ -31,6 +32,9 @@ public class TrickAudioIdAsync : ITrickAudioId
     [SerializeField] private Vector2 volumeFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings volumeTweenSettings;
     
+    [SerializeField] private bool useSpatialBlend;
+    [SerializeField] private float spatialBlendValue;
+    
     [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings pitchTweenSettings;
     [SerializeField] private bool ignoreApplyDefaultPitch;
@@ -42,6 +46,7 @@ public class TrickAudioIdAsync : ITrickAudioId
     public Vector2 VolumeFromTo => volumeFromTo;
     public TweenSettings VolumeTweenSettings => volumeTweenSettings;
     public Vector2 PitchFromTo => pitchFromTo;
+    public float? SpatialBlend => useSpatialBlend ? spatialBlendValue : null;
     public TweenSettings PitchTweenSettings => pitchTweenSettings;
     
     
@@ -62,6 +67,9 @@ public class TrickAudioId : ITrickAudioId
     [SerializeField] private Vector2 volumeFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings volumeTweenSettings;
     
+    [SerializeField] private bool useSpatialBlend;
+    [SerializeField] private float spatialBlendValue;
+
     [SerializeField] private Vector2 pitchFromTo = new Vector2(1.0f, 1.0f);
     [SerializeField] private TweenSettings pitchTweenSettings;
     [SerializeField] private bool ignoreApplyDefaultPitch;
@@ -73,6 +81,7 @@ public class TrickAudioId : ITrickAudioId
     public Vector2 VolumeFromTo => volumeFromTo;
     public TweenSettings VolumeTweenSettings => volumeTweenSettings;
     public Vector2 PitchFromTo => pitchFromTo;
+    public float? SpatialBlend => useSpatialBlend ? spatialBlendValue : null;
     public TweenSettings PitchTweenSettings => pitchTweenSettings;
     
     

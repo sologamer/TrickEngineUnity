@@ -35,6 +35,16 @@ namespace TrickCore
         /// The default main track to play
         /// </summary>
         public ITrickAudioId DefaultMainTrack;
+        
+        /// <summary>
+        /// The default spatial blend for 3D audio
+        /// </summary>
+        public float DefaultSpatialBlendNoLoop = 1.0f;
+        
+        /// <summary>
+        /// The default spatial blend for 3D audio when looping
+        /// </summary>
+        public float DefaultSpatialBlendLoop = 0.0f;
 
         private readonly List<TrickAudioSource> _sources = new List<TrickAudioSource>();
 

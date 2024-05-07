@@ -47,6 +47,7 @@ public class TrickAudioSource
         Source.loop = loop;
         Source.volume = audioId.VolumeFromTo.x;
         Source.transform.position = position.GetValueOrDefault(Camera.main is {} mainCamera ? mainCamera.transform.position : Vector3.zero);
+        Source.spatialBlend = audioId.SpatialBlend ?? (loop ? AudioManager.Instance.DefaultSpatialBlendLoop : AudioManager.Instance.DefaultSpatialBlendNoLoop);
         if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
             _volumeRoutine.Replace(Source.VolumeTo(audioId.VolumeFromTo.y, audioId.VolumeTweenSettings).Play());
         else
