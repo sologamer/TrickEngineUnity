@@ -26,25 +26,27 @@ public class TrickAudioSource
     public void PlayLoop(ITrickAudioId audioId)
     {
         _isResolving = true;
-        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, true));
+        AudioManager.Instance.AudioClipResolver(audioId, Vector3.zero, clip => DefaultResolver(audioId, Vector3.zero, clip, true));
     }
 
     /// <summary>
     /// Plays the audio one time
     /// </summary>
     /// <param name="audioId"></param>
-    public void PlayOneShot(ITrickAudioId audioId)
+    /// <param name="position"></param>
+    public void PlayOneShot(ITrickAudioId audioId, Vector3 position = default)
     {
         _isResolving = true;
-        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, clip, false));
+        AudioManager.Instance.AudioClipResolver(audioId, position, clip => DefaultResolver(audioId, position, clip, false));
     }
 
-    private void DefaultResolver(ITrickAudioId audioId, AudioClip clip, bool loop)
+    private void DefaultResolver(ITrickAudioId audioId, Vector3 position, AudioClip clip, bool loop)
     {
         Source.clip = clip;
         Source.outputAudioMixerGroup = audioId.Mixer;
         Source.loop = loop;
         Source.volume = audioId.VolumeFromTo.x;
+        Source.transform.position = position;
         if (Math.Abs(audioId.VolumeFromTo.x - audioId.VolumeFromTo.y) > float.Epsilon)
             _volumeRoutine.Replace(Source.VolumeTo(audioId.VolumeFromTo.y, audioId.VolumeTweenSettings).Play());
         else

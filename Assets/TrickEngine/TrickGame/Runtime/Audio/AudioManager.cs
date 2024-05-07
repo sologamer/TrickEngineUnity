@@ -9,7 +9,7 @@ namespace TrickCore
         /// <summary>
         /// The way how we transform a TrickAudioId into a AudioClip
         /// </summary>
-        public Action<ITrickAudioId, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
+        public Action<ITrickAudioId, Vector3, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
 
         /// <summary>
         /// The number of audio sources to pool
@@ -75,7 +75,7 @@ namespace TrickCore
             
             if (ActiveMainTrack != null && ActiveMainTrack.IsPlaying())
             {
-                AudioClipResolver(audioId, clip =>
+                AudioClipResolver(audioId, Vector3.zero, clip =>
                 {
                     if (clip == ActiveMainTrack.GetActiveClip()) return;
                     ActiveMainTrack.Stop();
@@ -110,14 +110,14 @@ namespace TrickCore
             return source;
         }
 
-        public TrickAudioSource PlayOneShot(List<ITrickAudioId> audioIds)
+        public TrickAudioSource PlayOneShot(List<ITrickAudioId> audioIds, Vector3 position = default)
         {
             return audioIds != null && audioIds.Count > 0
-                ? PlayOneShot(audioIds.Random(TrickIRandomizer.Default))
+                ? PlayOneShot(audioIds.Random(TrickIRandomizer.Default), position)
                 : null;
         }
 
-        public TrickAudioSource PlayOneShot(ITrickAudioId audioId)
+        public TrickAudioSource PlayOneShot(ITrickAudioId audioId, Vector3 position = default)
         {
             if (audioId == null || !audioId.IsValid()) return null;
 
@@ -130,7 +130,7 @@ namespace TrickCore
                     return null;
             }
 
-            source?.PlayOneShot(audioId);
+            source?.PlayOneShot(audioId, position);
             return source;
         }
 
@@ -150,8 +150,9 @@ namespace TrickCore
         /// Later we have different resolvers which can for example load an asset asynchronous (addressables or so)
         /// </summary>
         /// <param name="arg1"></param>
+        /// <param name="position"></param>
         /// <param name="arg2"></param>
-        public static void DefaultAudioClipResolver(ITrickAudioId arg1, Action<AudioClip> arg2)
+        public static void DefaultAudioClipResolver(ITrickAudioId arg1, Vector3 position, Action<AudioClip> arg2)
         {
             if (arg1 is TrickAudioId trickAudioId)
             {
