@@ -26,7 +26,7 @@ public class TrickAudioSource
     public void PlayLoop(ITrickAudioId audioId)
     {
         _isResolving = true;
-        AudioManager.Instance.AudioClipResolver(audioId, Vector3.zero, clip => DefaultResolver(audioId, Vector3.zero, clip, true));
+        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, Vector3.zero, clip, true));
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class TrickAudioSource
     public void PlayOneShot(ITrickAudioId audioId, Vector3 position = default)
     {
         _isResolving = true;
-        AudioManager.Instance.AudioClipResolver(audioId, position, clip => DefaultResolver(audioId, position, clip, false));
+        AudioManager.Instance.AudioClipResolver(audioId, clip => DefaultResolver(audioId, position, clip, false));
     }
 
     private void DefaultResolver(ITrickAudioId audioId, Vector3 position, AudioClip clip, bool loop)

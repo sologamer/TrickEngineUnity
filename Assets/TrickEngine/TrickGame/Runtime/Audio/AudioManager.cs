@@ -9,8 +9,13 @@ namespace TrickCore
         /// <summary>
         /// The way how we transform a TrickAudioId into a AudioClip
         /// </summary>
-        public Action<ITrickAudioId, Vector3, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
+        public Action<ITrickAudioId, Action<AudioClip>> AudioClipResolver { get; set; } = DefaultAudioClipResolver;
 
+        /// <summary>
+        /// The custom audio source prefab to use
+        /// </summary>
+        public AudioSource CustomAudioSourcePrefab;
+        
         /// <summary>
         /// The number of audio sources to pool
         /// </summary>
@@ -56,12 +61,22 @@ namespace TrickCore
 
         private TrickAudioSource CreateNew()
         {
-            var source =
-                new GameObject($"AudioSource {_sources.Count}", typeof(AudioSource)).GetComponent<AudioSource>();
-            source.transform.SetParent(transform);
-            TrickAudioSource newSource = new TrickAudioSource(source);
-            _sources.Add(newSource);
-            return newSource;
+            if (CustomAudioSourcePrefab == null)
+            {
+                var source = new GameObject($"AudioSource {_sources.Count}", typeof(AudioSource)).GetComponent<AudioSource>();
+                source.transform.SetParent(transform);
+                TrickAudioSource newSource = new TrickAudioSource(source);
+                _sources.Add(newSource);
+                return newSource;
+            }
+            else
+            {
+                var source = Instantiate(CustomAudioSourcePrefab, transform);
+                source.name = $"AudioSource {_sources.Count}";
+                TrickAudioSource newSource = new TrickAudioSource(source);
+                _sources.Add(newSource);
+                return newSource;
+            }
         }
 
         public TrickAudioSource GetAvailableAudioSource()
@@ -75,7 +90,7 @@ namespace TrickCore
             
             if (ActiveMainTrack != null && ActiveMainTrack.IsPlaying())
             {
-                AudioClipResolver(audioId, Vector3.zero, clip =>
+                AudioClipResolver(audioId, clip =>
                 {
                     if (clip == ActiveMainTrack.GetActiveClip()) return;
                     ActiveMainTrack.Stop();
@@ -152,7 +167,7 @@ namespace TrickCore
         /// <param name="arg1"></param>
         /// <param name="position"></param>
         /// <param name="arg2"></param>
-        public static void DefaultAudioClipResolver(ITrickAudioId arg1, Vector3 position, Action<AudioClip> arg2)
+        public static void DefaultAudioClipResolver(ITrickAudioId arg1, Action<AudioClip> arg2)
         {
             if (arg1 is TrickAudioId trickAudioId)
             {
