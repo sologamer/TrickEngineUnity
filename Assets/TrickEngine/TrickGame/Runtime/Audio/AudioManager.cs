@@ -125,14 +125,14 @@ namespace TrickCore
             return source;
         }
 
-        public TrickAudioSource PlayOneShot(List<ITrickAudioId> audioIds, Vector3 position = default)
+        public TrickAudioSource PlayOneShot(List<ITrickAudioId> audioIds, Vector3? position = default)
         {
             return audioIds != null && audioIds.Count > 0
                 ? PlayOneShot(audioIds.Random(TrickIRandomizer.Default), position)
                 : null;
         }
 
-        public TrickAudioSource PlayOneShot(ITrickAudioId audioId, Vector3 position = default)
+        public TrickAudioSource PlayOneShot(ITrickAudioId audioId, Vector3? position = default)
         {
             if (audioId == null || !audioId.IsValid()) return null;
 
