@@ -25,11 +25,11 @@ namespace TrickCore
             }
             
             // Load the data we're looking at from the stream
-            var values = ((string)reader.Value)
+            var values = readerValue
                 // Split the data, accept both ',' and ' ' as separators
                 .Split(new []{',', ' '}, StringSplitOptions.RemoveEmptyEntries)
                 // Parse the separate bits into floats (do not remove the template parameters, Unity's fault)
-                .Select<string, int>(f => int.Parse(f, CultureInfo.InvariantCulture)).ToArray();
+                .Select<string, float>(f => float.Parse(f, CultureInfo.InvariantCulture)).ToArray();
 
             // Stuff the data into a Vector3
             return new Vector4(values[0], values[1], values[2], values[3]);
