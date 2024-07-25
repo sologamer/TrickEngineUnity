@@ -65,6 +65,7 @@ namespace TrickCore
                     {
                         if (dynTrickPool is T2 dynT2)
                         {
+                            dynTrickPool.OnInstantiated();
                             getItemCallback?.Invoke(dynT2);
                         }
                         else
@@ -79,6 +80,7 @@ namespace TrickCore
                                     x.AssetReferenceGameObject = dynTrickPool.AssetReferenceGameObject;
                                     x.IsClaimed = dynTrickPool.IsClaimed;
                                     dynTrickPool.RedirectTarget = x;
+                                    dynTrickPool.OnInstantiated();
                                 }
                             }
 
