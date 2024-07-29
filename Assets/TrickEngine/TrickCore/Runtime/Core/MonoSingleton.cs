@@ -1,13 +1,4 @@
-﻿/**
- * MonoSingleton is an abstract class to easily create a singleton. A singleton is a single instance of an object. This also support unity OnDestroy which destroys the actual singleton
- * The singleton is actually an Unity gameobject, when the gameobject is destroyed the singleton will get destroyed aswell, this gives you more control which singletons are still active.
- * Made by Tuan Le
- */
-
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using TrickCore;
+﻿using UnityEngine;
 
 namespace TrickCore
 {
@@ -53,6 +44,17 @@ namespace TrickCore
             }
         }
 #endif
+
+        public static T RuntimeInstance =>
+#if UNITY_EDITOR
+            Application.isPlaying ? Instance : _cached != null ? _cached : _cached = MonoSingletonExtensions.FindManagerEditor<T>();
+#else
+        Instance;
+#endif
+
+        public static T EditorInstance => MonoSingletonExtensions.FindManagerEditor<T>();
+
+        private static T _cached;
 
         #region Singleton virtuals
 
