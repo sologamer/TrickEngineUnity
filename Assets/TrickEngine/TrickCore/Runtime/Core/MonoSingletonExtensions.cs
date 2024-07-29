@@ -4,6 +4,10 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
