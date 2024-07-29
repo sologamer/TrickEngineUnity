@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -18,13 +19,31 @@ namespace TrickCore
     {
         private static readonly Dictionary<Type, object> Cache = new Dictionary<Type, object>();
 
+        public static List<string> FindPrefabDirectories()
+        {
+            var directories = new List<string>();
+
+            // Get all first-level directories under "Assets"
+            string[] topLevelDirectories = Directory.GetDirectories("Assets", "*", SearchOption.TopDirectoryOnly);
+
+            foreach (var dir in topLevelDirectories)
+            {
+                // Look for "Prefabs" directories inside each top-level directory
+                string prefabsPath = Path.Combine(dir, "Prefabs");
+                if (Directory.Exists(prefabsPath)) directories.Add(prefabsPath);
+            }
+
+            return directories;
+        }
+
         public static T FindManagerEditor<T>() where T : MonoSingleton<T>
         {
 #if UNITY_EDITOR
             if (Cache.TryGetValue(typeof(T), out var value)) return (T)value;
 
-            var findAssets = AssetDatabase.FindAssets($"{typeof(T).Name} t:prefab", new[] { "Assets/DevouringHunter/Prefabs/Managers" });
-            if (findAssets.Length == 0) return null;
+            // Search for the asset in the found directories
+            var findAssets = FindPrefabDirectories().SelectMany(dir => AssetDatabase.FindAssets($"{typeof(T).Name} t:prefab", new[] { dir })).ToList();
+            if (findAssets.Count == 0) return null;
             var path = AssetDatabase.GUIDToAssetPath(findAssets[0]);
             var prefab = AssetDatabase.LoadAssetAtPath<T>(path);
             Cache.Add(typeof(T), prefab);
@@ -40,8 +59,9 @@ namespace TrickCore
             if (Cache.TryGetValue(typeof(T), out var value)) return (T)value;
 
             string findName = string.IsNullOrEmpty(name) ? typeof(T).Name : name;
-            var findAssets = AssetDatabase.FindAssets($"{findName} t:prefab", new[] { "Assets/DevouringHunter/Prefabs" });
-            if (findAssets.Length == 0) return null;
+            var findAssets = FindPrefabDirectories().SelectMany(dir => AssetDatabase.FindAssets($"{findName} t:prefab", new[] { dir })).ToList();
+            if (findAssets.Count == 0) return null;
+
             var path = AssetDatabase.GUIDToAssetPath(findAssets[0]);
             var prefab = AssetDatabase.LoadAssetAtPath<T>(path);
             Cache.Add(typeof(T), prefab);
