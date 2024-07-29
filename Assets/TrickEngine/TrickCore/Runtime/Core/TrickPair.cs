@@ -30,7 +30,7 @@ namespace TrickCore
 
         public KeyValuePair<T, T2> ToPair() => new KeyValuePair<T, T2>(Key, Value);
 
-        protected bool Equals(TrickPair<T, T2> other)
+        internal bool Equals(TrickPair<T, T2> other)
         {
             return EqualityComparer<T>.Default.Equals(Key, other.Key) && EqualityComparer<T2>.Default.Equals(Value, other.Value);
         }
