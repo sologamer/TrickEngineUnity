@@ -20,20 +20,9 @@ namespace TrickCore
             PlayerPrefs.SetString(key, new CacheData<T>()
             {
                 CacheTime = TrickTime.CurrentServerTime.Add(span),
-                Data = value.SerializeToJsonBase64(),
+                SerializedData = value.SerializeToJsonBase64(),
             }.SerializeToJsonTryCatch(false));
             PlayerPrefs.Save();
-        }
-
-        public struct CacheData<T>
-        {
-            public DateTime CacheTime;
-            public string Data;
-
-            public bool IsValid()
-            {
-                return TrickTime.CurrentServerTime >= CacheTime;
-            }
         }
     }
 }

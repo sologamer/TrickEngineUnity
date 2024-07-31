@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace TrickCore
@@ -30,14 +29,6 @@ namespace TrickCore
         private string SquareEvaluator(Match match)
         {
             return match.Value;
-        }
-    }
-    
-    public static class LocalizationManagerExtensions
-    {
-        public static string LocalizationArguments(this string str, params string[] param)
-        {
-            return str + string.Join("", param.Select(s => $"[{s}]"));
         }
     }
 }
