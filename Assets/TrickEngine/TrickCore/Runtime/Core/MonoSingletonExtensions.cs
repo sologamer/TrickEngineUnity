@@ -19,30 +19,45 @@ namespace TrickCore
     {
         private static readonly Dictionary<Type, object> Cache = new Dictionary<Type, object>();
 
-        public static List<string> FindPrefabDirectories()
+        public static List<string> FindPrefabDirectories(int depth)
         {
             var directories = new List<string>();
-
-            // Get all first-level directories under "Assets"
-            string[] topLevelDirectories = Directory.GetDirectories("Assets", "*", SearchOption.TopDirectoryOnly);
-
-            foreach (var dir in topLevelDirectories)
-            {
-                // Look for "Prefabs" directories inside each top-level directory
-                string prefabsPath = Path.Combine(dir, "Prefabs");
-                if (Directory.Exists(prefabsPath)) directories.Add(prefabsPath);
-            }
-
+            string rootPath = "Assets";
+            FindPrefabDirectoriesRecursive(rootPath, depth, 0, directories);
             return directories;
         }
 
-        public static T FindManagerEditor<T>() where T : MonoSingleton<T>
+        private static void FindPrefabDirectoriesRecursive(string currentPath, int maxDepth, int currentDepth, List<string> directories)
+        {
+            if (currentDepth > maxDepth) return;
+
+            // Check if the current directory contains a "Prefabs" directory
+            string prefabsPath = Path.Combine(currentPath, "Prefabs");
+            if (Directory.Exists(prefabsPath))
+            {
+                directories.Add(prefabsPath);
+
+                // No need to search in subdirectories if we found a "Prefabs" directory
+                return;
+            }
+
+            // Get all first-level directories under the current path
+            string[] subDirectories = Directory.GetDirectories(currentPath, "*", SearchOption.TopDirectoryOnly);
+
+            foreach (var subDir in subDirectories)
+            {
+                // Recursively search in each subdirectory
+                FindPrefabDirectoriesRecursive(subDir, maxDepth, currentDepth + 1, directories);
+            }
+        }
+
+        public static T FindManagerEditor<T>(int searchDepth = 4) where T : MonoSingleton<T>
         {
 #if UNITY_EDITOR
             if (Cache.TryGetValue(typeof(T), out var value)) return (T)value;
 
             // Search for the asset in the found directories
-            var findAssets = FindPrefabDirectories().SelectMany(dir => AssetDatabase.FindAssets($"{typeof(T).Name} t:prefab", new[] { dir })).ToList();
+            var findAssets = FindPrefabDirectories(searchDepth).SelectMany(dir => AssetDatabase.FindAssets($"{typeof(T).Name} t:prefab", new[] { dir })).ToList();
             if (findAssets.Count == 0) return null;
             var path = AssetDatabase.GUIDToAssetPath(findAssets[0]);
             var prefab = AssetDatabase.LoadAssetAtPath<T>(path);
@@ -53,13 +68,13 @@ namespace TrickCore
 #endif
         }
 
-        public static T FindPrefabEditor<T>(string name) where T : MonoBehaviour
+        public static T FindPrefabEditor<T>(string name, int searchDepth = 4) where T : MonoBehaviour
         {
 #if UNITY_EDITOR
             if (Cache.TryGetValue(typeof(T), out var value)) return (T)value;
 
             string findName = string.IsNullOrEmpty(name) ? typeof(T).Name : name;
-            var findAssets = FindPrefabDirectories().SelectMany(dir => AssetDatabase.FindAssets($"{findName} t:prefab", new[] { dir })).ToList();
+            var findAssets = FindPrefabDirectories(searchDepth).SelectMany(dir => AssetDatabase.FindAssets($"{findName} t:prefab", new[] { dir })).ToList();
             if (findAssets.Count == 0) return null;
 
             var path = AssetDatabase.GUIDToAssetPath(findAssets[0]);
