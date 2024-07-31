@@ -13,7 +13,7 @@ namespace TrickCore
         private bool _returnToPool;
         private IGameContext _context;
 
-        public void Initialize(PoolObject effect, IGameContext context)
+        public void Setup(PoolObject effect, IGameContext context)
         {
             _poolObject = effect;
             _context = context;

@@ -85,11 +85,10 @@ namespace TrickCore
 
         public void AutoDestroyParticle()
         {
-            if (!TryGetComponent<TrickAutoDestroyParticleOnComplete>(out _))
-            {
-                var autoDestroy = gameObject.AddComponent<TrickAutoDestroyParticleOnComplete>();
-                if (autoDestroy != null) autoDestroy.Initialize(this, Context);
-            }
+            if (!TryGetComponent<TrickAutoDestroyParticleOnComplete>(out var autoDestroy))
+                autoDestroy = gameObject.AddComponent<TrickAutoDestroyParticleOnComplete>();
+
+            if (autoDestroy != null) autoDestroy.Setup(this, Context);
         }
     }
 }
