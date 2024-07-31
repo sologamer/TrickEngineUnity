@@ -32,9 +32,9 @@ public static class AddressableExtensions
         });
     }
 
-    public static bool HasAddress(this AssetReference assetReference)
+    public static bool HasAddress(this AssetReference ar)
     {
-        return assetReference == null || string.IsNullOrEmpty(assetReference.AssetGUID) == false;
+        return ar != null && !string.IsNullOrEmpty(ar.AssetGUID);
     }
 
     public static Vector3 GetTransformPosition(this IPoolObject obj)
