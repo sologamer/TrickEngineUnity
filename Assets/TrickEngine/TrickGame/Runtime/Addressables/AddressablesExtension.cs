@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TrickCore;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,6 +16,19 @@ public static class AddressableExtensions
         if (!assetReference.HasAddress()) return;
         ObjectPoolManager.RuntimeInstance.GetPoolDataAsset(assetReference, 1)
             .OnResolve(data => callback?.Invoke(data.GetAssetAs<T>()));
+    }
+
+    public static void GetRandomPoolAsset<T>(this List<AssetReferenceT<T>> list, IRandomizer randomizer, Action<T> callback) where T : UnityEngine.Object
+    {
+        if (list == null || list.Count == 0) return;
+        list.Random(randomizer).GetPoolAsset(callback);
+    }
+
+    public static void GetRandomPoolEntity<T>(this List<AssetReferenceGameObject> list, IRandomizer randomizer, IGameContext context,
+        Action<T> callback, Transform parent = null, Vector3? position = null, Quaternion? rotation = null) where T : Component
+    {
+        if (list == null || list.Count == 0) return;
+        list.Random(randomizer).GetPoolEntity(context, callback, parent, position, rotation);
     }
 
     public static void GetPoolEntity<T>(this AssetReferenceGameObject assetReference, IGameContext context,
