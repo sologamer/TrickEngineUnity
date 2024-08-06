@@ -5,11 +5,7 @@
 	"com.sologamer.trickengineunity.rest":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickREST",
 	"com.sologamer.trickengineunity.time":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickTime",
 	"com.sologamer.trickengineunity.game":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickGame",
-	"com.sologamer.trickengineunity.addressables":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickAddressables",
-	"com.sologamer.trickengineunity.builder":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickBuilder",
-	"com.sologamer.trickengineunity.database":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickDatabase",
 	"com.sologamer.trickengineunity.firebase":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickFirebase",
-	"com.sologamer.trickengineunity.login":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickLogin",
 	"com.sologamer.trickengineunity.socketio":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickSocketIO",
 	"com.sologamer.trickengineunity.webgl":"https://github.com/sologamer/TrickEngineUnity.git?path=Assets/TrickEngine/TrickWebGL",
 	"recommended":[
