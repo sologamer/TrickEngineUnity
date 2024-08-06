@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.IO;
-using System.Net;
 using BeauRoutine;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TrickCore
 {
@@ -14,10 +11,9 @@ namespace TrickCore
 
         private Routine _fetchRoutine;
 
-        public TrickTimeInternalUnity(string endpoint, bool isRestEndpoint, Action fetchFailCallback, bool injectRandomnessForNoCache = true)
+        public TrickTimeInternalUnity(Func<IEnumerator> fetchServerTimeFunc)
         {
-            if (injectRandomnessForNoCache) endpoint += $"?rnd={DateTime.Now.Ticks}";
-            FetchServerTimeFunc = () => FetchServerTime(endpoint, isRestEndpoint, CalculateTimeDifference, fetchFailCallback);
+            FetchServerTimeFunc = fetchServerTimeFunc;
         }
 
         /// <summary>
@@ -91,53 +87,6 @@ namespace TrickCore
             // We local compensate, but we MUST make a request to the server, otherwise we will never know if it was forwarded or not
             if (!_fetchRoutine.Exists() && FetchServerTimeFunc != null)
                 _fetchRoutine = Routine.Start(FetchServerTimeFunc.Invoke());
-        }
-
-        public static IEnumerator FetchServerTime(string endPoint, bool isRestEndpoint, Action<DateTime> fetchServerTimeResult, Action failedToFetch)
-        {
-            bool? succeeded = null;
-            DateTime serverTime = DateTime.UtcNow;
-
-            if (isRestEndpoint)
-            {
-                yield return new RESTGet<T>(endPoint, null, s =>
-                {
-                    succeeded = s != null;
-                    if (s != null) serverTime = s.FetchedServerTime;
-                });
-            }
-            else
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(endPoint);
-                request.Method = "GET";
-                TrickTask.StartNewTask(async () =>
-                {
-                    var response = await request.GetResponseAsync();
-                    using var dataStream = response.GetResponseStream();
-                    if (dataStream != null)
-                    {
-                        using var reader = new StreamReader(dataStream);
-                        var str = await reader.ReadToEndAsync();
-                        var obj = str.DeserializeJson<T>();
-                        if (obj != null) serverTime = obj.FetchedServerTime;
-                        succeeded = obj != null;
-                    }
-                    else
-                    {
-                        succeeded = false;
-                    }
-                });
-                yield return new WaitUntil(() => succeeded != null);
-            }
-            
-            if (succeeded.GetValueOrDefault())
-            {
-                fetchServerTimeResult?.Invoke(serverTime);
-            }
-            else
-            {
-                failedToFetch?.Invoke();
-            }
         }
     }
 }
