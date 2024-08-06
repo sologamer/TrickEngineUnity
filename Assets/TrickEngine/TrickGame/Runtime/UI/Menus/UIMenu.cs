@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using BeauRoutine;
-using TrickCore;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 
 #if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
     using Sirenix.OdinInspector;
