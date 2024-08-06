@@ -131,12 +131,14 @@ namespace TrickCore
                 clonedObject = (T)(object)clonedGradient; // Cast back to T
                 return true; // Indicate that cloning was handled
             }
-            
+
+#if UNITY_ADDRESSABLES
             if (original is AssetReference)
             {
                 clonedObject = original;
                 return true;
             }
+#endif
             
             if (UnitySpecificDeepClone != null)
             {
