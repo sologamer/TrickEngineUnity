@@ -72,11 +72,6 @@ namespace TrickCore
         /// The canvas camera plane distance
         /// </summary>
         public float PlaneDistance;
-    
-        /// <summary>
-        /// True if we need to fix the render scale, otherwise the UI might not look sharp
-        /// </summary>
-        public bool FixRenderScale;
 
         internal float RenderScaleBefore;
         internal Camera MainCamera;
@@ -104,7 +99,6 @@ namespace TrickCore
 
         public List<IUIMenuAction> DefaultActions = new()
         {
-            new FixURPUIMenuAction(),
             new HandleAudioMenuAction(),
             new HandleMainCameraMenuAction(),
             new HandleSortingOrderMenuAction(),

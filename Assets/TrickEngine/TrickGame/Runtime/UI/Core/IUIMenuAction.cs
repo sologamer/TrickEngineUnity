@@ -1,9 +1,10 @@
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 namespace TrickCore
 {
+    /*
+     * Interface for UI menu actions, this is used to execute actions before and after showing and hiding a menu
+     */
     public interface IUIMenuAction
     {
         void ExecuteShow(UIMenu menu);
@@ -19,6 +20,7 @@ namespace TrickCore
 
         public void ExecuteHide(UIMenu menu)
         {
+            // Reset sorting order
             if (menu.MenuCanvas != null) menu.MenuCanvas.sortingOrder = menu.StartingSortingOrder;
         }
     }
@@ -33,10 +35,8 @@ namespace TrickCore
 
         public void ExecuteHide(UIMenu menu)
         {
-            if (menu.HideCallbackOnceQueue.Count > 0)
-            {
-                menu.HideCallbackOnceQueue.Pop()?.Invoke();
-            }
+            // Execute hide callback if any
+            if (menu.HideCallbackOnceQueue.Count > 0) menu.HideCallbackOnceQueue.Pop()?.Invoke();
         }
     }
     
@@ -77,26 +77,6 @@ namespace TrickCore
         public void ExecuteHide(UIMenu menu)
         {
             
-        }
-    }
-    
-    public class FixURPUIMenuAction : IUIMenuAction
-    {
-        public void ExecuteShow(UIMenu menu)
-        {
-            if (menu.FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
-            {
-                menu.RenderScaleBefore = asset.renderScale;
-                if (asset.renderScale < 1) asset.renderScale = 1.0f;
-            }
-        }
-
-        public void ExecuteHide(UIMenu menu)
-        {
-            if (menu.FixRenderScale && GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset asset)
-            {
-                asset.renderScale = menu.RenderScaleBefore;
-            }
         }
     }
 }
