@@ -3,7 +3,9 @@ using UnityEngine;
 
 namespace TrickCore
 {
-    public abstract class GamePatchManager<TPatch> : MonoSingleton<GamePatchManager<TPatch>> where TPatch : IGamePatch, new()
+    public abstract class GamePatchManager<TInstance, TPatch> : MonoSingleton<TInstance> where
+        TInstance : GamePatchManager<TInstance, TPatch>, new() where
+        TPatch : IGamePatch, new()
     {
         [field: SerializeField] public TPatch DefaultPatch { get; private set; } = new TPatch();
 
