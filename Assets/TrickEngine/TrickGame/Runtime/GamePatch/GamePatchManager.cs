@@ -40,6 +40,7 @@ namespace TrickCore
         public void ApplyPatchData(byte[] patchData) => Current = UnpackPatchFunc(patchData);
         public void ApplyPatchData(TPatch patchData) => Current = patchData;
         public void ApplyDefaultPatchData() => Current = DefaultPatch;
+        protected void SetDefaultPatch(TPatch patchData) => DefaultPatch = patchData;
 
         public byte[] CreatePatchData(TPatch patchData, int version)
         {
