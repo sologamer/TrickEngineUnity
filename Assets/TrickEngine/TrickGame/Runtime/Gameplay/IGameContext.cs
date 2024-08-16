@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace TrickCore
@@ -6,7 +7,7 @@ namespace TrickCore
     {
         Transform ContextParentRoot { get; set; }
         string GetContextName();
-        void Tick();
+        IEnumerator Tick();
         void RegisterTickable(ITickable tickable);
         void UnregisterTickable(ITickable tickable);
     }
