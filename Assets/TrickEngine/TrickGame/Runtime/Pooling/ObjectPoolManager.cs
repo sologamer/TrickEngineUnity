@@ -71,7 +71,7 @@ namespace TrickCore
 
             if (assetReference is AssetReferenceGameObject or AssetReferenceT<GameObject>)
             {
-                if (assetReference.OperationHandle.Status != AsyncOperationStatus.None) assetReference = new AssetReferenceGameObject(assetReference.AssetGUID);
+                if (assetReference.OperationHandle.IsValid() && assetReference.OperationHandle.Status != AsyncOperationStatus.None) assetReference = new AssetReferenceGameObject(assetReference.AssetGUID);
                 AsyncOperationHandle<GameObject> op = assetReference.LoadAssetAsync<GameObject>();
                 op.Completed += CompletedGameObject;
                 _objectPools.Add(poolId, poolData);
@@ -138,7 +138,7 @@ namespace TrickCore
 
             ObjectPoolData TryLoad<T>()
             {
-                if (assetReference.OperationHandle.Status != AsyncOperationStatus.None) assetReference = new AssetReference(assetReference.AssetGUID);
+                if (assetReference.OperationHandle.IsValid() && assetReference.OperationHandle.Status != AsyncOperationStatus.None) assetReference = new AssetReference(assetReference.AssetGUID);
                 AsyncOperationHandle<T> op = assetReference.LoadAssetAsync<T>();
                 op.Completed += CompletedObject;
                 _objectPools.Add(poolId, poolData);
