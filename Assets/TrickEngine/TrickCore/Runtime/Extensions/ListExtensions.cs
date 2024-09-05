@@ -21,7 +21,7 @@ namespace TrickCore
             if (source == null) return;
             foreach (T behaviour in source)
             {
-                Object.Destroy(behaviour.gameObject);
+                if (behaviour != null) Object.Destroy(behaviour.gameObject);
             }
             if (clear && source is IList list) list.Clear();
         }
