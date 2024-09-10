@@ -9,7 +9,7 @@ namespace TrickCore
     {
         [field: SerializeField] public TPatch DefaultPatch { get; private set; } = new TPatch();
 
-        public TPatch Current { get; private set; } = new TPatch();
+        public TPatch Current { get; protected set; } = new TPatch();
 
         /// <summary>
         /// A function to unpack the patch data from bytes. This is used when applying a patch file

@@ -35,7 +35,9 @@ namespace TrickCore
         /// <returns></returns>
         public TPatch UnpackPatchData<TPatch>(IPackProcessor<TPatch> packProcessor) where TPatch : IGamePatch, new()
         {
-            var bytes = packProcessor == null ? PatchData : packProcessor.UnpackConvertBytes(PatchData);
+            if (packProcessor != null) return packProcessor.UnpackToObject(PatchData);
+            
+            var bytes = PatchData;
             return bytes == null ? default : Convert.ToBase64String(bytes).DeserializeJsonBase64<TPatch>();
         }
 
