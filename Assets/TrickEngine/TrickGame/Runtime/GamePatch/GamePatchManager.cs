@@ -37,13 +37,18 @@ namespace TrickCore
             Current = DefaultPatch;
         }
 
-        public void ApplyPatchData(byte[] patchData) => Current = UnpackPatchFunc(patchData);
+        public void ApplyPatchData(byte[] patchData) => Current = PackProcessor != null ? PackProcessor.UnpackToObject(patchData) : UnpackPatchFunc(patchData);
         public void ApplyPatchData(TPatch patchData) => Current = patchData;
         public void ApplyDefaultPatchData() => Current = DefaultPatch;
         protected void SetDefaultPatch(TPatch patchData) => DefaultPatch = patchData;
 
         public byte[] CreatePatchData(TPatch patchData, int version)
         {
+            if (PackProcessor != null)
+            {
+                return PackProcessor.PackToBytes(patchData);
+            }
+            
             var packedPatchData = PackPatchToBytesFunc(patchData, version);
             return packedPatchData;
         }
