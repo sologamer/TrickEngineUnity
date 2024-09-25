@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using BeauRoutine;
 using TrickCore;
 using UnityEngine;
@@ -8,6 +9,9 @@ public class TrickAudioSource
     private Routine _volumeRoutine;
     private bool _isResolving;
     private AudioSource Source { get; }
+    
+    public bool IsResolving => _isResolving;
+    
     public TrickAudioSource(AudioSource source)
     {
         Source = source;
@@ -18,6 +22,12 @@ public class TrickAudioSource
     /// </summary>
     /// <returns></returns>
     public bool IsAvailable() => !_isResolving && !Source.isPlaying;
+    
+    public IEnumerator WaitForResolve(Action<AudioClip> onResolve = null)
+    {
+        while (_isResolving) yield return null;
+        onResolve?.Invoke(Source.clip);
+    }
 
     /// <summary>
     /// Plays the audio in a loop
