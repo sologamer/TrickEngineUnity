@@ -24,5 +24,15 @@ namespace TrickCore
             }.SerializeToJsonTryCatch(false));
             PlayerPrefs.Save();
         }
+
+        public void Remove(string cacheKey)
+        {
+            PlayerPrefs.DeleteKey(cacheKey);
+        }
+
+        public void Clear()
+        {
+            PlayerPrefs.DeleteAll();
+        }
     }
 }

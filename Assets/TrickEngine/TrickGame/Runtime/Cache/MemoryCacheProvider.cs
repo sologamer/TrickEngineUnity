@@ -25,5 +25,15 @@ namespace TrickCore
                 MemoryData = value
             };
         }
+
+        public void Remove(string cacheKey)
+        {
+            _cache.Remove(cacheKey);
+        }
+
+        public void Clear()
+        {
+            _cache.Clear();
+        }
     }
 }

@@ -10,5 +10,7 @@ namespace TrickCore
         bool Has(string key);
         CacheData<T> Get<T>(string key);
         void Set<T>(string key, T value, TimeSpan span);
+        void Remove(string cacheKey);
+        void Clear();
     }
 }
