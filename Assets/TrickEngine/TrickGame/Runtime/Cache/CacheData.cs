@@ -32,7 +32,7 @@ namespace TrickCore
 
         public bool IsValid()
         {
-            return TrickTime.CurrentServerTime >= CacheTime;
+            return TrickTime.CurrentServerTime < CacheTime;
         }
     }
 }
