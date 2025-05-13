@@ -17,19 +17,26 @@ namespace TrickCore
         public string SerializedData;
 
         [JsonIgnore]
-        private T? _memoryData;
+        private T _memoryData;
+
+        [JsonIgnore]
+        private bool _hasMemoryData;
 
         [JsonIgnore]
         public T MemoryData
         {
-            get => _memoryData.HasValue ? _memoryData.Value : default;
-            set => _memoryData = value;
+            get => _memoryData;
+            set
+            {
+                _memoryData = value;
+                _hasMemoryData = true;
+            }
         }
 
         public T GetData()
         {
-            return _memoryData.HasValue
-                ? _memoryData.Value
+            return _hasMemoryData
+                ? _memoryData
                 : SerializedData.DeserializeJsonBase64TryCatch<T>();
         }
 
@@ -38,5 +45,6 @@ namespace TrickCore
             return TrickTime.CurrentServerTime < CacheTime;
         }
     }
+
 
 }
