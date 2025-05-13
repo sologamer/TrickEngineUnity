@@ -10,29 +10,33 @@ namespace TrickCore
     [JsonObject]
     public struct CacheData<T>
     {
-        /// <summary>
-        /// The cache time.
-        /// </summary>
         [JsonProperty("ct")]
         public DateTime CacheTime;
 
-        /// <summary>
-        /// The data in base64 format.
-        /// </summary>
         [JsonProperty("sd")]
         public string SerializedData;
 
-        /// <summary>
-        /// The memory data.
-        /// </summary>
         [JsonIgnore]
-        public T MemoryData;
+        private T? _memoryData;
 
-        public T GetData() => MemoryData ?? SerializedData.DeserializeJsonBase64TryCatch<T>();
+        [JsonIgnore]
+        public T MemoryData
+        {
+            get => _memoryData.HasValue ? _memoryData.Value : default;
+            set => _memoryData = value;
+        }
+
+        public T GetData()
+        {
+            return _memoryData.HasValue
+                ? _memoryData.Value
+                : SerializedData.DeserializeJsonBase64TryCatch<T>();
+        }
 
         public bool IsValid()
         {
             return TrickTime.CurrentServerTime < CacheTime;
         }
     }
+
 }
