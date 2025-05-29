@@ -8,9 +8,21 @@ public class TrickAudioSource
 {
     private Routine _volumeRoutine;
     private bool _isResolving;
-    private AudioSource Source { get; }
+
+    public AudioSource Source { get; }
     
     public bool IsResolving => _isResolving;
+    
+    public float Volume
+    {
+        get => Source.volume;
+        set => Source.volume = value;
+    }
+    public float Time
+    {
+        get => Source.time;
+        set => Source.time = value;
+    }
     
     public TrickAudioSource(AudioSource source)
     {
