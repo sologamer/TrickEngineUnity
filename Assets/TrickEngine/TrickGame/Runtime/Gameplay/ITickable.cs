@@ -4,6 +4,6 @@ namespace TrickCore
 {
     public interface ITickable
     {
-        IEnumerator Tick(int tick, int tickRate);
+        void Tick(int tick, int tickRate);
     }
 }

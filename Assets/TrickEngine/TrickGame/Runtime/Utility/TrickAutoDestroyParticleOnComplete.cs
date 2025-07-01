@@ -32,17 +32,17 @@ namespace TrickCore
             }
         }
 
-        public IEnumerator Tick(int tick, int tickRate)
+        public void Tick(int tick, int tickRate)
         {
-            if (_particleSystem == null) yield break;
+            if (_particleSystem == null) return;
             _isEnabled = _particleSystem.isPlaying;
 
             _hasBeenPlayedSinceEnable = _hasBeenPlayedSinceEnable || _isEnabled;
 
             // We only want to destroy the particle if it has been played since OnEnable was called
-            if (!_hasBeenPlayedSinceEnable) yield break;
-            if (_isEnabled) yield break;
-            if (_returnToPool) yield break;
+            if (!_hasBeenPlayedSinceEnable) return;
+            if (_isEnabled) return;
+            if (_returnToPool) return;
 
             _poolObject ??= GetComponent<IPoolObject>();
             if (_poolObject != null)
