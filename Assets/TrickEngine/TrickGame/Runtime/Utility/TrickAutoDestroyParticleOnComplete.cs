@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TrickCore
 {
-    public class TrickAutoDestroyParticleOnComplete : MonoBehaviour, ITickable
+    public class TrickAutoDestroyParticleOnComplete : MonoBehaviour
     {
         private const float DestroyDelay = 1.0f;
         private const float StateChangeDelay = 0.1f; // Small delay after state change
