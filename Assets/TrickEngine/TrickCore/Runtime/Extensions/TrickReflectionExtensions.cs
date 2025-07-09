@@ -430,5 +430,36 @@ namespace TrickCore
             if (_memberCache.ContainsKey(type)) 
                 _memberCache.Remove(type);
         }
+
+        public static MemberInfo[] TrickGetMemberInfoFromType(this Type type, bool includeProperty, BindingFlags flags = BindingFlags.Instance | BindingFlags.Public)
+        {
+            // Use the new cached members implementation for consistency
+            if (flags == (BindingFlags.Instance | BindingFlags.Public) && includeProperty)
+            {
+                return GetCachedMembers(type);
+            }
+
+            // Fallback to original implementation for custom flags
+            return type.GetMembers(flags)
+                .Where(info => info.MemberType == MemberTypes.Field ||
+                               info.MemberType == MemberTypes.Property).Where(info =>
+                {
+                    var attris = info.GetCustomAttributes(false);
+                    bool res = true;
+
+                    if (info.MemberType == MemberTypes.Property)
+                    {
+                        PropertyInfo prop = (PropertyInfo)info;
+                        res = includeProperty && prop.GetGetMethod() != null && prop.GetSetMethod() != null;
+                    }
+
+                    return res && (attris.Length == 0 
+#if ODIN_INSPECTOR && !ODIN_INSPECTOR_EDITOR_ONLY
+                                   || attris.Any(o2=> o2 is OdinSerializeAttribute)
+#endif
+                                   || attris.All(o => (!(o is NonSerializedAttribute)) && !(o is JsonIgnoreAttribute)));;
+                }).ToArray();
+        }
+
     }
 }
